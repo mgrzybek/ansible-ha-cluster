@@ -1,0 +1,4 @@
+---
+
+- name: Create the bridge and the bond
+  shell: ovs-vsctl --may-exist add-br {{ item.bridge }} -- ovs-vsctl --may-exist add-bond {{ item.bridge }} {{ item.bond }} {{ item.ethernet_ports }} lacp=active

@@ -1,0 +1,52 @@
+---
+
+- name: Configure SLES repositories
+  zypper_repository: name="{{ item.name }}" repo="{{ item.url }}" state=present
+  with_items:
+    - name: sle-server-product
+      url: "{{ repo_sle_server_product }}"
+    - name: sle-server-updates
+      url: "{{ repo_sle_server_updates }}"
+    - name: sle-ha-product
+      url: "{{ repo_sle_ha_product }}"
+    - name: sle-ha-updates
+      url: "{{ repo_sle_ha_updates }}"
+  when:
+    - ansible_distribution == 'SLES'
+    - repo_sle_server_product != 'None'
+    - repo_sle_server_updates != 'None'
+    - repo_sle_ha_product != 'None'
+    - repo_sle_ha_updates != 'None'
+
+- name: Install base packages
+  zypper: type=pattern name={{ item }} state=present
+  with_items:
+    - Minimal
+    - base
+
+- name: Upgrade if pacemaker is not running
+  zypper: name=* state=latest
+  when: pcmk_status.stdout.find("inactive") > -1
+
+- name: Install some useful packages
+  zypper: name={{ item }} state=present
+  with_items:
+    - lsb-release
+
+- name: Install logging packages
+  zypper: name={{ item }} state=present
+  with_items:
+    - rsyslog-module-rabbitmq
+
+- name: Installation des paquets standards
+  zypper: name={{ item }} state=present
+  with_items:
+    - openvswitch
+    - open-lldp
+  when:
+    - ansible_virtualization_role == "host"
+    - cluster_role == 'compute'
+    - net_use_openvswitch == true
+
+- name: Rafraichissement de la liste des paquets dans le cron.daily
+  copy: src=zypper.cron dest=/etc/cron.daily/zypper owner=root group=root mode=0755
