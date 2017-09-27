@@ -25,12 +25,13 @@
     - libdlm
   when:
     - cluster_role == 'compute'
+    - hosting_use_libvirt_lxc == true
 
 - name: Install packages for compute nodes (OpenVSwitch)
   zypper: name={{ item }} state=present
   with_items:
     - openvswitch
-  when: 
+  when:
     - cluster_role == 'compute'
     - net_use_openvswitch == true
 

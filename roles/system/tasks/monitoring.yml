@@ -5,7 +5,3 @@
 
 - include: monitoring/consul.yml
   when: monitoring_use_consul == true
-
-- name: Accounting sur les cgroups systemd
-  copy: src=system.conf dest=/etc/systemd/system.conf
-

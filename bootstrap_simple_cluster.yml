@@ -1,14 +1,10 @@
 ---
 
-#- hosts: all
-#  any_errors_fatal: true
-#  roles:
-#    - system
-
 - hosts: all
   # We do not configure the cluster if one node is failing something.
   any_errors_fatal: true
   roles:
+    - system
     - cluster
   vars:
     # Mandatory

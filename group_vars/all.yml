@@ -4,8 +4,15 @@
 cluster_role: compute
 cluster_use_hawk: false
 
+cluster_hawk_file_key: None
+cluster_hawk_file_pem: None
+
 cluster_stonith_use_sbd: false
 cluster_stonith_use_ipmi: false
+
+cluster_stonith_sbd_lun_1: None
+cluster_stonith_sbd_lun_2: None
+cluster_stonith_sbd_lun_3: None
 
 cluster_allocation_vcpus_ratio: 0.8
 cluster_allocation_memory_ratio: 0.8
@@ -15,6 +22,10 @@ cluster_no_quorum_policy: stop
 cluster_mgmt_ip: None
 
 cluster_ping_remote_addr: None
+
+# Hypervisor configuration
+hosting_use_libvirt_lxc: true
+hosting_use_lxd: false
 
 # Networking configuration
 net_use_openvswitch: false
@@ -29,6 +40,27 @@ net_back_port: None
 net_admin_port: None
 net_cluster_port: None
 
+net_cluster:
+  address: None
+  prefix: None
+  network: None
+
+net_ilo:
+  address: None
+  prefix: None
+  network: None
+
+# Comma-separated list of two interfaces
+net_front_eth_ports: None
+net_back_eth_ports: None
+net_admin_eth_ports: None
+net_cluster_eth_ports: None
+
+net_front_bridge: None
+net_back_bridge: None
+net_admin_bridge: None
+net_cluster_bridge: None
+
 # Monitoring
 monitoring_use_nrpe: false
 monitoring_use_consul: false
@@ -36,3 +68,9 @@ monitoring_use_consul: false
 # Metrics
 metrics_use_collectd: false
 metrics_use_telegraf: false
+
+# Repositories
+repo_sle_server_product: None
+repo_sle_server_updates: None
+repo_sle_ha_product: None
+repo_sle_ha_updates: None

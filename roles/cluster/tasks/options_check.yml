@@ -18,3 +18,11 @@
   when:
     - cluster_ping_remote_addr == 'None'
     - cluster_expected_nodes < 3
+
+- fail: msg="You need to choose between libvirt/LXC and LXD"
+  when: hosting_use_libvirt_lxc == true and hosting_use_lxd == true or hosting_use_libvirt_lxc == false and hosting_use_lxd == false
+
+- fail: msg="LXD is only available on Ubuntu"
+  when:
+    - hosting_use_lxd == true
+    - ansible_os_family != 'Ubuntu'

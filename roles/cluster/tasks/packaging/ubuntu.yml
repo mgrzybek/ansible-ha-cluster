@@ -7,6 +7,9 @@
     - crmsh
     - pacemaker
 
+- name: Install LXD tools
+  apt: name=lxc2 state=present
+
 - name: Install packages for compute nodes (OpenVSwitch)
   apt: name={{ item }} state=present
   with_items:
