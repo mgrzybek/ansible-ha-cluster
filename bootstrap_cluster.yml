@@ -31,7 +31,13 @@
     cluster_allocation_vcpus_ratio: 0.8
     cluster_allocation_memory_ratio: 0.8
 
+    # Optional: hypervisor configuration
+    hosting_use_libvirt_lxc: true # default is true
+    hosting_use_lxd: false # default is false
+
     # Optional: networking
+    net_use_openvswitch: true # default is false
+
     net_front_port: bond-front
     net_back_port: bond-back
     net_admin_port: bond-admin
