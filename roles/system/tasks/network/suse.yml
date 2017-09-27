@@ -3,7 +3,7 @@
 - name: Configuration de l'interface cluster
   template: src=suse/ifcfg-interface.j2 dest=/etc/sysconfig/network/ifcfg-{{ item.device }} mode=0600
   with_items:
-    - device: cluster
+    - device: "{{ net_cluster_port }}"
       address: "{{ net_cluster.address }}"
       prefix: "{{ net_cluster.prefix }}"
 
