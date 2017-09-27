@@ -1,0 +1,78 @@
+---
+
+- name: Init RPM db
+  shell: rpm --root /srv/cluster/{{ application.name }} --initdb
+
+#- name: Mise en place de la configuration minimale de zypper
+#  file: path=/srv/cluster/{{ application.name }}/etc/zypp state=directory
+- name: Mise en place des depots
+  shell: zypper --no-gpg-checks --non-interactive --root /srv/cluster/{{ application.name }} lr | grep -q {{ item.name }} ||zypper --no-gpg-checks --non-interactive --root /srv/cluster/{{ application.name }} ar {{ item.url }} {{ item.name }}
+  with_items:
+    - name: sle-server-product
+      url: http://{{ depot_fqdn }}/suse/Products/SLE-SERVER/{{ ansible_distribution_major_version }}-SP{{ ansible_distribution_version.split('.')[1] }}/{{ ansible_machine }}/product
+    - name: sle-server-updates
+      url: http://{{ depot_fqdn }}/suse/Products/SLE-SERVER/{{ ansible_distribution_major_version }}-SP{{ ansible_distribution_version.split('.')[1] }}/{{ ansible_machine }}/update
+
+- name: Mise en place du repertoire /opt/stig
+  file: path=/srv/cluster/{{ application.name }}/opt state=directory
+
+- name: Mise en place de la configuration minimale de zypper
+  synchronize: src=/etc/zypp dest=/srv/cluster/{{ application.name }}/etc recursive=yes perms=yes existing_only=no
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Mise a jour des depots
+  shell: zypper --no-gpg-checks --non-interactive --root /srv/cluster/{{ application.name }} refresh
+
+- name: Installation des paquets de base
+  shell: zypper --no-gpg-checks --non-interactive --root /srv/cluster/{{ application.name }} install --download-in-advance -t pattern {{ item }}
+  with_items:
+    - base
+    - Minimal
+
+- name: Mise en place du lien symbolique sur la version de l'OS
+  file: src=SLES.prod dest=/srv/cluster/{{ application.name }}/etc/products.d/baseproduct state=link
+
+- name: Installation des paquets de base
+  shell: zypper --no-gpg-checks --non-interactive --root /srv/cluster/{{ application.name }} install --download-in-advance {{ item }}
+  with_items:
+    - sles-release
+    - coreutils
+    - zypper
+    - less
+    - iputils
+    - vim
+    - sudo
+    - systemd
+    - systemd-sysvinit
+    - systemd-bash-completion
+    - bind-utils
+    - bash
+    - iproute
+    - java-1_8_0-openjdk-headless
+    - syslog-service
+    - suse-build-key
+    - traceroute
+    - SuSEfirewall2
+    - pacemaker-remote
+    - openssh
+    - sssd
+    - sssd-ldap
+    - sssd-krb5
+    - supportutils
+    - monitoring-plugins-zypper
+    - nrpe
+
+- name: Nettoyage des paquets inutiles
+  shell: zypper --no-gpg-checks --non-interactive --root /srv/cluster/{{ application.name }} rm {{ item }} || exit 0
+  with_items:
+    - ipw-firmware
+    - kernel-firmware
+    - mpt-firmware
+    - atmel-firmware
+    - adaptec-firmware
+    - kernel-firmware
+    - nfs-kernel-server
+    - postfix
+
+- name: Rafraichissement de la liste des paquets dans le cron.daily
+  copy: src=zypper.cron dest=/srv/cluster/{{ application.name }}/etc/cron.daily/zypper owner=root group=root mode=0744

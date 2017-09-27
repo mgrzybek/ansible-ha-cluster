@@ -1,0 +1,30 @@
+---
+
+- include: packaging.yml
+  tags:
+    - packaging
+
+- include: configuration.yml
+  tags:
+    - configuration
+
+- include: monitoring.yml
+  tags:
+    - configuration
+    - monitoring
+
+- include: network.yml
+  tags:
+    - configuration
+
+- include: users.yml
+  tags:
+    - configuration
+
+- include: services.yml
+  tags:
+    - configuration
+
+- include: firewall.yml
+  tags:
+    - firewall

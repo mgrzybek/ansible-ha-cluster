@@ -1,0 +1,39 @@
+---
+
+# The playbook is failed if misconfiguration
+- include: options_check.yml
+  run_once: true
+  tags:
+    - always
+
+- include: packaging.yml
+  tags:
+    - packaging
+
+- include: crmsh.yml
+  tags:
+    - cluster
+    - packaging
+
+- include: firewall.yml # TODO: ubuntu support
+  when: ansible_os_family == 'Suse'
+- include: network.yml
+
+- include: configuration.yml
+
+- include: cgroups.yml
+  when: ansible_os_family == 'Suse'
+  tags:
+    - cgroups
+
+- include: cluster.yml
+  tags:
+    - cluster
+
+- include: monitoring.yml
+  tags:
+   - monitoring
+
+- include: metrics.yml
+  tags:
+    - metrics

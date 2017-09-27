@@ -1,0 +1,13 @@
+---
+
+- name: Install NRPE
+  apt: name={{ item }} state=latest
+  with_items:
+    - nrpe
+  when: use_monitoring_nrpe == true
+
+- name: Install Consul
+  apt: name={{ item }} state=latest
+  with_items:
+    - consul
+  when: use_monitoring_consul == true

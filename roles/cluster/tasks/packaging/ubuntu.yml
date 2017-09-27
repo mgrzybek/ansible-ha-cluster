@@ -1,0 +1,23 @@
+---
+
+- name: Install pacemaker / corosync packages
+  apt: name={{ item }} state=latest
+  with_items:
+    - apparmor
+    - crmsh
+    - pacemaker
+
+- name: Install packages for compute nodes (OpenVSwitch)
+  apt: name={{ item }} state=present
+  with_items:
+    - openvswitch
+  when:
+    - cluster_role == 'compute'
+    - net_use_openvswitch == true
+
+# There resource-agents might be present in the official package
+- name: Additional resource-agent
+  copy: src={{ item }} dest=/usr/lib/ocf/resource.d/heartbeat/{{ item }} mode=0755 force=no
+  with_items:
+    - ovsmonitor
+    - LXDInfo

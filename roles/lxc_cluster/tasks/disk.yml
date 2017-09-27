@@ -1,0 +1,30 @@
+---
+
+- name: Does the LUN exist?
+  stat: path={{ application.storage.lun[0] }}
+  register: lun_check_0
+
+- name: Does the LUN exist?
+  stat: path={{ application.storage.lun[1] }}
+  register: lun_check_1
+
+- name: Rescan SCSI
+  shell: /usr/bin/rescan-scsi-bus.sh
+  when: lun_check_0.stat.exists == false or lun_check_1.stat.exists
+
+- name: Does the LUN exist?
+  stat: path={{ application.storage.lun[0] }}
+  register: lun_check_0
+
+- name: Does the LUN exist?
+  stat: path={{ application.storage.lun[1] }}
+  register: lun_check_1
+
+- fail: msg="Stop if no LUN"
+  when: lun_check_0.stat.exists == false or lun_check_1.stat.exists
+
+- name: VG Create (clustered)
+  lvg: vg={{ application.name }} pvs={{ application.storage.lun[0] }},{{ application.storage.lun[1] }} vg_options="-cy"
+
+- name: Create root path
+  file: path=/srv/cluster/{{ application.name }} state=directory owner=root group=root

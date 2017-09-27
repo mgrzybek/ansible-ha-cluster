@@ -1,0 +1,4 @@
+---
+
+- include: network/ovs.yml
+  when: net_use_openvswitch == true

@@ -1,0 +1,32 @@
+---
+
+- name: Install some crm scripts (directories)
+  file: path=/usr/share/crmsh/scripts/{{ item }} state=directory
+  with_items:
+    - cloned_systemd_service
+    - cloned_clvm
+    - rg_graphite
+    - rg_mono
+    - rg_multi
+    - mgmt
+    - ovs_monitoring
+    - ping
+    - stonith_ipmi
+    - stonith_suicide
+    - systemd_service
+
+
+- name: Install some crm scripts (files)
+  copy: src=scripts/{{ item }}.yml dest=/usr/share/crmsh/scripts/{{ item }}/main.yml
+  with_items:
+    - cloned_systemd_service
+    - cloned_clvm
+    - rg_graphite
+    - rg_mono
+    - rg_multi
+    - mgmt
+    - ovs_monitoring
+    - ping
+    - stonith_ipmi
+    - stonith_suicide
+    - systemd_service

@@ -1,0 +1,51 @@
+---
+
+- name: Check du fonctionnement du service de cluster
+  shell: systemctl |awk '/^pacemaker/'
+  register: pcmk_status
+
+- name: Installation des depots
+  zypper_repository: name="{{ item.name }}" repo="{{ item.url }}" state=present
+  with_items:
+    - name: sle-server-product
+      url: "http://{{ depot_fqdn }}/suse/Products/SLE-SERVER/{{ ansible_distribution_major_version }}-SP{{ ansible_distribution_version.split('.')[1] }}/{{ ansible_machine }}/product"
+    - name: sle-server-updates
+      url: "http://{{ depot_fqdn }}/suse/Updates/SLE-SERVER/{{ ansible_distribution_major_version }}-SP{{ ansible_distribution_version.split('.')[1] }}/{{ ansible_machine }}/update"
+    - name: sle-ha-product
+      url: "http://{{ depot_fqdn }}/suse/Products/SLE-HA/{{ ansible_distribution_major_version }}-SP{{ ansible_distribution_version.split('.')[1] }}/{{ ansible_machine }}/product"
+    - name: sle-ha-updates
+      url: "http://{{ depot_fqdn }}/suse/Updates/SLE-HA/{{ ansible_distribution_major_version }}-SP{{ ansible_distribution_version.split('.')[1] }}/{{ ansible_machine }}/update"
+    - name: gendarmerie
+      url: "http://{{ depot_fqdn }}/gendarmerie/prod/SLE-SERVER{{ ansible_distribution_major_version }}-SP{{ ansible_distribution_version.split('.')[1] }}/{{ ansible_machine }}"
+
+- name: Installation des groupes de paquets standards
+  zypper: type=pattern name={{ item }} state=present
+  with_items:
+    - Minimal
+    - base
+
+- name: Mise a jour
+  zypper: name=* state=latest
+  when: pcmk_status.stdout.find("loaded active running") < 0
+
+- name: Installation des paquets standards
+  zypper: name={{ item }} state=latest
+  with_items:
+    - sssd
+    - sssd-krb5
+    - sssd-ldap
+    - rsyslog-module-rabbitmq
+    - lsb-release
+
+- name: Installation des paquets standards
+  zypper: name={{ item }} state=latest
+  with_items:
+    - libvirt-daemon
+    - libvirt-daemon-lxc
+    - openvswitch
+    - openvswitch-switch
+    - open-lldp
+  when: ansible_virtualization_role == "host"
+
+- name: Rafraichissement de la liste des paquets dans le cron.daily
+  copy: src=zypper.cron dest=/etc/cron.daily/zypper owner=root group=root mode=0755

@@ -1,0 +1,40 @@
+---
+
+- name: LV create "{{ item.vg }}/{{ item.lv }}" (mirrored)
+  lvol: vg={{ item.vg }} lv={{ item.lv }} size={{ item.size }} opts="-m1"
+  when:
+    - item.fstype != "tmpfs"
+
+- name: LV mkfs "{{ item.vg }}/{{ item.lv }}"
+  filesystem: fstype={{ item.fstype }} dev=/dev/{{ item.vg }}/{{ item.lv }}
+  when:
+    - item.fstype != "tmpfs"
+
+- name: Check if the LV primitive is present
+  shell: crm configure show
+  register: crm_conf
+
+- name: Create primitive "{{ item.vg }}_{{ item.lv }}"
+  shell: >
+    crm configure primitive "{{ item.vg }}_{{ item.lv }}" Filesystem \
+        directory="{{ item.mountpoint }}" \
+        param device="/dev/{{ item.vg }}/{{ item.lv }}" \
+        fstype="{{ item.fstype }}" \
+        op monitor timeout=40 interval=20 \
+        op start timeout=60 interval=0 \
+        op stop timeout=60 interval=0 \
+        meta target-role=Stopped
+  when:
+    - crm_conf.stdout.find("primitive {{ item.vg }}_{{ item.lv }}") < 0
+
+- name: Check group configuration "{{ item.vg }}_rg"
+  shell: crm configure show {{ item.vg }}_rg
+  register: crm_group_conf
+
+- name: Add the LV primitive "{{ item.lv }}" to the group
+  shell: crm -w configure modgroup "{{ item.vg }}_rg" add "{{ item.vg }}_{{ item.lv }}"
+  when:
+    - crm_group_conf.stdout.find("{{ item.lv }}") < 0
+
+- name: Start the primitive "{{ item.vg }}_{{ item.lv }}"
+  shell: crm -w resource start {{ item.vg }}_{{ item.lv }}

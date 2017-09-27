@@ -1,0 +1,8 @@
+---
+
+- include: monitoring.yml
+  tag: monitoring
+
+- include: metrics.yml
+  tag: metrics
+

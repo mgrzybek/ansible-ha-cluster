@@ -1,0 +1,51 @@
+# Ansible modules for openvswitch are in preview state.
+
+# VLAN tagging
+
+- name: Front Office Networking - VLAN tagging
+  shell: ovs-vsctl set port {{ net_front_port }} trunks="{{ net_front_vlans }}"
+  when:
+    - cluster_role == 'compute'
+    - net_front_vlans != 'None'
+
+- name: Back Office Networking - VLAN tagging
+  shell: ovs-vsctl set port {{ net_back_port }} trunks="{{ net_back_vlans }}"
+  when:
+    - cluster_role == 'compute'
+    - net_back_vlans != 'None'
+
+- name: Admin Networking - VLAN tagging
+  shell: ovs-vsctl set port {{ net_admin_port }} trunks="{{ net_admin_vlans }}"
+  when:
+    - cluster_role == 'compute'
+    - net_admin_vlans != 'None'
+
+- name: Cluster Networking - VLAN tagging
+  shell: ovs-vsctl set port {{ net_cluster_port }} trunks="{{ net_cluster_vlans }}"
+  when:
+    - cluster_role == 'compute'
+    - net_cluster_vlan != 'None'
+
+# Interfaces creation
+
+- name: Cluster Networking - Port creation with tag
+  shell: ovs-vsctl --may-exist add-port ovs-back {{ net_cluster_port }} -- set interface {{ net_cluster_port }} type=internal
+  when:
+    - cluster_role == 'compute'
+    - net_cluster_vlan != 'None'
+
+- name: Cluster Networking - Port creation without tag
+  shell: ovs-vsctl --may-exist add-port ovs-back {{ net_cluster_port }} tag={{ net_cluster_vlan }} -- set interface {{ net_cluster_port }} type=internal
+  when:
+    - cluster_role == 'compute'
+    - net_cluster_vlan != 'None'
+
+- include: network/suse.yml
+  when:
+    - ansible_os_family == 'Suse'
+    - net_cluster_port != 'None'
+
+- include: network/ubuntu.yml
+  when:
+    - ansible_os_family == 'Ubuntu'
+    - net_cluster_port != 'None'

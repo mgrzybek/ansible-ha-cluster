@@ -1,0 +1,16 @@
+---
+
+# Utilization attributes
+- name: Define cpu and memory allocation ratio
+  shell: crm_attribute -z --node {{ ansible_hostname }} --name {{ item.property }} --update {{ item.value }}
+  with_items:
+    - property: cpu
+      value: "{{ (ansible_processor_vcpus * cluster_allocation_vcpus_ratio) | int }}"
+    - property: hv_memory
+      value: "{{ (ansible_memtotal_mb * 1024 * cluster_allocation_memory_ratio) | int }}"
+  when: ansible_virtualization_role == 'host'
+
+# Usage attributes
+- name: Add cluster_role attribute
+  shell: crm_attribute --node {{ ansible_hostname }} --name cluster_role --update compute
+  when: cluster_role == 'compute'

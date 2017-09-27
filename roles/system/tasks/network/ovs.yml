@@ -1,0 +1,10 @@
+---
+
+- name: Create bridge
+  #openvswitch_bridge: bridge=ovs-front vlan={{ front_vlans }}
+  shell: ovs-vsctl add-br {{ item.bridge }}
+  when: front_port != None
+
+- name: Create bond-front
+  shell: ovs-vsctl add-bond ovs-front {{ front_port }}
+  when: front_port != None

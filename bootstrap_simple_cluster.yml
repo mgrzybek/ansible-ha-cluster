@@ -1,0 +1,34 @@
+---
+
+#- hosts: all
+#  any_errors_fatal: true
+#  roles:
+#    - system
+
+- hosts: all
+  # We do not configure the cluster if one node is failing something.
+  any_errors_fatal: true
+  roles:
+    - cluster
+  vars:
+    # Mandatory
+    cluster_name: db-cluster-1
+    cluster_expected_nodes: 2
+    cluster_compute_nodes: 2
+
+    # Mandatory on two-nodes clusters: anti-splitbran ping resource
+    cluster_ping_remote_addr: 8.8.8.8
+
+    # Optional: quorum
+    cluster_no_quorum_policy: stop # stop, freeze, fence, ignore
+
+    # Optional: resource allocation
+    cluster_allocation_vcpus_ratio: 0.8
+    cluster_allocation_memory_ratio: 0.8
+
+    # Optional: networking
+
+    #net_front_port: bond-front
+    #net_back_port: bond-back
+    #net_admin_port: bond-admin
+    net_cluster_port: enp0s3

@@ -1,0 +1,27 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Cluster
+  shortdesc: Deploy a ping resource.
+  longdesc: |
+    Deploy a ping resource to avoid split brain.
+    Three nodes are used (host_list)
+
+  parameters:
+   - name: host_list
+     shortdesc: Hosts list.
+     longdesc: Space-separated list of nodes.
+     required: true
+     type: string
+
+  actions:
+    - cib: |
+        primitive splitbrain_detection ocf:pacemaker:ping
+         params host_list="{{host_list}}"
+         op monitor interval=10s timeout=60s
+
+    - cib: |
+        clone c-splitbrain_detection splitbrain_detection
+          meta interleave=true

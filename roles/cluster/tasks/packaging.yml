@@ -1,0 +1,7 @@
+---
+
+- include: packaging/suse.yml
+  when: ansible_os_family == 'Suse'
+
+- include: packaging/ubuntu.yml
+  when: ansible_os_family == 'Ubuntu'

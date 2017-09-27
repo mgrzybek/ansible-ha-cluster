@@ -1,0 +1,9 @@
+---
+
+- name: Autorisation des services cluster pour Hawk
+  shell: yast firewall services add service="{{ item }}" zone=INT
+  with_items:
+    - service:cluster
+  when:
+    - ansible_os_family == 'Suse'
+    - cluster_use_hawk == true

@@ -1,0 +1,21 @@
+---
+
+- name: Check du noeud de la ressource
+  shell: /usr/sbin/crm_resource --resource {{ application.name }}_rg --locate
+  register: crm_resource_node
+
+#- name: Install the pacemaker remote monitoring script
+#  copy: src=monitor_pacemaker_remote.sh dest=/srv/cluster/{{ application.name }}/opt/stig//monitor_pacemaker_remote.sh owner=root mode=755
+
+#- name: Install the PgSQL monitoring script
+#  copy: src=pgsql/{{ item }} dest=/srv/cluster/{{ application.name }}/opt/stig/{{ item }} owner=root mode=755
+#  with_items:
+#    - check_postgres.pl
+#    - monitor_database.sh
+#  when: application.type == "postgres" and crm_resource_node.stdout.find("{{ inventory_hostname }}")
+
+#- name: Mise en place de la remontee des logs vers Graylog
+#  template:
+
+#- name: Installation de la configuration de collectd
+#  template:

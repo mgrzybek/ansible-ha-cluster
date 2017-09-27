@@ -1,0 +1,30 @@
+---
+
+#- name: LXC capping
+#  service: name=machine-slice-configuration.service state=started enabled=yes
+
+- name: Machine.slice accounting
+  shell: systemctl set-property machine.slice {{ item }}=yes
+  with_items:
+    - MemoryAccounting
+    - BlockIOAccounting
+    - CPUAccounting
+  register: cgroup_accounting
+
+- name: Deploy machine-slice-configuration
+  copy: src={{ item.src }} dest={{ item.dest }} mode=755 owner=root group=root
+  with_items:
+    - src: machine-slice-configuration.sh
+      dest: /opt/machine-slice-configuration.sh
+    - src: machine-slice-configuration.service
+      dest: /etc/systemd/system/machine-slice-configuration.service
+  register: cgroup_script
+
+- name: Reload systemd
+  shell: systemctl daemon-reload
+  when: cgroup_accounting.changed or cgroup_script.changed
+
+- name: Start machined
+  service: name={{ item }}.service state=started enabled=yes
+  with_items:
+    - systemd-machined

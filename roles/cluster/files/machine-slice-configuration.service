@@ -1,0 +1,11 @@
+[Unit]
+Description=machine.slice configuration
+After=machine.slice
+
+[Service]
+Type=oneshot
+RemainAfterExit=no
+ExecStart=/opt/machine-slice-configuration.sh
+
+[Install]
+WantedBy=multi-user.target

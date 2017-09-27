@@ -1,0 +1,50 @@
+---
+
+- name: Configuration du client kerberos
+  template: src=krb5.conf.j2 dest=/srv/cluster/{{ application.name }}/etc/krb5.conf
+
+- name: Configuration de SSSD
+  template: src=sssd.conf.j2 dest=/srv/cluster/{{ application.name }}/etc/sssd/sssd.conf owner=root group=root mode=0600
+  #notify: restart sssd
+
+- name: Configuration de SSHD
+  template: src=sshd_config.j2 dest=/srv/cluster/{{ application.name }}/etc/ssh/sshd_config owner=root group=root mode=0600
+  #notify: restart sshd
+
+- name: Configuration de NS Switch
+  copy: src=nsswitch.conf dest=/srv/cluster/{{ application.name }}/etc/nsswitch.conf owner=root group=root mode=0644
+
+- name: Configuration du PAM
+  copy: src={{ item }} dest=/srv/cluster/{{ application.name }}/etc/pam.d/{{ item }} owner=root group=root
+  with_items:
+   - common-account-pc
+   - common-auth-pc
+   - common-password-pc
+   - common-session-pc
+
+#- name: Creation des groups locaux
+#  group: name={{ item.group }}
+#  with_items:
+#    users
+
+#- name: Creation des comptes locaux
+#  user: name={{ item.name }} comment={{ item.comment }} group={{ item.group }}
+#  with_items:
+#    users
+
+#- name: Installation des cles des comptes locaux
+#  authorized_key: user={{ item.name }} key={{ item.key }}
+#  with_items:
+#    users
+
+- name: Mise en place du sudo pour la supervision
+  copy: src=sudo/nagios dest=/srv/cluster/{{ application.name }}/etc/sudoers.d/nagios validate='visudo -cf %s' mode=0440 owner=root group=root
+
+- name: Mise en place du sudo global
+  copy: src=sudo/sudoers dest=/srv/cluster/{{ application.name }}/etc/sudoers validate='visudo -cf %s' mode=0440 owner=root group=root
+
+#- name: Arret de NSCD
+#  shell: virsh -c lxc:/// lxc-enter-namespace --noseclabel {{ application.name }} -- systemctl stop nscd.service
+
+#- name: Desactivation de NSCD
+#  shell: virsh -c lxc:/// lxc-enter-namespace --noseclabel {{ application.name }} -- systemctl disable nscd.service

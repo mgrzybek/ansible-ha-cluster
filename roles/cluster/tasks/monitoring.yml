@@ -1,0 +1,12 @@
+---
+
+- include: monitoring/suse.yml
+  when: ansible_os_family == "SUSE"
+
+- include: monitoring/ubuntu.yml
+  when: ansible_os_family == "Ubuntu"
+
+- name: Mise en place de la configuration NRPE
+  template: src=cluster.cfg.j2 dest=/etc/nrpe.d/cluster.cfg
+  notify: restart nrpe
+  when: monitoring_use_nrpe == true

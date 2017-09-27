@@ -1,0 +1,53 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Cluster
+  shortdesc: Mise en place des ressources stonith.
+  longdesc: |
+    On installe une ressource stonith pour le noeud donné
+    et on ajoute une contraite pour éviter qu'elle tourne sur le noeud.
+
+  parameters:
+   - name: node
+     shortdesc: Noeud à gérer
+     longdesc: Nom du noeud qu'on veut gérer.
+     required: true
+     type: string
+
+   - name: ipmi_ip
+     shortdesc: Adresse d'administration
+     longdesc: Adresse de la carte ILO du serveur.
+     required: true
+     type: string
+
+   - name: userid
+     shortdesc: Nom d'utilisateur
+     longdesc: Nom d'un utilisateur ILO capable de rebooter le serveur.
+     required: true
+     type: string
+
+   - name: passwd
+     shortdesc: Mot de passe
+     longdesc: Mot de passe de l'utilisateur ILO capable de rebooter le serveur.
+     required: true
+     type: string
+
+  actions:
+    - cib: |
+        primitive stonith_ipmi_{{node}} stonith:external/ipmi
+         params hostname={{node}}
+         interface=lanplus
+         ipaddr={{ipmi_ip}}
+         userid={{userid}}
+         passwd={{passwd}}
+         passwd_method=param
+         op monitor interval=120 timeout=20
+         op start interval=0 timeout=20
+         op stop interval=0 timeout=15
+         meta is-managed=true target-role=Started
+
+    - cib: |
+        location loc_stonith_ipmi_{{node}} stonith_ipmi_{{node}} resource-discovery=always
+         rule -inf: cluster_role ne compute

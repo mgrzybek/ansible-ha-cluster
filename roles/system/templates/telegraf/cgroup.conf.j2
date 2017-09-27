@@ -1,0 +1,39 @@
+# {{ ansible_managed }}
+
+# Read specific statistics per cgroup
+[[inputs.cgroup]]
+  ## Directories in which to look for files, globs are supported.
+  ## Consider restricting paths to the set of cgroups you really
+  ## want to monitor if you have a large number of cgroups, to avoid
+  ## any cardinality issues.
+  #paths = [
+	#"/sys/fs/cgroup/cpuacct/machine.slice/machine-*",
+	#"/sys/fs/cgroup/memory/machine.slice/machine-*",
+	#"/sys/fs/cgroup/blkio/machine.slice/machine-*"
+	#]
+	paths = [
+	"/sys/fs/cgroup/cpuacct/machine.slice/machine-*",
+	"/sys/fs/cgroup/memory/machine.slice/machine-*"
+  ]
+
+	## cgroup stat fields, as file names, globs are supported.
+	## these file names are appended to each path from above.
+	#files = [
+	#"cpuacct.usage_percpu",
+	#"cpuacct.usage",
+	#"memory.*usage*",
+	#"memory.limit_in_bytes",
+	#"memory.stat",
+	#"blkio.io_merged",
+	#"blkio.io_queued",
+	#"blkio.io_serviced",
+	#"blkio.io_service_bytes",
+	#"blkio.io_wait_time"
+	#]
+	files = [
+	"cpuacct.usage_percpu",
+	"cpuacct.usage",
+	"memory.*usage*",
+	"memory.limit_in_bytes",
+	"memory.stat"
+	]

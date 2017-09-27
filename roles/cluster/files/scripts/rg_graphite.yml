@@ -1,0 +1,38 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Monitoring
+  shortdesc: Deploy a graphite-based relay and cache service.
+  longdesc: |
+    systemd graphite-relay-ng.
+    systemd go-carbon.
+
+  parameters:
+   - name: host
+     shortdesc: Hostname.
+     longdesc: Hostname used for the location constraint.
+     required: true
+     type: string
+
+   - name: application
+     shortdesc: Usage name of the primitives.
+     longdesc: Usage name of the primitives.
+     required: true
+     type: string
+
+  actions:
+    - cib: |
+        primitive {{application}}_cache systemd:go-carbon
+          op monitor interval="60" timeout="60"
+
+    - cib: |
+        primitive {{application}}_relay systemd:carbon-c-relay
+          op monitor interval="60" timeout="60"
+
+    - cib: |
+        group {{application}}_graphite_rg {{application}}_cache {{application}}_relay
+
+    - cib: |
+        location loc_{{application}}_graphite_rg {{application}}_graphite_rg rule -inf: '#uname' ne "{{host}}"

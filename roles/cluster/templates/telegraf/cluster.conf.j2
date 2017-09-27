@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+[[inputs.exec]]
+	# Shell/commands array
+	commands = [
+		'/usr/bin/cluster_get_cpuset_allocation -aucq -f graphite -p /etc/pacemaker',
+		'/usr/bin/cluster_get_mem_allocation -auq -f graphite -p /etc/pacemaker',
+		'/usr/bin/cluster_get_cluster_usage -m -f graphite'
+	]
+
+	# Data format to consume.
+	# NOTE json only reads numerical measurements, strings and booleans are ignored.
+	data_format = "graphite"
+
+	## Below configuration will be used for data_format = "graphite", can be ignored for other data_format
+	## If matching multiple measurement files, this string will be used to join the matched values.
+	separator = "."

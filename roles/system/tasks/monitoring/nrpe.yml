@@ -1,0 +1,24 @@
+---
+
+- name: Packaging
+  zypper: name={{ item }} state=present disable_gpg_check=yes
+  with_items:
+    - nrpe
+    - monitoring-plugins-procs
+    - monitoring-plugins-zypper
+
+- name: Packaging for physical nodes
+  zypper: name={{ item }} state=present disable_gpg_check=yes
+  with_items:
+    - monitoring-plugins-ntp_time
+    - monitoring-plugins-multipath
+  when: ansible_virtualization_role == 'host'
+
+- name: Basic configuration
+  template: src=nrpe.cfg.j2 dest=/etc/nrpe.cfg
+  notify: restart nrpe
+
+- name: System checks configuration
+  template: src=system.cfg.j2 dest=/etc/nrpe.d/system.cfg
+  notify: restart nrpe
+

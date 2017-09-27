@@ -1,0 +1,31 @@
+---
+
+- name: Start OpenVSwitch
+  service: name=openvswitch.service state=started enabled=true
+  when:
+  - cluster_role == 'compute'
+
+# Bridges
+
+- include: network/ovs.yml
+  with_items:
+    - bridge: ovs-front
+      bond-name: bond-front
+      interfaces:
+        - eth0
+        - eth1
+    - bridge: ovs-back
+      bond-name: bond-back
+      interfaces:
+        - eth0
+        - eth1
+    - bridge: ovs-admin
+      bond-name: bond-admin
+      interfaces:
+        - eth0
+        - eth1
+    - bridge: ovs-cluster
+      bond-name: bond-cluster
+      interfaces:
+        - eth0
+        - eth1

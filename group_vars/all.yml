@@ -1,0 +1,38 @@
+---
+
+# Cluster configuration
+cluster_role: compute
+cluster_use_hawk: false
+
+cluster_stonith_use_sbd: false
+cluster_stonith_use_ipmi: false
+
+cluster_allocation_vcpus_ratio: 0.8
+cluster_allocation_memory_ratio: 0.8
+
+cluster_no_quorum_policy: stop
+
+cluster_mgmt_ip: None
+
+cluster_ping_remote_addr: None
+
+# Networking configuration
+net_use_openvswitch: false
+
+net_front_vlans: None
+net_back_vlans: None
+net_admin_vlans: None
+net_cluster_vlan: None
+
+net_front_port: None
+net_back_port: None
+net_admin_port: None
+net_cluster_port: None
+
+# Monitoring
+monitoring_use_nrpe: false
+monitoring_use_consul: false
+
+# Metrics
+metrics_use_collectd: false
+metrics_use_telegraf: false

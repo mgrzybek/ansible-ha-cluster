@@ -1,0 +1,46 @@
+## Name: template service
+## Description: opens ports for {{ item.name }}
+
+# space separated list of allowed TCP ports
+{% for port in item.ports %}
+{% if port.protocol == 'tcp' %}
+# {{ port.number }} for {{ item.name }}
+{% endif %}
+{% endfor %}
+TCP="{% for port in item.ports %}{% if port.protocol == 'tcp' %}{{ port.number }}{% endif %}{% endfor %}"
+
+# space separated list of allowed UDP ports
+{% for port in item.ports %}
+{% if port.protocol == 'udp' %}
+# {{ port.number }} for {{ item.name }}
+{% endif %}
+{% endfor %}
+UDP="{% for port in item.ports %}{% if port.protocol == 'udp' %}{{ port.number }}{% endif %}{% endfor %}"
+
+# space separated list of allowed RPC services
+RPC=""
+
+# space separated list of allowed IP protocols
+IP=""
+
+# space separated list of allowed UDP ports that accept broadcasts
+BROADCAST=""
+
+### variables below are only needed in very special cases
+
+# space separated list of net,protocol[,sport[,dport]]
+# see FW_SERVICES_ACCEPT_RELATED_EXT
+# net 0/0 means IPv4 and IPv6. If this sevice should only work for
+# IPv4 use 0.0.0.0/0
+RELATED=""
+
+# space separated list of net,protocol[,sport[,dport]]
+# sets FW_SERVICES_ACCEPT_*_EXT
+# Alternative to TCP,UDP,... variants above allowing to
+# open ports for IPv6 only or IPv4 only, using ::/0 or
+# 0.0.0.0/0 as net (source address net).
+ACCEPT=""
+
+# additional kernel modules needed for this service
+# see FW_LOAD_MODULES
+MODULES=""

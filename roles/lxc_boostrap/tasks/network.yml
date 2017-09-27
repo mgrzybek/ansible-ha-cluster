@@ -1,0 +1,10 @@
+---
+
+- name: Configuration reseau du conteneur
+  template: src=ifcfg-interface.j2 dest=/srv/cluster/{{ application.name }}/etc/sysconfig/network/ifcfg-{{ item.interface }}
+  with_items: "{{application.ips}}"
+
+- name: Configuration des routes du conteneur pour l'interface d'admin
+  template: src=ifroute-interface.j2 dest=/srv/cluster/{{ application.name }}/etc/sysconfig/network/ifroute-{{ item.interface }}
+  with_items: "{{application.ips}}"
+  when: item.interface == 'admin'

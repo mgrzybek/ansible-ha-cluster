@@ -1,0 +1,37 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Cluster
+  shortdesc: Initialize a systemd primitive.
+  longdesc: |
+    The location is based on the cluster_group attribute.
+    
+
+  parameters:
+   - name: service
+     shortdesc: Nom du service.
+     longdesc: Nom du service systemd à lancer.
+     required: true
+     type: string
+
+   - name: cluster-group
+     shortdesc: Nom du groupe de machines.
+     longdesc: On lance la ressource sur le groupe donné uniquement.
+     required: true
+     type: string
+
+   - name: application
+     shortdesc: Nom de l'application.
+     longdesc: Nom de l'application pour nommer la ressource.
+     required: true
+     type: string
+
+  actions:
+    - cib: |
+        primitive {{application}}_{{service}} systemd:{{service}}
+          op monitor interval="60" timeout="60"
+
+    - cib: |
+        location loc_{{application}}_{{service}} {{application}}_{{service}} rule -inf: 'cluster_group' ne "{{cluster-group}}"

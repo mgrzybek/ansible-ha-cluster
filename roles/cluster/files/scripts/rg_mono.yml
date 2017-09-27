@@ -1,0 +1,40 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Cluster
+  shortdesc: Initialasation RG mono-noeud.
+  longdesc: |
+    On installe un groupe avec un VG.
+    On fixe sa position sur le noeud avec une contrainte.
+
+  parameters:
+   - name: id
+     shortdesc: Group name.
+     longdesc: Usage name of the group.
+     required: true
+     type: string
+
+   - name: host
+     shortdesc: Hostname.
+     longdesc: Hostname to set the location constraint.
+     required: true
+     type: string
+
+  actions:
+    - cib: |
+        primitive {{id}}_vg LVM
+         params volgrpname={{id}} exclusive=false partial_activation=true
+         op monitor timeout=30 interval=10
+         op start timeout=30 interval=0
+         op stop timeout=30 interval=0
+
+    - cib: |
+        group {{id}}_rg {{id}}_vg
+
+    - cib: |
+        location loc_{{id}} {{id}}_rg
+         rule -inf: '#uname' ne "{{host}}"
+         rule -inf: ovsmonitor-bond-front ne 1
+         rule -inf: ovsmonitor-bond-back ne 1

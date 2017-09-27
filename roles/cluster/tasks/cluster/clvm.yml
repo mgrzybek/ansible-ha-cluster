@@ -1,0 +1,13 @@
+---
+
+- name: Configuration lvm.conf for multipath SAN
+  copy: src=lvm.conf dest=/etc/lvm/lvm.conf
+  when: cluster_role == 'compute'
+
+- name: Set clvm and dlm resources
+  shell: crm script run cloned_clvm size={{ cluster_compute_nodes }}
+  run_once: true
+
+- name: Wait for clvmd's availability
+  wait_for: path=/var/run/lvm/clvmd.sock state=present delay=5 timeout=30
+  when: ansible_virtualization_role == 'compute'

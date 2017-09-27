@@ -1,0 +1,13 @@
+STARTMODE='auto'
+BOOTPROTO='static'
+
+LABEL='{{ item.interface }}'
+NAME='{{ item.interface }}'
+IPADDR='{{ item.address }}/{{ item.prefix }}'
+
+## Type:    integer
+## Default: ""
+#
+# Set a specific Maximum Transmission Unit (MTU) for this interface.
+#
+#MTU=

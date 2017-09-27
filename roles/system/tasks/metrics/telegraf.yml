@@ -1,0 +1,34 @@
+---
+
+- name: Telegraf packaging
+  zypper: name=telegraf state=latest
+  notify: restart telegraf
+
+- name: Base configuration
+  template: src=telegraf/telegraf.conf.j2 dest=/etc/telegraf/telegraf.conf
+  notify: restart telegraf
+
+- name: Metrics configuration
+  template: src=telegraf/{{ item }}.j2 dest=/etc/telegraf/telegraf.d/{{ item }}
+  with_items:
+    - output.conf
+    - system.conf
+    - net.conf
+    - processes.conf
+    - cgroup.conf
+  notify: restart telegraf
+
+- name: IPMI metrics for physical nodes only
+  template: src=telegraf/{{ item }}.j2 dest=/etc/telegraf/telegraf.d/{{ item }}
+  with_items:
+    - ipmi.conf
+  notify: restart telegraf
+  when: ansible_virtualization_role == 'host'
+
+- name: Configuration of user root to be able to read /dev/ipmi*
+  template: src=telegraf/telegraf.service.j2 dest=/etc/systemd/system/telegraf.service
+  notify:
+    - systemctl daemon reload
+    - restart telegraf
+  when: ansible_virtualization_role == 'host'
+

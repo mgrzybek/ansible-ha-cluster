@@ -1,0 +1,42 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Cluster
+  shortdesc: Deploy management resources.
+  longdesc: |
+    Deploy a floating IP and Hawk.
+    A management resource group is created.
+    The node cluster_role attribute must be set to 'compute'.
+
+  parameters:
+   - name: ipaddr
+     shortdesc: Adresse IP
+     longdesc: Adresse de management
+     required: true
+     type: string
+
+   - name: size
+     shortdesc: Nombre de clones.
+     longdesc: Nombre de clones à lancer.
+     required: true
+     type: integer
+
+  actions:
+    - cib: |
+        primitive mgmt_ip_addr IPaddr2
+          params ip={{ipaddr}}
+          op monitor interval=10 timeout=20
+          op start timeout=20 interval=0
+          op stop timeout=20 interval=0
+
+    - cib: |
+        primitive hawk systemd:hawk
+
+    - cib: |
+        group mgmt_rg hawk mgmt_ip_addr
+
+    - cib: |
+        location loc_mgmt_rg mgmt_rg resource-discovery=always
+          rule -inf: cluster_role ne compute

@@ -1,0 +1,38 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Cluster
+  shortdesc: Cluster LVM and DLM cloned primitives.
+  longdesc: |
+    Deploy a cluster LVM and DLM cloned group where the cluster_group attribute is set to 'compute'.
+
+  parameters:
+   - name: size
+     shortdesc: Number of cloned primitives.
+     longdesc: Number of cloned primitives.
+     required: true
+     type: integer
+
+  actions:
+   - cib: |
+       primitive dlm ocf:pacemaker:controld
+        op monitor interval="60" timeout="60"
+
+   - cib: |
+       primitive clvm ocf:lvm2:clvmd
+        params daemon_timeout=30
+        op monitor interval=20s timeout=60s
+        op start interval=0 timeout=90s
+        op stop interval=0 timeout=100s
+
+   - cib: |
+       group g-clvm dlm clvm
+
+   - cib: |
+       clone c-clvm g-clvm
+         meta interleave=true ordered=true clone-max={{size}}
+
+   - cib: |
+       location loc_clvm c-clvm rule -inf: cluster_role ne compute

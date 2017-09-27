@@ -1,0 +1,17 @@
+---
+
+- name: Recuperation des CPUs disponibles
+  shell: cluster_get_cpuset_allocation -p /etc/pacemaker/ -q -d {{ application.name }} -g {{ application.resources.cpus }}
+  register: custom_cpuset
+
+- name: Check de la presence du conteneur
+  shell: virsh -c lxc:/// list
+  register: virsh_domains
+
+- name: Creation du fichier XML du conteneur
+  template: src=container.xml.j2 dest=/etc/pacemaker/{{ application.name }}.xml
+  when: virsh_domains.stdout.find("{{ application.name }}") < 0
+
+#- name: Edition du conteneur a chaud
+#  shell: echo {{ custom_cpuset.stdout }} > /sys/fs/cgroup/cpuset/machine.slice/machine-lxc\\x2d{{ application.name }}.scope/cpuset.cpus
+#  when: virsh_domains.stdout.find("{{ application.name }}") > -1

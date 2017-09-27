@@ -1,0 +1,44 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Cluster
+  shortdesc: Deploy ovsmonitor on compute nodes.
+  longdesc: |
+    Deploy ovsmonitor where cluster_role is 'compute'.
+    A monitoring resource group is created.
+    The node cluster_role attribute must be set to 'compute'.
+
+  parameters:
+   - name: size
+     shortdesc: Number of clones.
+     longdesc: Number of compute nodes.
+     required: true
+     type: integer
+   - name: bridge
+     shortdesc: Bridge name.
+     longdesc: Name of the bridge holding the bond.
+     required: true
+     type: string
+   - name: bond
+     shortdesc: Bond name.
+     longdesc: Name of the bond.
+     required: true
+     type: string
+
+  actions:
+    - cib: |
+        primitive ovs_monitor_{{bond}} ovsmonitor
+         params bond={{bond}} bridge={{bridge}} link_status_only=yes
+         op monitor interval=10s timeout=60s
+         op start interval=0 timeout=60s
+         op stop interval=0 timeout=60s
+
+    - cib: |
+        clone c-ovs_monitor_{{bond}} ovs_monitor_{{bond}}
+          meta interleave=true clone-max={{size}}
+
+    - cib: |
+        location loc_c-ovs_monitor_{{bond}} c-ovs_monitor_{{bond}} resource-discovery=never
+          rule -inf: cluster_role ne compute
