@@ -6,7 +6,12 @@
 - include: monitoring/ubuntu.yml
   when: ansible_os_family == "Ubuntu"
 
-- name: Mise en place de la configuration NRPE
+- name: Set monitoring probes (nrpe)
   template: src=cluster.cfg.j2 dest=/etc/nrpe.d/cluster.cfg
   notify: restart nrpe
   when: monitoring_use_nrpe == true
+
+- name: Set monitoring probes (consul)
+  template: src=consul/cluster.json.j2 dest=/etc/consul.d/cluster.json
+  notify: reload consul
+  when: monitoring_use_consul == true

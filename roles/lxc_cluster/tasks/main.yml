@@ -6,7 +6,7 @@
   register: is_pacemaker_running
 
 - fail: msg="pacemaker must be running"
-  when: is_pacemaker_running.stdout.find("true") > -1
+  when: is_pacemaker_running.stdout.find("inactive") > -1
 
 - name: vgscan
   shell: vgscan

@@ -13,28 +13,42 @@
 
 - include: crmsh.yml
   tags:
-    - cluster
-    - packaging
+    - cluster_cluster
+    - cluster_packaging
 
 - include: firewall.yml # TODO: ubuntu support
   when: ansible_os_family == 'Suse'
+  tags:
+    - cluster_firewall
+
 - include: network.yml
+  tags:
+    - cluster_network
 
 - include: configuration.yml
+  tags:
+    - cluster_configuration
 
 - include: cgroups.yml
   when: ansible_os_family == 'Suse'
   tags:
-    - cgroups
+    - cluster_cgroups
 
 - include: cluster.yml
   tags:
-    - cluster
+    - cluster_cluster
+
+- include: libvirt.yml
+  when:
+    - cluster_role == 'compute'
+    - hosting_use_libvirt_lxc == true
+  tags:
+    - cluster_libvirt
 
 - include: monitoring.yml
   tags:
-   - monitoring
+   - cluster_monitoring
 
 - include: metrics.yml
   tags:
-    - metrics
+    - cluster_metrics

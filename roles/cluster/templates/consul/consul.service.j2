@@ -1,0 +1,27 @@
+# {{ ansible_managed }}
+
+[Unit]
+Description=consul agent
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=consul
+{% if ansible_os_family == 'Suse' %}
+EnvironmentFile=-/etc/sysconfig/consul
+{% else %}
+EnvironmentFile=-/etc/default/consul
+{% endif %}
+Environment=GOMAXPROCS=2
+Restart=on-failure
+{% if net_admin_port != 'None' %}
+ExecStart=/opt/consul agent $OPTIONS -enable-script-checks -syslog -config-dir=/etc/consul.d -data-dir=/var/lib/consul -bind={{ hostvars[ansible_hostname][generated_admin_port]['ipv4']['address'] }}
+{% else %}
+ExecStart=/opt/consul agent $OPTIONS -enable-script-checks -syslog -config-dir=/etc/consul.d -data-dir=/var/lib/consul -bind={{ hostvars[ansible_hostname]['ansible_default_ipv4']['address'] }}
+{% endif %}
+
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

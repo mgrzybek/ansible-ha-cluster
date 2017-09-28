@@ -1,6 +1,12 @@
 ---
 
-- name: Check du fonctionnement du service de cluster
+- include: options_check.yml
+  run_once: true
+  tags:
+    - always
+    - system_check
+
+- name: Check pacemaker state
   shell: systemctl is-active pacemaker || true
   register: pcmk_status
   tags:
@@ -8,16 +14,16 @@
 
 - include: packaging.yml
   tag:
-    - packaging
+    - system_packaging
 
 - include: monitoring.yml
   tags:
-    - monitoring
+    - system_monitoring
 
 - include: metrics.yml
   tags:
-    - metrics
+    - system_metrics
 
 - include: network.yml
   tags:
-    - network
+    - system_network

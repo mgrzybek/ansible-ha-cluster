@@ -1,0 +1,4 @@
+---
+
+- name: Start libvirtd
+  service: name=libvirtd.service state=started enabled=yes

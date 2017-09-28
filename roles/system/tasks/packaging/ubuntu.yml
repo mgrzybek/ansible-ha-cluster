@@ -1,0 +1,28 @@
+---
+
+- name: Upgrade if pacemaker is not running
+  apt: name=* state=latest
+  when: pcmk_status.stdout.find("inactive") > -1
+
+- name: Install some useful packages
+  apt: name={{ item }} state=present
+  with_items:
+    - lsb-release
+
+- name: Install logging packages
+  apt: name={{ item }} state=present
+  with_items:
+    - rsyslog-module-rabbitmq
+
+- name: Installation des paquets standards
+  apt: name={{ item }} state=present
+  with_items:
+    - openvswitch
+    - open-lldp
+  when:
+    - ansible_virtualization_role == "host"
+    - cluster_role == 'compute'
+    - net_use_openvswitch == true
+
+- name: Rafraichissement de la liste des paquets dans le cron.daily
+  copy: src=apt.cron dest=/etc/cron.daily/apt owner=root group=root mode=0755

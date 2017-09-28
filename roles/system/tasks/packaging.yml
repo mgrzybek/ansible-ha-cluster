@@ -2,3 +2,32 @@
 
 - include: packaging/suse.yml
   when: ansible_os_family == 'Suse'
+
+- name: Create consul user
+  user: name=consul createhome=no shell=/sbin/nologin state=present
+  when: monitoring_use_consul == true
+
+- name: Download consul
+  unarchive: src={{ monitoring_consul_url_package }} dest=/opt validate_certs=no remote_src=yes
+  register: get_url_consul
+  when: monitoring_use_consul == true
+
+- name: Create the configuration directory
+  file: path={{ item.path }} state=directory owner={{ item.owner }} group={{ item.group }}
+  with_items:
+    - path: /etc/consul.d
+      owner: root
+      group: root
+    - path: /var/lib/consul
+      owner: consul
+      group: root
+  when: monitoring_use_consul == true
+
+- name: Set systemd service file
+  template: src=consul/consul.service.j2 dest=/etc/systemd/system/consul.service
+  vars:
+    generated_admin_port: 'ansible_{{ net_admin_port }}'
+  notify:
+    - reload systemd
+    - start consul
+  when: monitoring_use_consul == true
