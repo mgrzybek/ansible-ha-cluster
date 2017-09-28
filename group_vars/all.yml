@@ -65,6 +65,9 @@ net_cluster_bridge: None
 monitoring_use_nrpe: false
 monitoring_use_consul: false
 
+monitoring_consul_url_package: https://releases.hashicorp.com/consul/0.9.3/consul_0.9.3_linux_amd64.zip
+monitoring_consul_server_endpoint: None
+
 # Metrics
 metrics_use_collectd: false
 metrics_use_telegraf: false
@@ -74,3 +77,6 @@ repo_sle_server_product: None
 repo_sle_server_updates: None
 repo_sle_ha_product: None
 repo_sle_ha_updates: None
+
+# Time
+ntp_fqdn: pool.ntp.org

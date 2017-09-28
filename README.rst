@@ -31,7 +31,6 @@ Bootstraps a minimal environment and creates the libvirt configuration file:
 * monitoring
 * network
 * services
-* users
 
 lxc_cluster
 ***********

@@ -28,3 +28,6 @@
     #net_back_port: bond-back
     #net_admin_port: bond-admin
     net_cluster_port: enp0s3
+
+    # monitoring
+    monitoring_use_consul: true
