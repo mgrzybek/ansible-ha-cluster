@@ -19,13 +19,17 @@
     - cluster_ping_remote_addr == 'None'
     - cluster_expected_nodes < 3
 
+- fail: msg="The number of nodes in the group must equal the number of expected nodes"
+  when:
+    - play_hosts|length != cluster_expected_nodes
+
 - fail: msg="You need to choose between libvirt/LXC and LXD"
   when: hosting_use_libvirt_lxc == true and hosting_use_lxd == true or hosting_use_libvirt_lxc == false and hosting_use_lxd == false
 
 - fail: msg="LXD is only available on Ubuntu"
   when:
     - hosting_use_lxd == true
-    - ansible_os_family != 'Ubuntu'
+    - ansible_distribution != 'Ubuntu'
 
 - fail: msg="A consul endpoint must be given to make agent join the cluster"
   when:
