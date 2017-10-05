@@ -69,6 +69,7 @@ logging_use_amqp: false
 monitoring_use_nrpe: false
 monitoring_use_consul: false
 
+monitoring_nrpe_allowed_hosts: 0.0.0.0/8
 monitoring_consul_url_package: https://releases.hashicorp.com/consul/0.9.3/consul_0.9.3_linux_amd64.zip
 monitoring_consul_server_endpoint: None
 
