@@ -24,7 +24,7 @@ cluster_mgmt_ip: None
 cluster_ping_remote_addr: None
 
 # Hypervisor configuration
-hosting_use_libvirt_lxc: true
+hosting_use_libvirt_lxc: false
 hosting_use_lxd: false
 
 # Networking configuration
@@ -51,6 +51,7 @@ net_ilo:
   network: None
 
 # Comma-separated list of two interfaces
+# If only one interface is given, a port is created instead of a bond
 net_front_eth_ports: None
 net_back_eth_ports: None
 net_admin_eth_ports: None
@@ -60,6 +61,9 @@ net_front_bridge: None
 net_back_bridge: None
 net_admin_bridge: None
 net_cluster_bridge: None
+
+# Logging
+logging_use_amqp: false
 
 # Monitoring
 monitoring_use_nrpe: false
