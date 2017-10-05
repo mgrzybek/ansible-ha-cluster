@@ -2,17 +2,24 @@
 
 - name: Create /etc/pacemaker
   file: path=/etc/pacemaker state=directory owner=hacluster
+  when: ansible_system == 'Linux'
+
+- name: Create /usr/local/etc/pacemaker
+  file: path=/usr/local/etc/pacemaker state=directory owner=hacluster
+  when: ansible_system == 'FreeBSD'
 
 - name: Disable and stop lvmetad
   service: name={{ item }} state=stopped enabled=no
   with_items:
    - lvm2-lvmetad.socket
    - lvm2-lvmetad.service
+  when: ansible_system == 'Linux'
 
 - name: Start apparmor
   service: name={{ item }} state=started enabled=yes
   with_items:
    - apparmor.service
+  when: ansible_system == 'Linux'
 
 # LXD does not need any monitoring script
 - name: Monitoring script for LXC containers
@@ -25,4 +32,6 @@
     - "{{ cluster_hawk_file_key }}"
     - "{{ cluster_hawk_file_pem }}"
   notify: restart hawk
-  when: cluster_use_hawk == true
+  when:
+    - cluster_use_hawk == true
+    - ansible_system == 'Linux'

@@ -45,6 +45,13 @@
   tags:
     - cluster_libvirt
 
+- include: lxd.yml
+  when:
+    - cluster_role == 'compute'
+    - hosting_use_lxd == true
+  tags:
+    - cluster_lxd
+
 - include: monitoring.yml
   tags:
    - cluster_monitoring

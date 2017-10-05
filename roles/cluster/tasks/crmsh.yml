@@ -14,6 +14,7 @@
     - stonith_ipmi
     - stonith_suicide
     - systemd_service
+    - lxd
 
 
 - name: Install some crm scripts (files)
@@ -30,3 +31,4 @@
     - stonith_ipmi
     - stonith_suicide
     - systemd_service
+    - lxd

@@ -6,17 +6,35 @@
     - apparmor
     - crmsh
     - pacemaker
+    - fping
+
+- name: Hack for python-parallax (for crm script)
+  pip: name=parallax
 
 - name: Install LXD tools
+  apt: name={{ item }} state=present default_release={{ ansible_distribution_release }}-backports
+  with_items:
+    - lxd
+    - lxd-client
+  when: hosting_use_lxd == true
+
+- name: Install libvirt
   apt: name=lxc2 state=present
+  when: hosting_use_libvirt_lxc == true
 
 - name: Install packages for compute nodes (OpenVSwitch)
   apt: name={{ item }} state=present
   with_items:
-    - openvswitch
+    - openvswitch-switch
   when:
     - cluster_role == 'compute'
     - net_use_openvswitch == true
+
+- name: Install SBD
+  apt: name=sbd state=present
+  when:
+    - cluster_role == 'compute'
+    - ansible_virtualization_role == 'host'
 
 # There resource-agents might be present in the official package
 - name: Additional resource-agent
@@ -24,3 +42,4 @@
   with_items:
     - ovsmonitor
     - LXDInfo
+    - lxd

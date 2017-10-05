@@ -14,11 +14,12 @@
     generated_cluster_port: 'ansible_{{ net_cluster_port }}'
 
 - name: Restart corosync
-  service: name={{ item }} state=restarted enabled=yes
+  shell: "{{ item }}"
   with_items:
-    - corosync
-    - pacemaker
-  when: corosync_template_result|changed
+    - crm cluster stop
+    - crm cluster start
+  when:
+    - corosync_template_result|changed
 
 - name: Waits for the cluster to be online
   shell: crm_mon -s
@@ -68,12 +69,12 @@
       value: 60
   run_once: true
 
-- name: Set default options
-  shell: crm configure op_defaults stonith-enabled=false
-  when:
-    - cluster_expected_nodes < 3
-    - ansible_virtualization_role != 'host'
-  run_once: true
+#- name: Set default options
+#  shell: crm configure op_defaults stonith-enabled=false
+#  when:
+#    - cluster_expected_nodes < 3
+#    - ansible_virtualization_role != 'host'
+#  run_once: true
 
 # Creates management IP, Hawk resources
 - name: Sets the management IP and Hawk resources
