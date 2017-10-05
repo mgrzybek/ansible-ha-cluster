@@ -3,6 +3,12 @@
 - include: packaging/suse.yml
   when: ansible_os_family == 'Suse'
 
+- include: packaging/ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
+
+- include: packaging/freebsd.yml
+  when: ansible_distribution == 'FreeBSD'
+
 - name: Create consul user
   user: name=consul createhome=no shell=/sbin/nologin state=present
   when: monitoring_use_consul == true

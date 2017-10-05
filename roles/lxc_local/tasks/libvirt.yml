@@ -1,0 +1,14 @@
+---
+
+# Create the volume group
+- include: disk.yml
+
+# Create the logical volumes
+- include: volumes/main.yml
+
+- name: Check libvirt networking
+  shell: virsh -c lxc:/// net-list
+  register: libvirt_net_list
+
+- include: network.yml
+  with_items: application.ips

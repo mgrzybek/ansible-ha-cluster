@@ -7,8 +7,16 @@
     - system_check
 
 - name: Check pacemaker state
-  shell: systemctl is-active pacemaker || true
+  shell: systemctl is-active pacemaker && echo active || echo ko
   register: pcmk_status
+  when: ansible_system == 'Linux'
+  tags:
+    - always
+
+- name: Check pacemaker state
+  shell: service pacemaker status && echo active || echo ko
+  register: pcmk_status
+  when: ansible_system == 'FreeBSD'
   tags:
     - always
 

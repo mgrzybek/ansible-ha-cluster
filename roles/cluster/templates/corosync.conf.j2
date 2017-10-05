@@ -12,9 +12,9 @@ totem {
 	interface {
 		ringnumber:	0
 {% if net_cluster_port != 'None' %}
-		bindnetaddr:	{{ hostvars[ansible_hostname][generated_cluster_port]['ipv4']['network'] }}
+		bindnetaddr:	{{ hostvars[ansible_fqdn][generated_cluster_port]['ipv4']['network'] }}
 {% else %}
-		bindnetaddr:	{{ hostvars[ansible_hostname]['ansible_default_ipv4']['network'] }}
+		bindnetaddr:	{{ hostvars[ansible_fqdn]['ansible_default_ipv4']['network'] }}
 {% endif %}
 		ttl:		1
 	}
@@ -26,7 +26,6 @@ logging {
 	fileline:	off
 	to_stderr:	no
 	to_logfile:	no
-	logfile:	/var/log/cluster/corosync.log
 	to_syslog:	yes
 	debug:		off
 	timestamp:	on
@@ -39,7 +38,7 @@ logging {
 nodelist {
 {% for node in play_hosts %}
 	node {
-		# {{ hostvars[node]['ansible_hostname'] }}
+		# {{ hostvars[node]['ansible_fqdn'] }}
 {% if net_cluster_port != 'None' %}
 		ring0_addr: {{ hostvars[node][generated_cluster_port]['ipv4']['address'] }}
 		nodeid: {{ hostvars[node][generated_cluster_port]['ipv4']['address'] | regex_replace("\D", "") | regex_replace("^\w+(\d){8}$","\\1") }}

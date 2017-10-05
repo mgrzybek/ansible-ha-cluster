@@ -12,5 +12,5 @@
 
 - include: network/ubuntu.yml
   when:
-    - ansible_os_family == 'Ubuntu'
+    - ansible_distribution == 'Ubuntu'
     - net_cluster.address is defined

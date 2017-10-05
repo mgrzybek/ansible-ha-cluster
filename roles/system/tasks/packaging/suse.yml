@@ -18,15 +18,24 @@
     - repo_sle_ha_product != 'None'
     - repo_sle_ha_updates != 'None'
 
-- name: Install base packages
+- name: Install base packages (SLES)
   zypper: type=pattern name={{ item }} state=present
   with_items:
     - Minimal
     - base
+  when:
+    - ansible_distribution == 'SLES'
 
-- name: Upgrade if pacemaker is not running
-  zypper: name=* state=latest
-  when: pcmk_status.stdout.find("inactive") > -1
+- name: Install base packages (OpenSUSE)
+  zypper: type=pattern name={{ item }} state=present
+  with_items:
+    - minimal_base
+  when:
+    - ansible_distribution != 'SLES'
+
+#- name: Upgrade if pacemaker is not running
+#  zypper: name=* state=latest force=true
+#  when: pcmk_status.stdout.find("inactive") > -1
 
 - name: Install some useful packages
   zypper: name={{ item }} state=present
@@ -37,6 +46,7 @@
   zypper: name={{ item }} state=present
   with_items:
     - rsyslog-module-rabbitmq
+  when: logging_use_amqp == true
 
 - name: Installation des paquets standards
   zypper: name={{ item }} state=present
@@ -44,9 +54,15 @@
     - openvswitch
     - open-lldp
   when:
-    - ansible_virtualization_role == "host"
+#    - ansible_virtualization_role == "host"
     - cluster_role == 'compute'
     - net_use_openvswitch == true
+
+- name: Start OpenVSwitch
+  service: name=openvswitch-switch.service state=started enabled=true
+  when:
+      - cluster_role == 'compute'
+      - net_use_openvswitch == true
 
 - name: Rafraichissement de la liste des paquets dans le cron.daily
   copy: src=zypper.cron dest=/etc/cron.daily/zypper owner=root group=root mode=0755

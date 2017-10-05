@@ -1,8 +1,8 @@
 ---
 
-- name: Upgrade if pacemaker is not running
-  apt: name=* state=latest
-  when: pcmk_status.stdout.find("inactive") > -1
+#- name: Upgrade if pacemaker is not running
+#  apt: name=* state=latest
+#  when: pcmk_status.stdout.find("inactive") > -1
 
 - name: Install some useful packages
   apt: name={{ item }} state=present
@@ -13,14 +13,22 @@
   apt: name={{ item }} state=present
   with_items:
     - rsyslog-module-rabbitmq
+  when: logging_use_amqp == true
 
 - name: Installation des paquets standards
   apt: name={{ item }} state=present
   with_items:
-    - openvswitch
-    - open-lldp
+    - openvswitch-switch
+    - lldpad
   when:
-    - ansible_virtualization_role == "host"
+#    - ansible_virtualization_role == "host"
+    - cluster_role == 'compute'
+    - net_use_openvswitch == true
+
+- name: Start OpenVSwitch
+  service: name=openvswitch-switch.service state=started enabled=true
+  when:
+#    - ansible_virtualization_role == "host"
     - cluster_role == 'compute'
     - net_use_openvswitch == true
 

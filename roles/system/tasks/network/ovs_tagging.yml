@@ -1,8 +1,5 @@
 # Ansible modules for openvswitch are in preview state.
 
-- name: Start OpenVSwitch
-  service: name=openvswitch.service state=started enabled=true
-
 # VLAN tagging
 
 - name: Front Office Networking - VLAN tagging

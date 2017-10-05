@@ -24,7 +24,9 @@
     - play_hosts|length != cluster_expected_nodes
 
 - fail: msg="You need to choose between libvirt/LXC and LXD"
-  when: hosting_use_libvirt_lxc == true and hosting_use_lxd == true or hosting_use_libvirt_lxc == false and hosting_use_lxd == false
+  when:
+    - hosting_use_libvirt_lxc == true and hosting_use_lxd == true or hosting_use_libvirt_lxc == false and hosting_use_lxd == false
+    - ansible_system == 'Linux'
 
 - fail: msg="LXD is only available on Ubuntu"
   when:

@@ -8,12 +8,15 @@
     - cluster
   vars:
     # Mandatory
-    cluster_name: db-cluster-1
-    cluster_expected_nodes: 2
-    cluster_compute_nodes: 2
+    cluster_name: lxd-cluster-1
+    cluster_expected_nodes: 3
+    cluster_compute_nodes: 3
 
     # Mandatory on two-nodes clusters: anti-splitbran ping resource
     cluster_ping_remote_addr: 8.8.8.8
+
+    # Mandatory: what container technology to use
+    hosting_use_lxd: true
 
     # Optional: quorum
     cluster_no_quorum_policy: stop # stop, freeze, fence, ignore
@@ -23,11 +26,14 @@
     cluster_allocation_memory_ratio: 0.8
 
     # Optional: networking
-
-    #net_front_port: bond-front
+    net_use_openvswitch: true
+    net_front_port: front
+    net_front_eth_ports: enp0s9
+    net_front_bridge: ovs-front
     #net_back_port: bond-back
     #net_admin_port: bond-admin
-    net_cluster_port: enp0s3
+    #net_cluster_port: enp0s8
+    #net_cluster_port: vtnet1
 
     # monitoring
-    monitoring_use_consul: true
+    monitoring_use_consul: false

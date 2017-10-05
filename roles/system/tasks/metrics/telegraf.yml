@@ -31,4 +31,3 @@
     - systemctl daemon reload
     - restart telegraf
   when: ansible_virtualization_role == 'host'
-
