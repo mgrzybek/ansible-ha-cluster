@@ -32,7 +32,7 @@
   when:
     - crm_resources_stonith.stdout.find("sbd") < 0
     - ansible_virtualization_role == 'host'
-    - ansible_os_family == 'Ubuntu'
+    - ansible_distribution == 'Ubuntu'
   notify: restart sbd resource
 
 - name: sbd on boot on compute nodes
