@@ -1,0 +1,30 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Containers
+  shortdesc: Creates some LXD-related resources.
+  longdesc: |
+    Starts LXD service and LXDInfo as a cloned group.
+    The attribute "cluster_role" must equal "compute".
+
+  actions:
+    - cib: |
+        primitive lxd systemd:lxd
+         op monitor timeout=30 interval=10
+         op start timeout=30 interval=0
+         op stop timeout=30 interval=0
+
+        primitive lxd_info LXDInfo
+         op monitor timeout=30 interval=10
+         op start timeout=30 interval=0
+         op stop timeout=30 interval=0
+
+    - cib: |
+        group g-lxd lxd lxd_info
+        clone c-lxd g-lxd
+
+    - cib: |
+        location loc_c-lxd c-lxd
+         rule -inf: 'cluster_role' ne "compute"

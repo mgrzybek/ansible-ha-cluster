@@ -1,0 +1,32 @@
+---
+
+- name: Enable lxd service
+  service: name=lxd state=enabled state=started
+
+- include: network/ovs.yml
+  with_items:
+    - bridge: "{{ net_front_bridge }}"
+      interface: "front"
+  when:
+    - net_front_bridge != 'None'
+    - net_use_openvswitch == true
+
+- include: network/ovs.yml
+  with_items:
+    - bridge: "{{ net_back_bridge }}"
+      interface: "back"
+  when:
+    - net_back_bridge != 'None'
+    - net_use_openvswitch == true
+
+- include: network/ovs.yml
+  with_items:
+    - bridge: "{{ net_admin_bridge }}"
+      interface: "admin"
+  when:
+    - net_admin_bridge != 'None'
+    - net_use_openvswitch == true
+
+- name: Bootstrap crm resources
+  shell: crm script run lxd
+  run_once: true
