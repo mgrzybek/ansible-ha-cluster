@@ -3,8 +3,15 @@
 # taille snapshots ???
 #command[]=
 
+{% if ansible_os_family == 'Suse' %}
 # check zypper (patchs à passer en critique, sinon warning)
 command[check_zypper]=/usr/lib/nagios/plugins/check_zypper -p -w security -c none
+{% endif %}
+
+{% if ansible_os_family == 'Debian' %}
+# check zypper (patchs à passer en critique, sinon warning)
+command[check_apt]=/usr/lib/nagios/plugins/check_apt
+{% endif %}
 
 {% if ansible_virtualization_role != "guest" %}
 # check app armor
