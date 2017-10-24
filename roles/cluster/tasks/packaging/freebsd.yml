@@ -6,8 +6,12 @@
     - crmsh
     - pacemaker
     - resource-agents
-    - py27-pip
     - fping
+
+- name: Hack for python-parallax (for crm script)
+  pkgng: name={{ item }} state=present
+  with_items:
+    - py27-pip
 
 - name: Hack for python-parallax (for crm script)
   pip: name=parallax

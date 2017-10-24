@@ -9,6 +9,11 @@
     - fping
 
 - name: Hack for python-parallax (for crm script)
+  apt: name={{ item }} state=latest
+  with_items:
+    - python-pip
+
+- name: Hack for python-parallax (for crm script)
   pip: name=parallax
 
 - name: Install LXD tools
