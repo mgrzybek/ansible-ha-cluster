@@ -4,12 +4,12 @@
 #command[]=
 
 {% if ansible_os_family == 'Suse' %}
-# check zypper (patchs à passer en critique, sinon warning)
+# check zypper (critical if security patches, else warning)
 command[check_zypper]=/usr/lib/nagios/plugins/check_zypper -p -w security -c none
 {% endif %}
 
 {% if ansible_os_family == 'Debian' %}
-# check zypper (patchs à passer en critique, sinon warning)
+# check apt (alert on available updates)
 command[check_apt]=/usr/lib/nagios/plugins/check_apt
 {% endif %}
 
