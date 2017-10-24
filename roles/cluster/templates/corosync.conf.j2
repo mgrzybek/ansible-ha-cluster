@@ -12,9 +12,17 @@ totem {
 	interface {
 		ringnumber:	0
 {% if net_cluster_port != 'None' %}
+{% if hostvars[ansible_fqdn] is defined %}
 		bindnetaddr:	{{ hostvars[ansible_fqdn][generated_cluster_port]['ipv4']['network'] }}
 {% else %}
+		bindnetaddr:	{{ hostvars[ansible_hostname][generated_cluster_port]['ipv4']['network'] }}
+{% endif %}
+{% else %}
+{% if hostvars[ansible_fqdn] is defined %}
 		bindnetaddr:	{{ hostvars[ansible_fqdn]['ansible_default_ipv4']['network'] }}
+{% else %}
+		bindnetaddr:	{{ hostvars[ansible_hostname]['ansible_default_ipv4']['network'] }}
+{% endif %}
 {% endif %}
 		ttl:		1
 	}
