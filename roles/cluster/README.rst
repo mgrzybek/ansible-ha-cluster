@@ -6,6 +6,7 @@ Corosync / pacemaker configuration
 ##################################
 
 Creates the cluster:
+
 * bootstrap
 * resources using crm scripts
 
