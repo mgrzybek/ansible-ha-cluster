@@ -1,0 +1,18 @@
+# {{ ansible_managed }}
+
+# taille snapshots ???
+#command[]=
+
+# check zypper (patchs à passer en critique, sinon warning)
+command[check_zypper]=/usr/lib/nagios/plugins/check_zypper -p -w security -c none
+
+{% if ansible_virtualization_role != "guest" %}
+# check app armor
+#command[]=
+{% endif %}
+
+# check run auditd
+command[check_auditd]=/usr/lib/nagios/plugins/check_procs -C auditd -w 1: -c 1:
+
+# ssh
+command[check_sshd]=/usr/lib/nagios/plugins/check_procs -C sshd -c 1:

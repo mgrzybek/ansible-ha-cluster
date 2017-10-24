@@ -25,6 +25,21 @@
     - cluster_role == 'compute'
     - net_use_openvswitch == true
 
+- name: Install NRPE
+  apt: name={{ item }} state=present
+  with_items:
+    - nagios-nrpe-server
+    - monitoring-plugins-basic
+  when:
+    - monitoring_use_nrpe == true
+
+# The available package is very heavy
+#    - nagios-plugins-contrib
+
+- name: Set NRPE service configuration
+  copy: src=systemd/nrpe.service dest=/etc/systemd/system/nrpe.service
+  notify: reload systemd
+
 - name: Start OpenVSwitch
   service: name=openvswitch-switch.service state=started enabled=true
   when:

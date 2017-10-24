@@ -58,6 +58,24 @@
     - cluster_role == 'compute'
     - net_use_openvswitch == true
 
+- name: Install NRPE
+  zypper: name={{ item }} state=present disable_gpg_check=yes
+  with_items:
+    - nrpe
+    - monitoring-plugins-procs
+    - monitoring-plugins-zypper
+  when:
+    - monitoring_use_nrpe == true
+
+- name: NRPE checks for physical nodes
+  zypper: name={{ item }} state=present disable_gpg_check=yes
+  with_items:
+    - monitoring-plugins-ntp_time
+    - monitoring-plugins-multipath
+  when:
+    - ansible_virtualization_role == 'host'
+    - monitoring_use_nrpe == true
+
 - name: Start OpenVSwitch
   service: name=openvswitch-switch.service state=started enabled=true
   when:
