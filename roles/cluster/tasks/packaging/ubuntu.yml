@@ -7,6 +7,9 @@
     - crmsh
     - pacemaker
     - fping
+    - clvm
+    - psmisc
+    - dlm
 
 - name: Hack for python-parallax (for crm script)
   apt: name={{ item }} state=latest
