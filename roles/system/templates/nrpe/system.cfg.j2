@@ -1,8 +1,5 @@
 # {{ ansible_managed }}
 
-# taille snapshots ???
-#command[]=
-
 {% if ansible_os_family == 'Suse' %}
 # check zypper (critical if security patches, else warning)
 command[check_zypper]=/usr/lib/nagios/plugins/check_zypper -p -w security -c none
