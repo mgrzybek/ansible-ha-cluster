@@ -1,0 +1,172 @@
+#!/bin/bash
+#
+#
+#	LXD storage attach / dettach OCF Resource Agent
+#	It records (in the CIB) various attributes of a node
+#
+# Copyright (c) 2017 Mathieu Grzybek
+#                    All Rights Reserved.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of version 2 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it would be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# Further, this software is distributed without any warranty that it is
+# free of the rightful claim of any third person regarding infringement
+# or the like.  Any license provided herein, whether implied or
+# otherwise, applies only to this software file.  Patent licenses, if
+# any, provided herein do not apply to combinations of this program with
+# other software, or any other product whatsoever.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write the Free Software Foundation,
+# Inc., 59 Temple Place - Suite 330, Boston MA 02111-1307, USA.
+#
+#######################################################################
+# Initialization:
+
+: ${OCF_FUNCTIONS_DIR=${OCF_ROOT}/lib/heartbeat}
+. ${OCF_FUNCTIONS_DIR}/ocf-shellfuncs
+
+#######################################################################
+# <pool> <volume> <container> [device name] <path>
+
+meta_data() {
+	cat <<END
+<?xml version="1.0"?>
+<!DOCTYPE resource-agent SYSTEM "ra-api-1.dtd">
+<resource-agent name="LXDVolume">
+<version>1.0</version>
+
+<longdesc lang="en">
+This is a LXD volume managing agent. It attaches and dettaches volumes.
+</longdesc>
+<shortdesc lang="en">Attaches a volume to a running container</shortdesc>
+
+<parameters>
+<parameter name="pool" required="1" unique="1">
+<longdesc lang="en">Storage pool name</longdesc>
+<shortdesc lang="en">Storage pool name (lxc storage list)</shortdesc>
+</parameter>
+<parameter name="volume" required="1" unique="1">
+<longdesc lang="en">Name of the volume</longdesc>
+<shortdesc lang="en">Name of the volume (lxc storage volume list)</shortdesc>
+<content type="string" default="0s" />
+</parameter>
+<parameter name="container" required="1" unique="1">
+<longdesc lang="en">Name of the container</longdesc>
+<shortdesc lang="en">Name of the container (lxc list)</shortdesc>
+<content type="string" default="0s" />
+</parameter>
+<parameter name="path" required="1" unique="1">
+<longdesc lang="en">Where to mount the volume</longdesc>
+<shortdesc lang="en">Where to mount the volume</shortdesc>
+<content type="string" default="0s" />
+</parameter>
+</parameters>
+
+<actions>
+<action name="start"   timeout="20s" />
+<action name="stop"    timeout="20s" />
+<action name="monitor" timeout="20s" interval="60s"/>
+<action name="meta-data"  timeout="5" />
+<action name="validate-all"  timeout="20s" />
+</actions>
+</resource-agent>
+END
+}
+
+#######################################################################
+
+LXDVolume_usage() {
+	cat <<END
+usage: $0 {start|stop|monitor|validate-all|meta-data}
+
+Expects to have a fully populated OCF RA-compliant environment set.
+END
+}
+
+LXDVolume_start() {
+	local _lvm_vg_name
+
+	# Does it exist as a storage volume?
+	if lxc storage show ${OCF_RESKEY_pool} > /dev/null 2>&1 ; then
+		_lvm_vg_name=$(lxc storage get $OCF_RESKEY_pool lvm.vg_name)
+
+		# Does it exist as a filesystem?
+		if lvs $_lvm_vg_name|grep ${OCF_RESKEY_volume} ; then
+
+			# Does it exist as a volume?
+			if ! lxc storage volume show ${OCF_RESKEY_pool} ${OCF_RESKEY_volume} ; then
+				lxc storage volume create ${OCF_RESKEY_pool} ${OCF_RESKEY_volume}
+			fi
+
+			if lxc storage volume attach ${OCF_RESKEY_pool} ${OCF_RESKEY_volume} ${OCF_RESKEY_container} ${OCF_RESKEY_path} ; then
+				exit $OCF_SUCCESS
+			fi
+		else
+			ocf_log err "The given LVM LV does not exist"
+		fi
+	else
+		ocf_log err "The given LVM VG does not exist"
+	fi
+
+	return $OCF_ERR_GENERIC
+}
+
+LXDVolume_stop() {
+	if ! lxc storage volume detach ${OCF_RESKEY_pool} ${OCF_RESKEY_volume} ${OCF_RESKEY_container} ; then
+		ocf_log err "Cannot detach the volume"
+		return $OCF_ERR_GENERIC
+	fi
+
+	if ! lxc storage volume delete ${OCF_RESKEY_pool} ${OCF_RESKEY_volume} ; then
+		ocf_log err "Cannot delete the volume"
+		return $OCF_ERR_GENERIC
+	fi
+
+	return $OCF_SUCCESS
+}
+
+LXDVolume_monitor() {
+	if lxc storage volume list ${OCF_RESKEY_pool}|awk -F\| "/${OCF_RESKEY_volume}/ {print $5}" | grep -q 1 ; then
+		exit $OCF_RUNNING
+	fi
+	exit $OCF_NOT_RUNNING
+}
+
+LXDVolume_validate() {
+	check_binary lxc
+	return $OCF_SUCCESS
+}
+
+if [ $# -ne 1 ]; then
+    LXDVolume_usage
+    exit $OCF_ERR_ARGS
+fi
+
+case $__OCF_ACTION in
+meta-data)	meta_data
+		exit $OCF_SUCCESS
+		;;
+start)		LXDVolume_start
+		;;
+stop)		LXDVolume_stop
+		;;
+monitor)	LXDVolume_monitor
+		;;
+validate-all)	LXDVolume_validate
+		;;
+usage|help)	LXDVolume_usage
+		exit $OCF_SUCCESS
+		;;
+*)		LXDVolume_usage
+		exit $OCF_ERR_UNIMPLEMENTED
+		;;
+esac
+
+exit $?
