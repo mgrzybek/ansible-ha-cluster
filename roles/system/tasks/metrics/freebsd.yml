@@ -1,0 +1,13 @@
+---
+
+- name: Install telegraf
+  pkgng: name={{ item }} state=latest
+  with_items:
+    - telegraf
+  when: metrics_use_telegraf == true
+
+- name: Install collectd
+  pkgng: name={{ item }} state=latest
+  with_items:
+    - collectd5
+  when: metrics_use_collectd == true
