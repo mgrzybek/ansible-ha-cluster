@@ -2,7 +2,13 @@
 
 - name: Configuration lvm.conf for multipath SAN
   copy: src=lvm.conf dest=/etc/lvm/lvm.conf
-  when: cluster_role == 'compute'
+
+- name: Disable and stop lvmetad
+  service: name={{ item }} state=stopped enabled=no
+  with_items:
+   - lvm2-lvmetad.socket
+   - lvm2-lvmetad.service
+  when: ansible_system == 'Linux'
 
 - name: Set clvm and dlm resources
   shell: crm script run cloned_clvm size={{ cluster_compute_nodes }}
