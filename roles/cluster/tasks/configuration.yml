@@ -8,13 +8,6 @@
   file: path=/usr/local/etc/pacemaker state=directory owner=hacluster
   when: ansible_system == 'FreeBSD'
 
-- name: Disable and stop lvmetad
-  service: name={{ item }} state=stopped enabled=no
-  with_items:
-   - lvm2-lvmetad.socket
-   - lvm2-lvmetad.service
-  when: ansible_system == 'Linux'
-
 - name: Start apparmor
   service: name={{ item }} state=started enabled=yes
   with_items:
