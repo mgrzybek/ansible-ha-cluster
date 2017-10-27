@@ -17,11 +17,18 @@
      required: true
      type: string
 
-   - name: cluster-group
-     shortdesc: Groupe.
-     longdesc: Valeur de l'attribut cluster-group.
+   - name: cluster-attribute
+     shortdesc: Which attribute to check.
+     longdesc: Which attribute to check.
      required: true
      type: string
+
+   - name: cluster-value
+     shortdesc: Which value to expect.
+     longdesc: Which value to expect.
+     required: true
+     type: string
+
 
   actions:
     - cib: |
@@ -36,9 +43,7 @@
 
     - cib: |
         location loc_{{id}} {{id}}_rg
-         rule -inf: 'cluster_group' ne "{{cluster-group}}"
-         rule -inf: ovsmonitor-bond-front ne 1
-         rule -inf: ovsmonitor-bond-back ne 1
+         rule -inf: '{{cluster-attribute}}' ne "{{cluster-value}}"
 
     - cib: |
         order order_clvm_{{id}}_rg Mandatory: c-clvm:start {{id}}_rg:start
