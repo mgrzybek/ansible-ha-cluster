@@ -1,0 +1,42 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Cluster
+  shortdesc: Initialize a cloned resource.
+  longdesc: |
+    A cloned systemd primitive is created.
+    The location is based on the value of the given attribute.
+
+  parameters:
+   - name: id
+     shortdesc: Resource name.
+     longdesc: Name of the resource to manage.
+     required: true
+     type: string
+
+   - name: size
+     shortdesc: Number of clones to run.
+     longdesc: This is the number of nodes that should own the cluster_group attribute.
+     required: true
+     type: integer
+
+   - name: attribute_name
+     shortdesc: Attribute to check for placement.
+     longdesc: Attribute to check for placement.
+     required: true
+     type: string
+
+   - name: attribute_value
+     shortdesc: Value to test.
+     longdesc: Value to test.
+     required: true
+     type: string
+
+  actions:
+    - cib: |
+        clone c-{{id}} {{id}} meta clone-max={{size}}
+
+    - cib: |
+        location loc_c-{{id}} c-{{id}} rule -inf: '{{attribute_name}}' ne "{{attribute_value}}"
