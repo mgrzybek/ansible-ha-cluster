@@ -10,6 +10,7 @@
     - clvm
     - psmisc
     - dlm
+    - thin-provisioning-tools
 
 - name: Hack for python-parallax (for crm script)
   apt: name={{ item }} state=latest
@@ -20,7 +21,7 @@
   pip: name=parallax
 
 - name: Install LXD tools
-  apt: name={{ item }} state=present default_release={{ ansible_distribution_release }}-backports
+  apt: name={{ item }} state=latest default_release={{ ansible_distribution_release }}-backports
   with_items:
     - lxd
     - lxd-client
@@ -46,8 +47,16 @@
 
 # There resource-agents might be present in the official package
 - name: Additional resource-agent
-  copy: src={{ item }} dest=/usr/lib/ocf/resource.d/heartbeat/{{ item }} mode=0755 force=no
+  copy: src={{ item }} dest=/usr/lib/ocf/resource.d/heartbeat/{{ item }} mode=0755
   with_items:
     - ovsmonitor
+  when: net_use_openvswitch == true
+
+- name: Additional resource-agent
+  copy: src={{ item }} dest=/usr/lib/ocf/resource.d/heartbeat/{{ item }} mode=0755
+  with_items:
     - LXDInfo
     - lxd
+    - lxd_pool
+    - lxd_volume
+  when: hosting_use_lxd == true
