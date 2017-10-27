@@ -5,6 +5,7 @@
   with_items:
     - cloned_systemd_service
     - cloned_clvm
+    - cloned_resource
     - rg_graphite
     - rg_mono
     - rg_multi
@@ -22,6 +23,7 @@
   with_items:
     - cloned_systemd_service
     - cloned_clvm
+    - cloned_resource
     - rg_graphite
     - rg_mono
     - rg_multi
