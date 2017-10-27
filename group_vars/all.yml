@@ -27,6 +27,12 @@ cluster_ping_remote_addr: None
 hosting_use_libvirt_lxc: false
 hosting_use_lxd: false
 
+# LXD configuration
+lxd_failover_mode: false
+lxd_images_repo: https://images.linuxcontainers.org
+lxd_architecture: amd64
+lxd_default_storage_pool: None
+
 # Networking configuration
 net_use_openvswitch: false
 
