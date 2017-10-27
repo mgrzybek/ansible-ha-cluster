@@ -1,8 +1,13 @@
 ---
 
-- name: Telegraf packaging
-  zypper: name=telegraf state=latest
-  notify: restart telegraf
+- include: suse.yml
+  when: ansible_os_family == 'Suse'
+
+- include: ubuntu.yml
+  when: ansible_distribution != 'Ubuntu'
+
+- include: freebsd.yml
+  when: ansible_distribution != 'FreeBSD'
 
 - name: Base configuration
   template: src=telegraf/telegraf.conf.j2 dest=/etc/telegraf/telegraf.conf

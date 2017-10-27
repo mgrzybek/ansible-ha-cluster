@@ -35,3 +35,8 @@
 - include: network.yml
   tags:
     - system_network
+
+- include: storage/lxd_local.yml
+  when: hosting_use_lxd == true
+  tags:
+    - system_storage
