@@ -85,7 +85,11 @@
 # Creates resources to manage LVM volumes in an active/standby way
 # Only on a physical host
 - include: cluster/clvm.yml
-  when: ansible_virtualization_type != 'lxc' or ansible_virtualization_role == 'host'
+  when:
+    - ansible_virtualization_type != 'lxc' or ansible_virtualization_role == 'host'
+    - hosting_use_lxd == false
+    - hosting_use_libvirt_lxc == true
+    - cluster_role == 'compute'
 
 # Creates a cloned resource to ping three peers.
 # This is an anti-splitbran system for share-nothing on two-nodes clusters
