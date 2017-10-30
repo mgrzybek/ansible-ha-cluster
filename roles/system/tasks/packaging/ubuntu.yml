@@ -25,6 +25,15 @@
     - cluster_role == 'compute'
     - net_use_openvswitch == true
 
+- name: Installation des paquets standards
+  apt: name={{ item }} state=present
+  with_items:
+    - bridge-utils
+    - lldpad
+  when:
+    - cluster_role == 'compute'
+    - net_use_linux_bridge == true
+
 - name: Install NRPE
   apt: name={{ item }} state=present
   with_items:
