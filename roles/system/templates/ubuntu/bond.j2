@@ -1,0 +1,6 @@
+auto {{ item.bond }}
+iface {{ item.bond }} inet static
+  bond-mode 4
+  bond-miimon 100
+  bond-lacp-rate 1
+  bond-slaves {{ item.ethernet_ports | regex_replace(","," ") }}

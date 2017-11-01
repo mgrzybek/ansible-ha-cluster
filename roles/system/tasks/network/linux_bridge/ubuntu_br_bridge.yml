@@ -1,0 +1,18 @@
+---
+
+- name: Create the bridge
+  template: src=ubuntu/bridge.j2 dest=/etc/network/interfaces.d/{{ item.bridge }}
+  register: bridge_status
+
+- name: Restart the bridge
+  shell: ifdown {{ item.bridge }} ; ifup {{ item.bridge }}
+  when: bridge_status|changed
+
+- name: Create the bond
+  template: src=ubuntu/bond.j2 dest=/etc/network/interfaces.d/{{ item.bond }}
+  when: item.ethernet_ports.find(",") > -1
+  register: bond_status
+
+- name: Restart the bond
+  shell: ifdown {{ item.bond }} ; ifup {{ item.bond }}
+  when: bond_status|changed
