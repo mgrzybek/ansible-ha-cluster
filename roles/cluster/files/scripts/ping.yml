@@ -3,7 +3,7 @@
 # License: GNU General Public License (GPL)
 ---
 - version: 2.2
-  category: Cluster
+  category: Network
   shortdesc: Deploy a ping resource.
   longdesc: |
     Deploy a ping resource to avoid split brain.
