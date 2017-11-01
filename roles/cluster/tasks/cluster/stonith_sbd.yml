@@ -10,17 +10,14 @@
 
 - name: LUNs initialisation for SBD if the resource does not exist
   shell: sbd -d {{ item }} create
-  with_items:
-    - "{{ cluster_stonith_sbd_lun_1 }}"
-    - "{{ cluster_stonith_sbd_lun_2 }}"
-    - "{{ cluster_stonith_sbd_lun_3 }}"
+  with_items: "{{ cluster_stonith_sbd_luns }}"
   when:
     - crm_configure_show.stdout.find("sbd") < 0
     - cluster_role == 'compute'
   run_once: true
 
 - name: Configure /etc/sysconfig/sbd if the resource does not exist
-  replace: dest=/etc/sysconfig/sbd regexp='^SBD_DEVICE=(.*?)$' replace='SBD_DEVICE="{{ cluster_stonith_sbd_lun_1 }};{{ cluster_stonith_sbd_lun_2 }};{{ cluster_stonith_sbd_lun_3 }}"'
+  replace: dest=/etc/sysconfig/sbd regexp='^SBD_DEVICE=(.*?)$' replace='SBD_DEVICE="{{ cluster_stonith_sbd_luns | join(';') }}"'
   when:
     - crm_resources_stonith.stdout.find("sbd") < 0
     - ansible_virtualization_role == 'host'
@@ -28,7 +25,7 @@
   notify: restart sbd resource
 
 - name: Configure /etc/default/sbd if the resource does not exist
-  replace: dest=/etc/default/sbd regexp='^SBD_DEVICE=(.*?)$' replace='SBD_DEVICE="{{ cluster_stonith_sbd_lun_1 }};{{ cluster_stonith_sbd_lun_2 }};{{ cluster_stonith_sbd_lun_3 }}"'
+  replace: dest=/etc/default/sbd regexp='^SBD_DEVICE=(.*?)$' replace='SBD_DEVICE="{{ cluster_stonith_sbd_luns | join(';') }}"'
   when:
     - crm_resources_stonith.stdout.find("sbd") < 0
     - ansible_virtualization_role == 'host'
