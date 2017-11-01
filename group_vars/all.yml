@@ -10,9 +10,7 @@ cluster_hawk_file_pem: None
 cluster_stonith_use_sbd: false
 cluster_stonith_use_ipmi: false
 
-cluster_stonith_sbd_lun_1: None
-cluster_stonith_sbd_lun_2: None
-cluster_stonith_sbd_lun_3: None
+cluster_stonith_sbd_luns: None
 
 cluster_allocation_vcpus_ratio: 0.8
 cluster_allocation_memory_ratio: 0.8
@@ -35,6 +33,7 @@ lxd_default_storage_pool: None
 
 # Networking configuration
 net_use_openvswitch: false
+net_use_linux_bridge: false
 
 net_front_vlans: None
 net_back_vlans: None
