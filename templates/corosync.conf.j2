@@ -13,12 +13,9 @@ totem {
 		ringnumber:	0
 {% if cluster_ring0_port != 'None' %}
 {% if hostvars[ansible_fqdn] is defined %}
-		bindnetaddr:	{{ hostvars[ansible_fqdn][cluster_ring0_port]['ipv4']['network'] }}
-{% if cluster_ring1_port != 'None' %}
-		bindnetaddr:	{{ hostvars[ansible_fqdn][cluster_ring1_port]['ipv4']['network'] }}
-{% endif %}
+		bindnetaddr:	{{ hostvars[ansible_fqdn][generated_cluster_ring0_port]['ipv4']['network'] }}
 {% else %}
-		bindnetaddr:	{{ hostvars[ansible_hostname][cluster_ring0_port]['ipv4']['network'] }}
+		bindnetaddr:	{{ hostvars[ansible_hostname][generated_cluster_ring0_port]['ipv4']['network'] }}
 {% endif %}
 {% else %}
 {% if hostvars[ansible_fqdn] is defined %}
@@ -28,10 +25,22 @@ totem {
 {% endif %}
 {% endif %}
 		ttl:		1
-{% if cluster_ring0_port != 'None' and cluster_ring1_port != 'None' %}
-		rrp_mode:	{{ cluster_rrp_mode }}
-{% endif %}
 	}
+
+{% if cluster_ring1_port != 'None' %}
+	interface {
+		ringnumber:	1
+{% if hostvars[ansible_fqdn] is defined %}
+		bindnetaddr:	{{ hostvars[ansible_fqdn][generated_cluster_ring1_port]['ipv4']['network'] }}
+{% else %}
+		bindnetaddr:	{{ hostvars[ansible_hostname][generated_cluster_ring1_port]['ipv4']['network'] }}
+{% endif %}
+		ttl:		1
+	}
+
+	rrp_mode:	{{ cluster_rrp_mode }}
+{% endif %}
+
 
 	transport: udpu
 }
@@ -54,11 +63,11 @@ nodelist {
 	node {
 		# {{ hostvars[node]['ansible_fqdn'] }}
 {% if cluster_ring0_port != 'None' %}
-		ring0_addr: {{ hostvars[node][generated_cluster_port_ring0]['ipv4']['address'] }}
+		ring0_addr: {{ hostvars[node][generated_cluster_ring0_port]['ipv4']['address'] }}
 {% if cluster_ring1_port != 'None' %}
-		ring1_addr: {{ hostvars[node][generated_cluster_port_ring1]['ipv4']['address'] }}
+		ring1_addr: {{ hostvars[node][generated_cluster_ring1_port]['ipv4']['address'] }}
 {% endif %}
-		nodeid: {{ hostvars[node][generated_cluster_port]['ipv4']['address'] | regex_replace("\D", "") | regex_replace("^\w+(\d){8}$","\\1") }}
+		nodeid: {{ hostvars[node][generated_cluster_ring0_port]['ipv4']['address'] | regex_replace("\D", "") | regex_replace("^\w+(\d){8}$","\\1") }}
 {% else %}
 		ring0_addr: {{ hostvars[node]['ansible_default_ipv4']['address'] }}
 		nodeid: {{ hostvars[node]['ansible_default_ipv4']['address'] | regex_replace("\D", "") | regex_replace("^\w+(\d){8}$","\\1") }}
