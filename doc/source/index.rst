@@ -51,9 +51,7 @@ None
 Tags
 ~~~~
 
-The ``cluster-stonith`` tag can be used to install and configure the SBD service.
-
-The ``cluster-install`` tag can be used to install and maintain configuration of corosync.
+The ``cluster-install`` tag can be used to install corosync.
 
 The ``cluster_mgmt_ip_addr`` tag can be used to maintain configuration of the management IP address.
 
@@ -62,3 +60,11 @@ The ``cluster-crm-scripts`` tag can be used to maintain nodes' attributes.
 The ``cluster-mgmt-hawk`` tag can be used to install Hawk WebGUI on SUSE systems.
 
 The ``cluster-mgmt-ip-addr`` tag can used to configure a floating management IP address.
+
+The ``cluster-attributes`` tag can used to maintain the nodes' cluster_role attribute.
+
+The ``cluster-corosync`` tag can used to configure corosync.
+
+The ``cluster-crm-scripts`` tag can used to install some crm script used to manage resources.
+
+The ``cluster-stonith`` tag can used to install and maintain STONITH devices (IPMI and SBD).
