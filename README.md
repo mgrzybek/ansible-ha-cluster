@@ -1,5 +1,5 @@
-Role Name
-=========
+ansible-ha-cluster
+==================
 
 This role is used to create and manage corosync / pacemaker-based clusters.
 
@@ -53,6 +53,8 @@ Openstack-Ansible use case:
 * the ethernet adapters to use with corosync are set by ```cluster_ring0_port``` and ```cluster_ring1_port```.
 
 
+    ---
+    
     - name: Installation and setup of corosync / pacemaker
       hosts: compute-infra_hosts
       user: root
