@@ -11,7 +11,7 @@ When SLES is used, the sle-ha extension repository is needed.
 When using IPMI STONITH, BMC IP address and credentials are needed. Each host needs these values in ```host_vars/my-node.yml```:
 
     ---
-    
+
     ilo:
       address: x.x.x.x
       login: admin
@@ -44,17 +44,16 @@ This is a simple example, the only mandatory variable is ```cluster_expected_vot
 
 Openstack-Ansible use case:
 
-* the group inventory is persisent, that is why we can set ```cluster_expected_votes``` to a dynamic value ;
+1. the group inventory is persisent, that is why we can set ```cluster_expected_votes``` to a dynamic value ;
 
-* the cluster's name is set thanks to ```cluster_name``` ;
+2. the cluster's name is set thanks to ```cluster_name``` ;
 
-* we deploy the cluster on the physical nodes hosting the control plane and we set the group's name using ```cluster_role``` ;
+3. we deploy the cluster on the physical nodes hosting the control plane and we set the group's name using ```cluster_role``` ;
 
-* the ethernet adapters to use with corosync are set by ```cluster_ring0_port``` and ```cluster_ring1_port```.
+4. the ethernet adapters to use with corosync are set by ```cluster_ring0_port``` and ```cluster_ring1_port```.
 
 
-    ---
-    
+
     - name: Installation and setup of corosync / pacemaker
       hosts: compute-infra_hosts
       user: root
