@@ -4,6 +4,7 @@
 - name: Get nodes list
   shell: crm node list|awk -F'(' '/{{ ansible_hostname }}/ {print $1}'
   register: crm_node_name
+  run_once: true
 
 # Utilization attributes
 - name: Define cpu and memory allocation ratio
@@ -17,5 +18,4 @@
 
 # Usage attributes
 - name: Add cluster_role attribute
-  shell: crm_attribute --node {{ crm_node_name.stdout }} --name cluster_role --update compute
-  when: cluster_role == 'compute'
+  shell: crm_attribute --node {{ crm_node_name.stdout }} --name cluster_role --update {{ cluster_role }}

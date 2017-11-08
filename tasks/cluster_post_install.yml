@@ -17,8 +17,10 @@
   template: src=corosync.conf.j2 dest=/etc/corosync/corosync.conf
   register: corosync_template_result
   vars:
-    generated_cluster_port_ring0: 'ansible_{{ cluster_ring0_port }}'
-    generated_cluster_port_ring1: 'ansible_{{ cluster_ring1_port }}'
+    generated_cluster_ring0_port: 'ansible_{{ cluster_ring0_port | regex_replace("-","_") }}'
+    generated_cluster_ring1_port: 'ansible_{{ cluster_ring1_port | regex_replace("-","_") }}'
+  tags:
+    - cluster-corosync
 
 - name: Restart corosync
   shell: "{{ item }}"
@@ -27,6 +29,8 @@
     - crm cluster start
   when:
     - corosync_template_result|changed
+  tags:
+    - cluster-corosync
 
 - name: Waits for the cluster to be online
   shell: crm_mon -s
@@ -52,6 +56,8 @@
 
 # Nodes attributes
 - include: cluster_post_install_attributes.yml
+  tags:
+    - cluster-attributes
 
 # Default values
 - name: Set no-quorum-policy
@@ -96,7 +102,7 @@
   tags:
     - cluster_mgmt_ip_addr
 
-- include: cluster_post_install_hawk
+- include: cluster_post_install_hawk.yml
   when:
     - cluster_use_hawk == true
     - ansible_os_family | lower == 'suse'
