@@ -3,24 +3,15 @@ cluster_distro_packages:
   - crmsh
   - pacemaker
   - fping
-  #- clvm
   - psmisc
-  #- dlm
-  #- thin-provisioning-tools
 
 cluster_sbd_configuration: /etc/default/sbd
 
 cluster_crm_scripts:
-  - cloned_clvm
   - cloned_resource
-  - eth_monitoring
-  - lxd
   - mgmt
   - ovs_monitoring
   - ping
-  - rg_graphite
-  - rg_mono
-  - rg_multi
   - stonith_ipmi
   - stonith_suicide
 

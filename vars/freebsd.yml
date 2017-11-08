@@ -9,8 +9,6 @@ cluster_crm_scripts:
   - mgmt
   - ovs_monitoring
   - ping
-  - rg_mono
-  - rg_multi
   - stonith_ipmi
   - stonith_suicide
 
