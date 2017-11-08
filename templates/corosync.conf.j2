@@ -1,0 +1,81 @@
+# {{ ansible_managed }}
+
+totem {
+	version:		2
+	secauth:		off
+	cluster_name:		{{ cluster_name }}
+	clear_node_high_bit:	yes
+
+	crypto_cipher:	none
+	crypto_hash:	none
+
+	interface {
+		ringnumber:	0
+{% if cluster_ring0_port != 'None' %}
+{% if hostvars[ansible_fqdn] is defined %}
+		bindnetaddr:	{{ hostvars[ansible_fqdn][cluster_ring0_port]['ipv4']['network'] }}
+{% if cluster_ring1_port != 'None' %}
+		bindnetaddr:	{{ hostvars[ansible_fqdn][cluster_ring1_port]['ipv4']['network'] }}
+{% endif %}
+{% else %}
+		bindnetaddr:	{{ hostvars[ansible_hostname][cluster_ring0_port]['ipv4']['network'] }}
+{% endif %}
+{% else %}
+{% if hostvars[ansible_fqdn] is defined %}
+		bindnetaddr:	{{ hostvars[ansible_fqdn]['ansible_default_ipv4']['network'] }}
+{% else %}
+		bindnetaddr:	{{ hostvars[ansible_hostname]['ansible_default_ipv4']['network'] }}
+{% endif %}
+{% endif %}
+		ttl:		1
+{% cluster_ring0_port != 'None' and cluster_ring1_port != 'None' %}
+		rrp_mode:	{{ cluster_rrp_mode }}
+{% endif %}
+	}
+
+	transport: udpu
+}
+
+logging {
+	fileline:	off
+	to_stderr:	no
+	to_logfile:	no
+	to_syslog:	yes
+	debug:		off
+	timestamp:	on
+	logger_subsys {
+		subsys:	QUORUM
+		debug:	off
+	}
+}
+
+nodelist {
+{% for node in play_hosts %}
+	node {
+		# {{ hostvars[node]['ansible_fqdn'] }}
+{% if cluster_ring0_port != 'None' %}
+		ring0_addr: {{ hostvars[node][generated_cluster_port_ring0]['ipv4']['address'] }}
+{% if cluster_ring1_port != 'None' %}
+		ring1_addr: {{ hostvars[node][generated_cluster_port_ring1]['ipv4']['address'] }}
+{% endif %}
+		nodeid: {{ hostvars[node][generated_cluster_port]['ipv4']['address'] | regex_replace("\D", "") | regex_replace("^\w+(\d){8}$","\\1") }}
+{% else %}
+		ring0_addr: {{ hostvars[node]['ansible_default_ipv4']['address'] }}
+		nodeid: {{ hostvars[node]['ansible_default_ipv4']['address'] | regex_replace("\D", "") | regex_replace("^\w+(\d){8}$","\\1") }}
+{% endif %}
+	}
+{% endfor %}
+}
+
+quorum {
+	# Enable and configure quorum subsystem (default: off)
+	# see also corosync.conf.5 and votequorum.5
+	provider: corosync_votequorum
+	wait_for_all: 1
+	expected_votes: {{ cluster_expected_nodes }}
+{% if cluster_expected_nodes == 2 %}
+	two_node: 1
+{% else %}
+	two_node: 0
+{% endif %}
+}

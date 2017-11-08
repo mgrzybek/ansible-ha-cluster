@@ -1,0 +1,32 @@
+cluster_distro_packages:
+  - apparmor
+  - crmsh
+  - pacemaker
+  - fping
+  #- clvm
+  - psmisc
+  #- dlm
+  #- thin-provisioning-tools
+
+cluster_sbd_configuration: /etc/default/sbd
+
+cluster_crm_scripts:
+  - cloned_systemd_service
+  - cloned_clvm
+  - cloned_resource
+  - rg_graphite
+  - rg_mono
+  - rg_multi
+  - mgmt
+  - ovs_monitoring
+  - ping
+  - stonith_ipmi
+  - stonith_suicide
+  - systemd_service
+  - lxd
+
+cluster_crm_scripts_root_path: /usr/share/crmsh/scripts
+
+cluster_nagios_plugins_root_path: /usr/lib/nagios/plugins
+
+cluster_etc_pacemaker: /etc/pacemaker

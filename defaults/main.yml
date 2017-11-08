@@ -1,0 +1,44 @@
+---
+
+cluster_name: ha-cluster
+cluster_server_package_state: present
+
+# Cluster configuration
+cluster_role: compute
+cluster_no_quorum_policy: stop
+cluster_mgmt_ip: None
+cluster_ping_remote_addr: None
+cluster_rrp_mode: active # active or passive
+
+# Hawk : management WebGUI
+cluster_use_hawk: false
+
+cluster_hawk_file_key: None
+cluster_hawk_file_pem: None
+
+# Stonith
+cluster_stonith_use_sbd: false
+cluster_stonith_use_ipmi: false
+cluster_stonith_sbd_luns: None
+
+cluster_ring0_port: None
+cluster_ring1_port: None
+
+# ILO / IPMI interface (one per physical node)
+cluster_net_ilo:
+  address: None
+  prefix: None
+  network: None
+
+# Monitoring
+cluster_monitoring_use_nrpe: false
+cluster_monitoring_use_consul: false
+
+# Repositories
+cluster_repo_sle_server_product: None
+cluster_repo_sle_server_updates: None
+cluster_repo_sle_ha_product: None
+cluster_repo_sle_ha_updates: None
+
+# Time
+cluster_ntp_fqdn: pool.ntp.org

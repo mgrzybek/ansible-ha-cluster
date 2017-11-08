@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+# Check du cluster par script perso, paquet monitoring-plugins-crm
+command[check_cluster]=sudo /usr/sbin/crm_mon -s
+
+{% if ansible_virtualization_role != "guest" %}
+# Offset NTP
+command[check_ntp_offset]={{ cluster_nagios_plugins_root_path }}/check_ntp_time -H {{ ntp_fqdn }} -w 1 -c 5
+{% endif %}

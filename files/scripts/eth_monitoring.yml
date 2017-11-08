@@ -1,0 +1,56 @@
+# Copyright (C) 2016 Mathieu Grzybek
+#
+# License: GNU General Public License (GPL)
+---
+- version: 2.2
+  category: Network
+  shortdesc: Deploy ethmonitor on compute nodes.
+  longdesc: |
+    Deploy a cloned ethmonitor resource where 'attribute_name' is 'attribute_value'.
+
+  parameters:
+   - name: size
+     shortdesc: Number of clones.
+     longdesc: Number of compute nodes.
+     required: true
+     type: integer
+
+   - name: bridge
+     shortdesc: Bridge name.
+     longdesc: Name of the bridge holding the bond.
+     required: true
+     type: string
+
+   - name: bond
+     shortdesc: Bond name.
+     longdesc: Name of the bond.
+     required: true
+     type: string
+
+   - name: attribute_name
+     shortdesc: Attribute to check for placement.
+     longdesc: Attribute to check for placement.
+     required: true
+     type: string
+
+   - name: attribute_value
+     shortdesc: Value to test.
+     longdesc: Value to test.
+     required: true
+     type: string
+
+  actions:
+    - cib: |
+        primitive eth_monitor_{{bond}} ethmonitor
+         params bond={{bond}} bridge={{bridge}} link_status_only=yes
+         op monitor interval=10s timeout=60s
+         op start interval=0 timeout=60s
+         op stop interval=0 timeout=60s
+
+    - cib: |
+        clone c-eth_monitor_{{bond}} eth_monitor_{{bond}}
+          meta interleave=true clone-max={{size}}
+
+    - cib: |
+        location loc_c-eth_monitor_{{bond}} c-eth_monitor_{{bond}} resource-discovery=never
+          rule -inf: {{attribute_name}} ne {{attribute_value}}

@@ -1,5 +1,0 @@
----
-
-- name: Bootstrap crm resources
-  shell: crm script run lxd
-  run_once: true

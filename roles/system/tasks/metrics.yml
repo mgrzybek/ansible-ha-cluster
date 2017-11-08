@@ -1,8 +1,0 @@
----
-
-- include: metrics/telegraf.yml
-  when: metrics_use_telegraf == true
-
-- name: Accounting sur les cgroups systemd
-  copy: src=systemd/system.conf dest=/etc/systemd/system.conf
-  when: ansible_system == 'Linux'

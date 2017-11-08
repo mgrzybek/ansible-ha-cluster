@@ -1,0 +1,8 @@
+---
+
+- name: Set SSL certs for Hawk
+  copy: src={{ item }} dest=/etc/{{ item | basename }} owner=root group=haclient mode=0640
+  with_items:
+    - "{{ cluster_hawk_file_key }}"
+    - "{{ cluster_hawk_file_pem }}"
+  notify: restart hawk

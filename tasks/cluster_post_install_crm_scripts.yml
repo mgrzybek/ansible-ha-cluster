@@ -1,0 +1,9 @@
+---
+
+- name: Install some crm scripts (directories)
+  file: path={{ cluster_crm_scripts_root_path }}/{{ item }} state=directory
+  with_items: "{{ cluster_crm_scripts }}"
+
+- name: Install some crm scripts (files)
+  copy: src=scripts/{{ item }}.yml dest={{ cluster_crm_scripts_root_path }}/{{ item }}/main.yml
+  with_items: "{{ cluster_crm_scripts }}"

@@ -1,7 +1,0 @@
-auto {{ item.bridge }}
-iface {{ item.bridge }} inet manual
-        bridge_ports {{ item.ethernet_ports | regex_replace(","," ") }}
-        bridge_fd 0
-        bridge_hello 2
-        bridge_maxage 12
-        bridge_stp off

@@ -1,0 +1,30 @@
+---
+
+- name: Install HA pattern (SLES only)
+  zypper: type=pattern name={{ item }} state=present
+  with_items:
+    - ha_sles
+  when: ansible_distribution == 'SLES'
+
+- name: Install corosync / pacemaker packages
+  package:
+    name: "{{ cluster_server_distro_packages }}"
+    state: "{{ cluster_server_package_state }}"
+    update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
+    cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
+  register: install_packages
+  until: install_packages | success
+  retries: 5
+  delay: 2
+  tags:
+    - install-apt
+    - install-yum
+    - install-zypper
+
+- name: Install SBD
+  apt: name=sbd state=present
+  when:
+    - cluster_stonith_use_sbd == true
+    - cluster_role == 'compute'
+    #- ansible_virtualization_role == 'host'
+    - ansible_pkg_mgr == 'apt'

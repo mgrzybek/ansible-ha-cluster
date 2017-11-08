@@ -1,0 +1,23 @@
+cluster_distro_packages:
+    - crmsh
+    - pacemaker
+    - resource-agents
+    - fping
+
+cluster_crm_scripts:
+  - cloned_systemd_service
+  - cloned_resource
+  - rg_graphite
+  - rg_mono
+  - rg_multi
+  - mgmt
+  - ovs_monitoring
+  - ping
+  - stonith_ipmi
+  - stonith_suicide
+
+cluster_crm_scripts_root_path: /usr/local/share/crmsh/scripts
+
+cluster_nagios_plugins_root_path: /usr/local/lib/nagios/plugins
+
+cluster_etc_pacemaker: /usr/local/etc/pacemaker

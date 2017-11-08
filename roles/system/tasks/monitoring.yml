@@ -1,7 +1,0 @@
----
-
-- include: monitoring/nrpe.yml
-  when: monitoring_use_nrpe == true
-
-- include: monitoring/consul.yml
-  when: monitoring_use_consul == true
