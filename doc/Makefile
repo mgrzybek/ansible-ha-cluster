@@ -87,9 +87,9 @@ qthelp:
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
 	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/openstack-ansible-os_keystone.qhcp"
+	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/ansible-ha-cluster.qhcp"
 	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/openstack-ansible-os_keystone.qhc"
+	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/ansible-ha-cluster.qhc"
 
 applehelp:
 	$(SPHINXBUILD) -b applehelp $(ALLSPHINXOPTS) $(BUILDDIR)/applehelp
@@ -104,8 +104,8 @@ devhelp:
 	@echo
 	@echo "Build finished."
 	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/openstack-ansible-os_keystone"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/openstack-ansible-os_keystone"
+	@echo "# mkdir -p $$HOME/.local/share/devhelp/ansible-ha-cluster"
+	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/ansible-ha-cluster"
 	@echo "# devhelp"
 
 epub:

@@ -59,18 +59,18 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-author = 'OpenStack-Ansible Contributors'
+author = 'Mathieu GRZYBEK'
 category = 'Miscellaneous'
-copyright = '2014-2016, OpenStack-Ansible Contributors'
-description = 'OpenStack-Ansible deploys OpenStack environments using Ansible.'
-project = 'OpenStack-Ansible'
-role_name = 'os_keystone'
-target_name = 'openstack-ansible-' + role_name
-title = 'OpenStack-Ansible Documentation: ' + role_name + 'role'
+copyright = '2017 Mathieu GRZYBEK'
+description = 'Deploys corosync / pacemaker service using Ansible.'
+project = 'ansible-ha-cluster'
+role_name = project
+target_name = role_name
+title = role_name 
 
 # The link to the browsable source code (for the left hand menu)
 oslosphinx_cgit_link = (
-    "https://git.openstack.org/cgit/openstack/{}".format(target_name)
+    "https://github.com/mgrzybek/{}".format(target_name)
 )
 
 # The version info for the project you're documenting, acts as replacement for
@@ -83,11 +83,6 @@ version_info = pbr.version.VersionInfo(target_name)
 release = version_info.version_string_with_vcs()
 # The short X.Y version.
 version = version_info.canonical_version_string()
-
-# openstackdocstheme options
-repository_name = 'openstack/' + target_name
-bug_project = project.lower()
-bug_tag = ''
 
 # for a list of supported languages.
 #

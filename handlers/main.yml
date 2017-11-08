@@ -1,1 +1,2 @@
-../../system/handlers/main.yml
+---
+# handlers file for ansible-ha-cluster-2

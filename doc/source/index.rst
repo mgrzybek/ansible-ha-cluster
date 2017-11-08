@@ -1,5 +1,5 @@
 ===================================
-Keystone role for OpenStack-Ansible
+High availability Ansible role
 ===================================
 
 .. toctree::
