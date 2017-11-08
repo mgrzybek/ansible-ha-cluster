@@ -71,7 +71,7 @@
 #- name: Set default options
 #  shell: crm configure op_defaults stonith-enabled=false
 #  when:
-#    - cluster_expected_nodes < 3
+#    - cluster_expected_votes < 3
 #    - ansible_virtualization_role != 'host'
 #  run_once: true
 
@@ -109,10 +109,10 @@
   shell: awk 'BEGIN { ORS=" " } /ring0_addr/ { print $2 }' /etc/corosync/corosync.conf
   register: crm_nodes_ips
   when:
-    - cluster_expected_nodes < 3
+    - cluster_expected_votes < 3
 
 - name: Sets a ping resource on two-nodes clusters
   shell: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
   run_once: true
   when:
-    - cluster_expected_nodes < 3
+    - cluster_expected_votes < 3

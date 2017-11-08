@@ -1,7 +1,7 @@
 ---
 
 cluster_name: ha-cluster
-cluster_server_package_state: present
+cluster_package_state: present
 
 # Cluster configuration
 cluster_role: compute
@@ -42,3 +42,6 @@ cluster_repo_sle_ha_updates: None
 
 # Time
 cluster_ntp_fqdn: pool.ntp.org
+
+# Packaging stuff
+cache_time: 600

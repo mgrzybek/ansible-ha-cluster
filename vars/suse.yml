@@ -11,19 +11,17 @@ cluster_distro_packages:
 cluster_sbd_configuration: /etc/sysconfig/sbd
 
 cluster_crm_scripts:
-  - cloned_systemd_service
   - cloned_clvm
   - cloned_resource
-  - rg_graphite
-  - rg_mono
-  - rg_multi
+  - eth_monitoring
   - mgmt
   - ovs_monitoring
   - ping
+  - rg_graphite
+  - rg_mono
+  - rg_multi
   - stonith_ipmi
   - stonith_suicide
-  - systemd_service
-  - lxd
 
 cluster_crm_scripts_root_path: /usr/share/crmsh/scripts
 

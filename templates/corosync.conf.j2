@@ -28,7 +28,7 @@ totem {
 {% endif %}
 {% endif %}
 		ttl:		1
-{% cluster_ring0_port != 'None' and cluster_ring1_port != 'None' %}
+{% if cluster_ring0_port != 'None' and cluster_ring1_port != 'None' %}
 		rrp_mode:	{{ cluster_rrp_mode }}
 {% endif %}
 	}
@@ -72,8 +72,8 @@ quorum {
 	# see also corosync.conf.5 and votequorum.5
 	provider: corosync_votequorum
 	wait_for_all: 1
-	expected_votes: {{ cluster_expected_nodes }}
-{% if cluster_expected_nodes == 2 %}
+	expected_votes: {{ cluster_expected_votes }}
+{% if cluster_expected_votes == 2 %}
 	two_node: 1
 {% else %}
 	two_node: 0

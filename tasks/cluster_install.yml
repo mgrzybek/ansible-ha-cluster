@@ -8,8 +8,8 @@
 
 - name: Install corosync / pacemaker packages
   package:
-    name: "{{ cluster_server_distro_packages }}"
-    state: "{{ cluster_server_package_state }}"
+    name: "{{ cluster_distro_packages }}"
+    state: "{{ cluster_package_state }}"
     update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
   register: install_packages

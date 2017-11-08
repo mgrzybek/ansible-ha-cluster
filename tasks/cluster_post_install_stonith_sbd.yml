@@ -26,6 +26,7 @@
 
 - name: sbd on boot on compute nodes
   service: name=sbd enabled=yes
+  when: 
     - ansible_virtualization_type != 'lxc' # Physical nodes or Xen/KVM
 
 # TODO: prevent node from joining the cluster if fenced
