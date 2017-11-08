@@ -8,6 +8,15 @@ Requirements
 
 When SLES is used, the sle-ha extension repository is needed.
 
+When using IPMI STONITH, BMC IP address and credentials are needed. Each host needs these values in ```host_vars/my-node.yml```:
+
+    ---
+    
+    ilo:
+      address: x.x.x.x
+      login: admin
+      password: secret
+
 Role Variables
 --------------
 
