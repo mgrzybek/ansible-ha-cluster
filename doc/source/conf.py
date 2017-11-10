@@ -39,7 +39,6 @@ import os
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'openstackdocstheme',
     'sphinx.ext.autodoc',
     'sphinxmark'
 ]
