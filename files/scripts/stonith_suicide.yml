@@ -6,7 +6,7 @@
   category: Cluster
   shortdesc: Initialize a cloned suicide STONITH resource.
   longdesc: |
-    A cloned systemd primitive is created.
+    A cloned suicide primitive is created.
 
   actions:
     - cib: |
