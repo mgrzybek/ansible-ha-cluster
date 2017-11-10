@@ -21,10 +21,13 @@
     - install-yum
     - install-zypper
 
-- name: Install SBD
-  apt: name=sbd state=present
+- name: Install sbd package
+  package:
+    name: sbd
+    state: "{{ cluster_package_state }}"
+    update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
+    cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
   when:
     - cluster_stonith_use_sbd == true
-    - cluster_role == 'compute'
-    #- ansible_virtualization_role == 'host'
-    - ansible_pkg_mgr == 'apt'
+    - ansible_virtualization_type != 'lxc'
+    - ansible_distribution != 'SLES' # included in the ha_sles pattern

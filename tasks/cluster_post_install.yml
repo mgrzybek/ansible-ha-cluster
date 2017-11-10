@@ -50,7 +50,9 @@
 - name: Create suicide resource
   shell: crm -w script run stonith_suicide
   run_once: true
-  when: cluster_stonith_use_sbd == false
+  when:
+    - cluster_stonith_use_sbd == false
+    - ansible_virtualization_type != 'lxc'
   tags:
     - cluster-stonith
 

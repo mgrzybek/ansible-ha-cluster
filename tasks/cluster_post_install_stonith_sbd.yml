@@ -5,7 +5,7 @@
   register: crm_configure_show
   run_once: true
 
-- name: Disable sbd if the node's role is not compute
+- name: Disable sbd on containers
   service: name=sbd enabled=false state=stopped
   when: ansible_virtualization_type == 'lxc' # Containers do not see physical block devices
 
@@ -21,6 +21,7 @@
   replace: dest={{ cluster_sbd_configuration }} regexp='^SBD_DEVICE=(.*?)$' replace='SBD_DEVICE="{{ cluster_stonith_sbd_luns | join(';') }}"'
   when:
     - crm_resources_stonith.stdout.find("sbd") < 0
+    - cluster_stonith_sbd_luns | length > 0
     - ansible_virtualization_type != 'lxc' # Physical nodes or Xen/KVM
   notify: restart sbd resource
 
