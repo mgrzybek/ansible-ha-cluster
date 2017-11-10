@@ -17,7 +17,7 @@ cluster_hawk_file_key: None
 cluster_hawk_file_pem: None
 
 # Stonith
-cluster_stonith_use_sbd: false
+cluster_stonith_use_sbd: true
 cluster_stonith_use_ipmi: false
 cluster_stonith_sbd_luns: None
 
