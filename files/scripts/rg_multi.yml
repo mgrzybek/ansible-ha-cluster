@@ -23,7 +23,7 @@
      required: true
      type: string
 
-   - name: cluster-value
+   - name: attribute-value
      shortdesc: Which value to expect.
      longdesc: Which value to expect.
      required: true
@@ -39,11 +39,11 @@
          op stop timeout=30 interval=0
 
     - cib: |
-        group {{id}}_rg {{id}}_vg
+        group g-{{id}} {{id}}_vg
 
     - cib: |
-        location loc_{{id}} {{id}}_rg
-         rule -inf: '{{cluster-attribute}}' ne "{{cluster-value}}"
+        location loc_{{id}} g-{{id}}
+         rule -inf: '{{cluster-attribute}}' ne "{{attribute-value}}"
 
     - cib: |
-        order order_clvm_{{id}}_rg Mandatory: c-clvm:start {{id}}_rg:start
+        order order_clvm_{{id}}_rg Mandatory: c-clvm:start g-{{id}}:start
