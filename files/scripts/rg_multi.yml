@@ -4,16 +4,14 @@
 ---
 - version: 2.2
   category: Cluster
-  shortdesc: Initialisation RG multi-noeuds.
+  shortdesc: Resource group with a logical volume group as first member.
   longdesc: |
-    On installe un groupe avec un VG.
-    On fixe sa position sur le noeud avec une contrainte en fonction de
-    l'attribut cluster-group.
+    The location of the group is based on the given attribute.
 
   parameters:
    - name: id
-     shortdesc: Nom du groupe.
-     longdesc: Nom de l'application.
+     shortdesc: Name.
+     longdesc: Name given to the group.
      required: true
      type: string
 
@@ -29,11 +27,17 @@
      required: true
      type: string
 
+   - name: exclusive
+     shortdesc: Exclusive mounting.
+     longdesc: Is this volume exclusive?
+     required: false
+     default: true
+     type: boolean
 
   actions:
     - cib: |
         primitive {{id}}_vg LVM
-         params volgrpname={{id}} exclusive=true partial_activation=true
+         params volgrpname={{id}} exclusive={{exclusive}} partial_activation=true
          op monitor timeout=30 interval=10
          op start timeout=30 interval=0
          op stop timeout=30 interval=0
@@ -46,4 +50,4 @@
          rule -inf: '{{cluster-attribute}}' ne "{{attribute-value}}"
 
     - cib: |
-        order order_clvm_{{id}}_rg Mandatory: c-clvm:start g-{{id}}:start
+        order order_clvm_g-{{id}} Mandatory: c-clvm:start g-{{id}}:start
