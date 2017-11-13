@@ -4,7 +4,6 @@
 - name: Get nodes list
   shell: crm node list|awk -F'(' '/{{ ansible_hostname }}/ {print $1}'
   register: crm_node_name
-  run_once: true
 
 # Utilization attributes
 - name: Define cpu and memory allocation ratio
