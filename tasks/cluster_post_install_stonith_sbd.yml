@@ -25,6 +25,12 @@
     - ansible_virtualization_type != 'lxc' # Physical nodes or Xen/KVM
   notify: restart sbd resource
 
+- name: Disable sbd pacemaker integration on two-nodes clusters when three sbd devices are given
+  replace: dest={{ cluster_sbd_configuration }} regexp='^SBD_PACEMAKER=(.*?)$' replace='SBD_PACEMAKER="no"'
+  when:
+    - cluster_expected_votes == 2
+    - cluster_stonith_sbd_luns | length == 3
+
 - name: sbd on boot on compute nodes
   service: name=sbd enabled=yes
   when:
