@@ -1,8 +1,8 @@
 cluster_distro_packages:
-    - crmsh
-    - pacemaker
-    - resource-agents
-    - fping
+  - crmsh
+  - pacemaker
+  - resource-agents
+  - fping
 
 cluster_crm_scripts:
   - cloned_resource
