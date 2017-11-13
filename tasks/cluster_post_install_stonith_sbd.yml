@@ -36,7 +36,9 @@
   when:
     - ansible_virtualization_type != 'lxc' # Physical nodes or Xen/KVM
 
-# TODO: prevent node from joining the cluster if fenced
+- name: Prevent the cluster to start if fenced by sbd
+  replace: dest={{ cluster_sbd_configuration }} regexp='^SBD_STARTMODE=(.*?)$' replace='SBD_STARTMODE="clean"'
+  when: cluster_sbd_start_mode == 'clean'
 
 # Create SBD resource
 - name: Create SBD resource

@@ -20,6 +20,7 @@ cluster_hawk_file_pem: None
 cluster_stonith_use_sbd: true
 cluster_stonith_use_ipmi: false
 cluster_stonith_sbd_luns: None
+cluster_sbd_start_mode: clean # or always
 
 cluster_ring0_port: None
 cluster_ring1_port: None
