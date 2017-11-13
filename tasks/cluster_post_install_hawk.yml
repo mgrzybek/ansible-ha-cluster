@@ -5,4 +5,4 @@
   with_items:
     - "{{ cluster_hawk_file_key }}"
     - "{{ cluster_hawk_file_pem }}"
-  notify: restart hawk
+  notify: restart hawk resource
