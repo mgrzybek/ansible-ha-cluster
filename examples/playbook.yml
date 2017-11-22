@@ -1,11 +1,12 @@
-    - name: Installation and setup of corosync / pacemaker 
+    - name: Installation and setup of corosync / pacemaker
       hosts: compute-infra_hosts
       user: root
       roles:
         - { role: "ansible-ha-cluster" }
       vars:
         cluster_name: openstack
-        cluster_role: infra_hosts
+        cluster_node_attribute_key: os_role
+        cluster_node_attribute_value: infra_hosts
         cluster_ring0_port: br-mgmt
         cluster_ring1_port: br-vxlan
         cluster_expected_votes: "{{ groups['compute-infra_hosts'] | length }}"
