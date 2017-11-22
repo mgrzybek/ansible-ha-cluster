@@ -8,7 +8,7 @@
   longdesc: |
     Deploy a floating IP and Hawk.
     A management resource group is created.
-    The node cluster_role attribute must be set to 'compute'.
+    Location is set by 'attribute_name' and 'attribute_value'.
 
   parameters:
    - name: ipaddr
@@ -22,6 +22,18 @@
      longdesc: Nombre de clones à lancer.
      required: true
      type: integer
+
+   - name: attribute_name
+     shortdesc: Attribute to check for placement.
+     longdesc: Attribute to check for placement.
+     required: true
+     type: string
+
+   - name: attribute_value
+     shortdesc: Value to test.
+     longdesc: Value to test.
+     required: true
+     type: string
 
   actions:
     - cib: |
@@ -39,4 +51,4 @@
 
     - cib: |
         location loc_mgmt_rg mgmt_rg resource-discovery=always
-          rule -inf: cluster_role ne compute
+          rule -inf: {{attribute_name}} ne {{attribute_value}}

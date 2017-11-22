@@ -6,31 +6,43 @@
   category: Cluster
   shortdesc: Mise en place des ressources stonith.
   longdesc: |
-    On installe une ressource stonith pour le noeud donné
-    et on ajoute une contraite pour éviter qu'elle tourne sur le noeud.
+    Configures an IPMI-based STONITH resource.
+    Location is set by 'attribute_name' and 'attribute_value'.
 
   parameters:
    - name: node
-     shortdesc: Noeud à gérer
-     longdesc: Nom du noeud qu'on veut gérer.
+     shortdesc: Node to control.
+     longdesc: Name of the node we want to control by IPMI.
      required: true
      type: string
 
    - name: ipmi_ip
-     shortdesc: Adresse d'administration
-     longdesc: Adresse de la carte ILO du serveur.
+     shortdesc: Management board address.
+     longdesc: Address or hostname of the management board.
      required: true
      type: string
 
    - name: userid
-     shortdesc: Nom d'utilisateur
-     longdesc: Nom d'un utilisateur ILO capable de rebooter le serveur.
+     shortdesc: User.
+     longdesc: Username able to reboot the server.
      required: true
      type: string
 
    - name: passwd
-     shortdesc: Mot de passe
-     longdesc: Mot de passe de l'utilisateur ILO capable de rebooter le serveur.
+     shortdesc: Password.
+     longdesc: User's password.
+     required: true
+     type: string
+
+   - name: attribute_name
+     shortdesc: Attribute to check for placement.
+     longdesc: Attribute to check for placement.
+     required: true
+     type: string
+
+   - name: attribute_value
+     shortdesc: Value to test.
+     longdesc: Value to test.
      required: true
      type: string
 
@@ -50,4 +62,4 @@
 
     - cib: |
         location loc_stonith_ipmi_{{node}} stonith_ipmi_{{node}} resource-discovery=always
-         rule -inf: cluster_role ne compute
+         rule -inf: {{attribute_name}} ne {{attribute_value}}

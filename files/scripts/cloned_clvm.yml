@@ -6,7 +6,8 @@
   category: Storage
   shortdesc: Cluster LVM and DLM cloned primitives.
   longdesc: |
-    Deploy a cluster LVM and DLM cloned group where the cluster_group attribute is set to 'compute'.
+    Deploy a cluster LVM and DLM cloned group.
+    Location is set by 'attribute_name' and 'attribute_value'.
 
   parameters:
    - name: size

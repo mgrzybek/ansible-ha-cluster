@@ -7,7 +7,7 @@
   shortdesc: Creates some LXD-related resources.
   longdesc: |
     Starts LXD service and LXDInfo as a cloned group.
-    The attribute "cluster_role" must equal "compute".
+    Location is set by 'attribute_name' and 'attribute_value'.
 
   actions:
     - cib: |
@@ -27,4 +27,4 @@
 
     - cib: |
         location loc_c-lxd c-lxd
-         rule -inf: 'cluster_role' ne "compute"
+         rule -inf: {{attribute_name}} ne {{attribute_value}}

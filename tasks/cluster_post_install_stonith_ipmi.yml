@@ -1,5 +1,12 @@
 ---
 
 - name: Add IPMI stonith resources on hardware nodes
-  shell: crm script run ipmi_stonith node={{ ansible_hostname }} ipmi_ip="{{ ilo.addr }}" passwd="{{ ilo.password }}" userid="{{ ilo.login }}"
+  shell: >
+    crm script run ipmi_stonith \
+      node={{ ansible_hostname }} \
+      ipmi_ip="{{ ilo.addr }}" \
+      passwd="{{ ilo.password }}" \
+      userid="{{ ilo.login }}" \
+      attribute_name="{{ cluster_node_stonith_ipmi_attribute_key }}" \
+      attribute_value="{{ cluster_node_stonith_ipmi_attribute_value }}"
   when: ansible_virtualization_role == 'host'

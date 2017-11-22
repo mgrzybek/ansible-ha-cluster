@@ -8,7 +8,7 @@
   longdesc: |
     Deploy ovsmonitor where cluster_role is 'compute'.
     A monitoring resource group is created.
-    The node cluster_role attribute must be set to 'compute'.
+    Location is set by 'attribute_name' and 'attribute_value'.
 
   parameters:
    - name: size

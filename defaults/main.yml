@@ -23,6 +23,13 @@ cluster_stonith_use_ipmi: false
 cluster_stonith_sbd_luns: None
 cluster_sbd_start_mode: clean # or always
 
+cluster_node_stonith_ipmi_attribute_key: cluster_role
+cluster_node_stonith_ipmi_attribute_value: compute
+
+cluster_node_stonith_sbd_attribute_key: cluster_role
+cluster_node_stonith_sbd_attribute_value: compute
+
+# Network
 cluster_ring0_port: None
 cluster_ring1_port: None
 
