@@ -83,6 +83,22 @@
 #    - ansible_virtualization_role != 'host'
 #  run_once: true
 
+# Creates a cloned resource to ping three peers.
+# This is an anti-splitbran system for share-nothing on two-nodes clusters
+- name: Gets the corosync ring0 IP address
+  shell: awk 'BEGIN { ORS=" " } /ring0_addr/ { print $2 }' /etc/corosync/corosync.conf
+  register: crm_nodes_ips
+  when:
+    - cluster_expected_votes < 3
+    - cluster_ping_remote_addr != None
+
+- name: Sets a ping resource on two-nodes clusters
+  shell: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
+  run_once: true
+  when:
+    - cluster_expected_votes < 3
+    - cluster_ping_remote_addr != None
+
 # Creates management IP, Hawk resources
 - name: Sets the management IP
   shell: >
@@ -103,19 +119,3 @@
     - ansible_os_family | lower == 'suse'
   tags:
     - cluster-mgmt-hawk
-
-# Creates a cloned resource to ping three peers.
-# This is an anti-splitbran system for share-nothing on two-nodes clusters
-- name: Gets the corosync ring0 IP address
-  shell: awk 'BEGIN { ORS=" " } /ring0_addr/ { print $2 }' /etc/corosync/corosync.conf
-  register: crm_nodes_ips
-  when:
-    - cluster_expected_votes < 3
-    - cluster_ping_remote_addr != None
-
-- name: Sets a ping resource on two-nodes clusters
-  shell: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
-  run_once: true
-  when:
-    - cluster_expected_votes < 3
-    - cluster_ping_remote_addr != None
