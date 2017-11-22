@@ -4,7 +4,8 @@ cluster_name: ha-cluster
 cluster_package_state: present
 
 # Cluster configuration
-cluster_role: compute
+cluster_node_attribute_key: cluster_role
+cluster_node_attribute_value: compute
 cluster_no_quorum_policy: stop
 cluster_mgmt_ip: None
 cluster_ping_remote_addr: None
