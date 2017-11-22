@@ -1,14 +1,14 @@
 ---
 # handlers file for ansible-ha-cluster
 
- - name: reload consul
-   shell: consul reload
+- name: reload consul
+  shell: consul reload
 
- - name: restart hawk resource
-   service: crm -w resource restart hawk
+- name: restart hawk resource
+  shell: crm -w resource restart hawk
 
- - name: restart nrpe
-   service: name=nrpe state=restarted enabled=yes
+- name: restart nrpe
+  service: name=nrpe state=restarted enabled=yes
 
- - name: restart sbd resource
-   service: crm -w resource restart sbd
+- name: restart sbd resource
+  shell: crm -w resource restart sbd
