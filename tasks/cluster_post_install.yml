@@ -88,21 +88,14 @@
   shell: >
     crm configure show mgmt_ip_addr || \
     crm configure primitive mgmt_ip_addr IPaddr2 \
-      params ip={{ipaddr}} \
+      params ip={{cluster_mgmt_ip}} \
       op monitor interval=10 timeout=20 \
       op start timeout=20 interval=0 \
       op stop timeout=20 interval=0
   run_once: true
-  when: cluster_mgmt_ip != 'None'
+  when: cluster_mgmt_ip != None
   tags:
     - cluster-mgmt-ip-addr
-
-- name: Set the management IP clone
-  shell: crm -w script run cloned_resource id=mgmt_ip_addr attribute_name=cluster_role attribute_value={{ cluster_role }}
-  run_once: true
-  when: cluster_mgmt_ip != 'None'
-  tags:
-    - cluster_mgmt_ip_addr
 
 - include: cluster_post_install_hawk.yml
   when:
@@ -118,9 +111,11 @@
   register: crm_nodes_ips
   when:
     - cluster_expected_votes < 3
+    - cluster_ping_remote_addr != None
 
 - name: Sets a ping resource on two-nodes clusters
   shell: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
   run_once: true
   when:
     - cluster_expected_votes < 3
+    - cluster_ping_remote_addr != None

@@ -7,8 +7,10 @@ cluster_package_state: present
 cluster_node_attribute_key: cluster_role
 cluster_node_attribute_value: compute
 cluster_no_quorum_policy: stop
-cluster_mgmt_ip: None
-cluster_ping_remote_addr: None
+cluster_mgmt_ip:
+cluster_node_mgmt_ip_attribute_key: cluster_role
+cluster_node_mgmt_ip_attribute_value: compute
+cluster_ping_remote_addr:
 cluster_rrp_mode: active # active or passive
 
 # Hawk : management WebGUI

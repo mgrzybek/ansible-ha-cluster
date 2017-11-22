@@ -17,12 +17,6 @@
      required: true
      type: string
 
-   - name: size
-     shortdesc: Nombre de clones.
-     longdesc: Nombre de clones à lancer.
-     required: true
-     type: integer
-
    - name: attribute_name
      shortdesc: Attribute to check for placement.
      longdesc: Attribute to check for placement.
