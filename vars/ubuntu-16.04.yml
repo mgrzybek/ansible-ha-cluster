@@ -6,6 +6,9 @@ cluster_distro_packages:
   - pacemaker
   - fping
   - psmisc
+  - python-pip
+  - python-setuptools
+  - python-pkg-resources
 
 cluster_sbd_configuration: /etc/default/sbd
 

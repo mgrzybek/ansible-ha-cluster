@@ -31,3 +31,7 @@
     - cluster_stonith_use_sbd == true
     - ansible_virtualization_type != 'lxc'
     - ansible_distribution != 'SLES' # included in the ha_sles pattern
+
+- name: Install python-parallax using pip (Debian / Ubuntu)
+  pip: name=parallax extra_args={{ pip_extra_args }}
+  when: ansible_os_family | lower == 'debian'
