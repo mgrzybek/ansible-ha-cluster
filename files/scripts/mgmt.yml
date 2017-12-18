@@ -17,6 +17,13 @@
      required: true
      type: string
 
+   - name: use_hawk
+     shortdesc: Declare Hawk.
+     longdesc: Do we add a resource for Hawk?
+     required: false
+     type: boolean
+     default: false
+
    - name: attribute_name
      shortdesc: Attribute to check for placement.
      longdesc: Attribute to check for placement.
@@ -38,11 +45,11 @@
           op stop timeout=20 interval=0
 
     - cib: |
-        primitive hawk systemd:hawk
+      {{#use_hawk}}primitive hawk systemd:hawk{{/use_hawk}}
 
     - cib: |
-        group mgmt_rg hawk mgmt_ip_addr
+      {{#use_hawk}}group mgmt_rg hawk mgmt_ip_addr{{/use_hawk}}
 
     - cib: |
-        location loc_mgmt_rg mgmt_rg resource-discovery=always
-          rule -inf: {{attribute_name}} ne {{attribute_value}}
+      {{#use_hawk}}location loc_mgmt_rg mgmt_rg resource-discovery=always{{/use_hawk}}
+          {{#use_hawk}}rule -inf: {{attribute_name}} ne {{attribute_value}}{{/use_hawk}}

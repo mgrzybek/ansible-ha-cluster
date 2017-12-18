@@ -99,23 +99,22 @@
     - cluster_expected_votes < 3
     - cluster_ping_remote_addr != None
 
-# Creates management IP, Hawk resources
-- name: Sets the management IP
-  shell: >
-    crm configure show mgmt_ip_addr || \
-    crm configure primitive mgmt_ip_addr IPaddr2 \
-      params ip={{cluster_mgmt_ip}} \
-      op monitor interval=10 timeout=20 \
-      op start timeout=20 interval=0 \
-      op stop timeout=20 interval=0
-  run_once: true
-  when: cluster_mgmt_ip != None
-  tags:
-    - cluster-mgmt-ip-addr
-
 - include: cluster_post_install_hawk.yml
   when:
     - cluster_use_hawk == true
     - ansible_os_family | lower == 'suse'
   tags:
     - cluster-mgmt-hawk
+
+# Creates management IP, Hawk resources
+- name: Sets the management IP
+  shell: >
+    crm script run mgmt \
+      ipaddr={{cluster_mgmt_ip}} \
+      use_hawk={{cluster_use_hawk}} \
+      attribute_name={{ cluster_node_attribute_key}} \
+      attribute_value=compute
+  run_once: true
+  when: cluster_mgmt_ip != None
+  tags:
+    - cluster-mgmt-ip-addr

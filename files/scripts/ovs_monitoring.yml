@@ -6,7 +6,7 @@
   category: Network
   shortdesc: Deploy ovsmonitor on compute nodes.
   longdesc: |
-    Deploy ovsmonitor where cluster_role is 'compute'.
+    Deploy ovsmonitor.
     A monitoring resource group is created.
     Location is set by 'attribute_name' and 'attribute_value'.
 
