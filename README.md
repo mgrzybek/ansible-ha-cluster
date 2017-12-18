@@ -64,7 +64,8 @@ The playbok looks like:
         cluster_expected_votes: "{{ groups['compute-infra_hosts'] | length }}"
         # Optionnal
         cluster_name: openstack
-        cluster_role: infra_hosts
+        cluster_node_attribute_key: cluster_role
+        cluster_node_attribute_value: infra_hosts
         cluster_ring0_port: br-mgmt
         cluster_ring1_port: br-vxlan
 
