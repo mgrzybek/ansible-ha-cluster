@@ -15,7 +15,7 @@
      shortdesc: Adresse IP
      longdesc: Adresse de management
      required: true
-     type: string
+     type: ip_address
 
    - name: use_hawk
      shortdesc: Declare Hawk.
@@ -36,20 +36,15 @@
      required: true
      type: string
 
+  include:
+    - script: virtual-ip
+      parameters:
+        - name: id
+          value: mgmt_ip_addr
+        - name: ip
+          value: "{{ipaddr}}"
   actions:
+    - include: virtual-ip
     - cib: |
-        primitive mgmt_ip_addr IPaddr2
-          params ip={{ipaddr}}
-          op monitor interval=10 timeout=20
-          op start timeout=20 interval=0
-          op stop timeout=20 interval=0
-
-    - cib: |
-      {{#use_hawk}}primitive hawk systemd:hawk{{/use_hawk}}
-
-    - cib: |
-      {{#use_hawk}}group mgmt_rg hawk mgmt_ip_addr{{/use_hawk}}
-
-    - cib: |
-      {{#use_hawk}}location loc_mgmt_rg mgmt_rg resource-discovery=always{{/use_hawk}}
-          {{#use_hawk}}rule -inf: {{attribute_name}} ne {{attribute_value}}{{/use_hawk}}
+       location loc_mgmt mgmt_ip_addr resource-discovery=always
+          rule -inf: {{attribute_name}} ne {{attribute_value}}
