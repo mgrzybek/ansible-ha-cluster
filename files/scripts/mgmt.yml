@@ -11,9 +11,8 @@
     Location is set by 'attribute_name' and 'attribute_value'.
 
   parameters:
-   - name: ipaddr
-     shortdesc: Adresse IP
-     longdesc: Adresse de management
+   - name: ip
+     shortdesc: Address for virtual-ip.
      required: true
      type: ip_address
 
@@ -22,7 +21,7 @@
      longdesc: Do we add a resource for Hawk?
      required: false
      type: boolean
-     default: false
+     value: false
 
    - name: attribute_name
      shortdesc: Attribute to check for placement.
@@ -42,9 +41,30 @@
         - name: id
           value: mgmt_ip_addr
         - name: ip
-          value: "{{ipaddr}}"
+          value: "{{ip}}"
+    - agent: systemd:hawk
+      name: hawk
+      parameters:
+        - name: id
+          value: mgmt_hawk
+      ops: |
+        op start timeout="40"
+        op stop timeout="60"
+        op monitor interval="120" timeout="20"
   actions:
     - include: virtual-ip
+    - include: hawk
+      when: use_hawk
+
     - cib: |
-       location loc_mgmt mgmt_ip_addr resource-discovery=always
+        group g-mgmt {{virtual-ip:id}} {{hawk:id}}
+      when: use_hawk
+    - cib: |
+        location loc_g-mgmt g-mgmt resource-discovery=always
           rule -inf: {{attribute_name}} ne {{attribute_value}}
+      when: use_hawk
+
+    - cib: |
+        location loc_mgmt mgmt_ip_addr resource-discovery=always
+          rule -inf: {{attribute_name}} ne {{attribute_value}}
+      when: not use_hawk

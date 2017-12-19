@@ -110,8 +110,8 @@
 - name: Sets the management IP
   shell: >
     crm script run mgmt \
-      ipaddr={{cluster_mgmt_ip}} \
-      use_hawk={{cluster_use_hawk}} \
+      ip={{ cluster_mgmt_ip }} \
+      use_hawk={{ cluster_use_hawk | lower }} \
       attribute_name={{ cluster_node_mgmt_ip_attribute_key }} \
       attribute_value={{ cluster_node_mgmt_ip_attribute_value }}
   run_once: true
