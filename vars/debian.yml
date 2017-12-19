@@ -8,12 +8,12 @@ cluster_distro_packages:
 cluster_sbd_configuration: /etc/default/sbd
 
 cluster_crm_scripts:
-  - cloned_resource
+  - clone
   - mgmt
   - ovs_monitoring
   - ping
-  - stonith_ipmi
-  - stonith_suicide
+  - ipmi
+  - suicide
 
 cluster_crm_scripts_root_path: /usr/share/crmsh/scripts
 

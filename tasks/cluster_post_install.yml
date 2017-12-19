@@ -48,7 +48,7 @@
 
 # The STONITH suicide is used when SBD is unused
 - name: Create suicide resource
-  shell: crm -w script run stonith_suicide
+  shell: crm -w script run suicide
   run_once: true
   when:
     - cluster_stonith_use_sbd == false

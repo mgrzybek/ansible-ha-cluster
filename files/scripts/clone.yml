@@ -3,7 +3,7 @@
 # License: GNU General Public License (GPL)
 ---
 - version: 2.2
-  category: Cluster
+  category: Basic
   shortdesc: Initialize a cloned resource.
   longdesc: |
     A cloned systemd primitive is created.

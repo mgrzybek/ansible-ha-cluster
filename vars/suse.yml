@@ -8,13 +8,13 @@ cluster_sbd_configuration: /etc/sysconfig/sbd
 cluster_crm_scripts:
   - cloned_systemd_service
   - cloned_clvm
-  - cloned_resource
+  - clone
   - mgmt
   - ovs_monitoring
   - ping
-  - stonith_ipmi
-  - stonith_suicide
-  - systemd_service
+  - ipmi
+  - suicide
+  - service
 
 cluster_crm_scripts_root_path: /usr/share/crmsh/scripts
 

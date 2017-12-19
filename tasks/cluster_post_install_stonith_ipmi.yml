@@ -2,7 +2,7 @@
 
 - name: Add IPMI stonith resources on hardware nodes
   shell: >
-    crm script run ipmi_stonith \
+    crm script run ipmi \
       node={{ ansible_hostname }} \
       ipmi_ip="{{ ilo.addr }}" \
       passwd="{{ ilo.password }}" \

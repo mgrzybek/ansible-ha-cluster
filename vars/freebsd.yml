@@ -5,12 +5,12 @@ cluster_distro_packages:
   - fping
 
 cluster_crm_scripts:
-  - cloned_resource
+  - clone
   - mgmt
   - ovs_monitoring
   - ping
-  - stonith_ipmi
-  - stonith_suicide
+  - ipmi
+  - suicide
 
 cluster_crm_scripts_root_path: /usr/local/share/crmsh/scripts
 
