@@ -7,7 +7,6 @@ cluster_sbd_configuration: /etc/sysconfig/sbd
 
 cluster_crm_scripts:
   - cloned_systemd_service
-  - cloned_clvm
   - clone
   - mgmt
   - ovs_monitoring
