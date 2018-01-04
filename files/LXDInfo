@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #
-#	Virtual LXD and Container Registration Service OCF Resource Agent
+#	LXD Registration Service OCF Resource Agent
 #	It records (in the CIB) various attributes of a node
 #
 # Copyright (c) 2017 Mathieu Grzybek
@@ -42,8 +42,8 @@ meta_data() {
 <version>1.0</version>
 
 <longdesc lang="en">
-This is a Virtual LXD Registration Service Resource Agent.
-It records (in the CIB) attributes about the number of running LXC containers
+This is a LXD Registration Service Resource Agent.
+It records (in the CIB) attributes about the number of running LXD containers
 running on the node.
 Sample output:
    lxd_containers:   5
