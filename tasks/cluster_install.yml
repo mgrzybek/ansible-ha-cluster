@@ -32,6 +32,6 @@
     - ansible_virtualization_type != 'lxc'
     - ansible_distribution != 'SLES' # included in the ha_sles pattern
 
-- name: Install python-parallax using pip (Debian / Ubuntu)
+- name: Install python-parallax using pip (Debian / Ubuntu / FreeBSD)
   pip: name=parallax extra_args={{ pip_extra_args }}
-  when: ansible_os_family | lower == 'debian'
+  when: ansible_os_family | lower == 'debian' or ansible_os_family | lower == 'freebsd'

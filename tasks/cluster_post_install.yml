@@ -14,7 +14,7 @@
 
 # Corosync configuration
 - name: Corosync configuration
-  template: src=corosync.conf.j2 dest=/etc/corosync/corosync.conf
+  template: src=corosync.conf.j2 dest={{ cluster_corosync_configuration }}
   register: corosync_template_result
   vars:
     generated_cluster_ring0_port: 'ansible_{{ cluster_ring0_port | regex_replace("-","_") }}'
@@ -53,6 +53,7 @@
   when:
     - cluster_stonith_use_sbd == false
     - ansible_virtualization_type != 'lxc'
+    - ansible_os_family | lower != 'freebsd'
   tags:
     - cluster-stonith
 
@@ -76,17 +77,16 @@
       value: 60
   run_once: true
 
-#- name: Set default options
-#  shell: crm configure op_defaults stonith-enabled=false
-#  when:
-#    - cluster_expected_votes < 3
-#    - ansible_virtualization_role != 'host'
-#  run_once: true
+- name: Disable stonith on FreeBSD
+  shell: crm configure op_defaults stonith-enabled=false
+  when:
+    - ansible_os_family | lower == 'freebsd'
+  run_once: true
 
 # Creates a cloned resource to ping three peers.
 # This is an anti-splitbran system for share-nothing on two-nodes clusters
 - name: Gets the corosync ring0 IP address
-  shell: awk 'BEGIN { ORS=" " } /ring0_addr/ { print $2 }' /etc/corosync/corosync.conf
+  shell: awk 'BEGIN { ORS=" " } /ring0_addr/ { print $2 }' {{ cluster_corosync_configuration }}
   register: crm_nodes_ips
   when:
     - cluster_expected_votes < 3
