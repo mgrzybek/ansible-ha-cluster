@@ -4,6 +4,7 @@ cluster_distro_packages:
   - crmsh
 
 cluster_sbd_configuration: /etc/sysconfig/sbd
+cluster_corosync_configuration: /etc/corosync/corosync.conf
 
 cluster_crm_scripts:
   - cloned_systemd_service

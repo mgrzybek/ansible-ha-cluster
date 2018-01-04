@@ -3,6 +3,7 @@ cluster_distro_packages:
   - pacemaker
   - resource-agents
   - fping
+  - py27-pip
 
 cluster_crm_scripts:
   - clone
@@ -12,8 +13,12 @@ cluster_crm_scripts:
   - ipmi
   - suicide
 
+cluster_corosync_configuration: /usr/local/etc/corosync/corosync.conf
+
 cluster_crm_scripts_root_path: /usr/local/share/crmsh/scripts
 
 cluster_nagios_plugins_root_path: /usr/local/lib/nagios/plugins
 
 cluster_etc_pacemaker: /usr/local/etc/pacemaker
+
+cluster_stonith_use_sbd: false

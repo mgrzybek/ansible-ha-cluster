@@ -6,6 +6,7 @@ cluster_distro_packages:
   - psmisc
 
 cluster_sbd_configuration: /etc/default/sbd
+cluster_corosync_configuration: /etc/corosync/corosync.conf
 
 cluster_crm_scripts:
   - clone
