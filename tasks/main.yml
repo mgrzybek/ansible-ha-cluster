@@ -11,7 +11,7 @@
   tags:
     - always
 
-- include: cluster_pre_install.yml
+#- include: cluster_pre_install.yml
 #  tags:
 #    - cluster-install
 
@@ -19,4 +19,8 @@
   tags:
     - cluster-install
 
-- include: cluster_post_install.yml
+- include: crmsh/cluster_post_install.yml
+  when: ansible_os_family | lower != 'redhat'
+
+- include: pcs/cluster_post_install.yml
+  when: ansible_os_family | lower == 'redhat'
