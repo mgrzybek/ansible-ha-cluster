@@ -1,0 +1,23 @@
+---
+
+# Check if we use FQDNs
+- name: Get nodes list
+  shell: pcs config show|grep -A1 "Pacemaker Nodes:"|tail -n1|tr ' ' '\n'|grep {{ ansible_hostname }}
+  register: crm_node_name
+
+# Utilization attributes
+- name: Define cpu and memory allocation ratio
+  command: pcs node utilization {{ crm_node_name.stdout }} {{ item.property }}={{ item.value }}
+  with_items:
+    - property: cpu
+      value: "{{ (ansible_processor_vcpus * cluster_allocation_vcpus_ratio) | int }}"
+    - property: hv_memory
+      value: "{{ (ansible_memtotal_mb * 1024 * cluster_allocation_memory_ratio) | int }}"
+  when: ansible_virtualization_role == 'host'
+
+# Usage attributes
+- name: Add {{ cluster_node_attribute_key }} attribute
+  command: pcs node attribute {{ crm_node_name.stdout }} {{ cluster_node_attribute_key }}={{ cluster_node_attribute_value }}
+  when:
+    - cluster_node_attribute_key|length > 0
+    - cluster_node_attribute_value|length > 0

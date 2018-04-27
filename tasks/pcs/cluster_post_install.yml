@@ -1,0 +1,97 @@
+---
+
+#- name: Start pcs
+#  service: name=pcsd state=started enabled=yes
+
+#- name: Set secret for hacluster
+#  shell: echo CHANGEME | passwd --stdin hacluster
+
+#- name: Set pcs auth
+#  shell: pcs cluster auth {{ play_hosts | join(' ') }} -u hacluster -p CHANGEME --force
+#  run_once: true
+
+- name: Corosync configuration
+  template: src=corosync.conf.j2 dest={{ cluster_corosync_configuration }}
+  register: corosync_template_result
+  vars:
+    generated_cluster_ring0_port: 'ansible_{{ cluster_ring0_port | regex_replace("-","_") }}'
+    generated_cluster_ring1_port: 'ansible_{{ cluster_ring1_port | regex_replace("-","_") }}'
+
+- name: Start the cluster
+#  command: pcs cluster start 
+  #run_once: true
+  service: name=pacemaker state=started
+
+- name: Waits for the cluster to be online
+  command: crm_mon -s
+  register: crm_mon
+  until: crm_mon.stdout.find("CLUSTER OK") > -1
+  retries: 10
+  delay: 10
+  run_once: true
+
+# Configure IPMI resource
+- include: cluster_post_install_stonith_ipmi.yml
+  when: cluster_stonith_use_ipmi == true
+  tags:
+    - cluster-stonith
+
+# The STONITH suicide is used when SBD is unused
+- name: Create suicide resource
+  command: pcs stonith create stonith_suicide suicide clone=c-stonith_suicide
+  run_once: true
+  when:
+    - cluster_stonith_use_sbd == false
+    - ansible_virtualization_type != 'lxc'
+  tags:
+    - cluster-stonith
+
+# Nodes attributes
+- include: cluster_post_install_attributes.yml
+  tags:
+    - cluster-attributes
+
+# Default values
+- name: Set no-quorum-policy
+  command: pcs property set {{ item.attribute }}={{ item.value }}
+  with_items:
+    - attribute: no-quorum-policy
+      value: "{{ cluster_no_quorum_policy }}"
+  run_once: true
+
+# Creates a cloned resource to ping three peers.
+# This is an anti-splitbran system for share-nothing on two-nodes clusters
+- block:
+  - name: Gets the corosync ring0 IP address
+    shell: awk 'BEGIN { ORS=" " } /ring0_addr/ { print $2 }' {{ cluster_corosync_configuration }}
+    register: crm_nodes_ips
+
+  - name: Sets a ping resource on two-nodes clusters
+    shell: >
+      pcs resource show splitbrain_detection || \
+      pcs resource create splitbrain_detection ocf:pacemaker:ping \
+        host_list="{{ crm_nodes_ips.stdout }}" \
+        op monitor interval=10s timeout=60s \
+        clone=c-splitbrain_detection
+
+  run_once: true
+  when:
+    - cluster_expected_votes < 3
+    - cluster_ping_remote_addr != None
+
+# Creates management IP
+- block:
+    - name: Create the management IP
+      shell: >
+        pcs resource show mgmt_ip_addr || \
+        pcs resource create mgmt_ip_addr IPAddr2 ip={{ cluster_mgmt_ip }} 
+
+    - name: Add management IP constraint rule
+      shell: >
+        pcs constraint location mgmt_ip_addr rule \
+            "{{ cluster_node_mgmt_ip_attribute_key }}" eq "{{ cluster_node_mgmt_ip_attribute_value }}"
+
+  run_once: true
+  when: cluster_mgmt_ip != None
+  tags:
+    - cluster-mgmt-ip-addr

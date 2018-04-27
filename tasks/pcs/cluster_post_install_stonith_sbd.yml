@@ -1,0 +1,42 @@
+ 
+---
+
+- name: Check cluster status
+  shell: pcs configure show || true
+  register: pcs_configure_show
+  run_once: true
+
+- name: Disable sbd on containers
+  service: name=sbd enabled=false state=stopped
+  when: ansible_virtualization_type == 'lxc' # Containers do not see physical block devices
+
+- name: Configure sbd if the resource does not exist
+  replace: dest={{ cluster_sbd_configuration }} regexp='^SBD_DEVICE=(.*?)$' replace='SBD_DEVICE="{{ cluster_stonith_sbd_luns | join(';') }}"'
+  when:
+    - crm_resources_stonith.stdout.find("sbd") < 0
+    - cluster_stonith_sbd_luns | length > 0
+    - ansible_virtualization_type != 'lxc' # Physical nodes or Xen/KVM
+  notify: restart sbd resource
+
+- name: Disable sbd pacemaker integration on two-nodes clusters when three sbd devices are given
+  replace: dest={{ cluster_sbd_configuration }} regexp='^SBD_PACEMAKER=(.*?)$' replace='SBD_PACEMAKER="no"'
+  when:
+    - cluster_expected_votes == 2
+    - cluster_stonith_sbd_luns | length == 3
+
+- name: sbd on boot on compute nodes
+  service: name=sbd enabled=yes
+  when:
+    - ansible_virtualization_type != 'lxc' # Physical nodes or Xen/KVM
+
+- name: Prevent the cluster to start if fenced by sbd
+  replace: dest={{ cluster_sbd_configuration }} regexp='^SBD_STARTMODE=(.*?)$' replace='SBD_STARTMODE="clean"'
+  when:
+    - cluster_sbd_start_mode == 'clean'
+    - ansible_virtualization_type != 'lxc' # Physical nodes or Xen/KVM
+
+# Create SBD resource
+- name: Create SBD resource
+  command: pcs sbd enable
+  run_once: true
+  when: cluster_stonith_use_sbd == true

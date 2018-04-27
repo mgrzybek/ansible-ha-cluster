@@ -1,0 +1,15 @@
+cluster_distro_packages:
+  #- fping
+  - pacemaker
+  - pcs
+
+cluster_sbd_configuration: /etc/sysconfig/sbd
+cluster_corosync_configuration: /etc/corosync/corosync.conf
+
+cluster_crm_scripts: []
+
+cluster_crm_scripts_root_path: /usr/share/crmsh/scripts
+
+cluster_nagios_plugins_root_path: /usr/lib/nagios/plugins
+
+cluster_etc_pacemaker: /etc/pacemaker
