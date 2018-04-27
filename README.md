@@ -7,6 +7,8 @@ Requirements
 ------------
 
 When SLES is used, the sle-ha extension repository is needed.
+Centos/Redhat support is in progress:
+* the stonith devices are not integrated yet.
 
 When using IPMI STONITH, BMC IP address and credentials are needed. Each host needs these values in ```host_vars/my-node.yml```:
 
@@ -26,7 +28,7 @@ server. This can be changed using ```cluster_ring0_port``` and ```cluster_ring1_
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+This is a standalone role.
 
 Example Playbook
 ----------------
