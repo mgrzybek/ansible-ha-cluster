@@ -2,7 +2,7 @@
 # handlers file for ansible-ha-cluster
 
 - name: reload consul
-  shell: "{{ consul_bin }}" reload
+  shell: "{{ consul_bin }} reload"
 
 - name: restart hawk resource
   shell: crm -w resource restart hawk
