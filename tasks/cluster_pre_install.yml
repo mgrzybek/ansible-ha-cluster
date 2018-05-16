@@ -1,2 +1,7 @@
 ---
 
+- name: Get consul binary path
+  shell: systemctl show consul | awk '/^ExecStart=/ { gsub("path=","") ; print $2 }'
+  register: consul_bin
+  when: monitoring_use_consul == true
+  
