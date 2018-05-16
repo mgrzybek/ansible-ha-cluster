@@ -38,7 +38,6 @@
   until: crm_mon.stdout.find("CLUSTER OK") > -1
   retries: 10
   delay: 10
-  run_once: true
 
 # Configure IPMI resource
 - include: cluster_post_install_stonith_ipmi.yml
