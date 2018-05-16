@@ -2,6 +2,7 @@
 
 cluster_name: ha-cluster
 cluster_package_state: present
+cluster_force_restart: false
 
 # Cluster configuration
 cluster_node_attribute_key: cluster_role
