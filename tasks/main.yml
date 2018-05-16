@@ -24,3 +24,5 @@
 
 - include: pcs/cluster_post_install.yml
   when: ansible_os_family | lower == 'redhat'
+
+- include: cluster_post_install_monitoring.yml
