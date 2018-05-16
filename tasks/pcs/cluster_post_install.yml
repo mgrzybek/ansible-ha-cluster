@@ -1,31 +1,30 @@
 ---
 
-#- name: Start pcs
-#  service: name=pcsd state=started enabled=yes
-
-#- name: Set secret for hacluster
-#  shell: echo CHANGEME | passwd --stdin hacluster
-
-#- name: Set pcs auth
-#  shell: pcs cluster auth {{ play_hosts | join(' ') }} -u hacluster -p CHANGEME --force
-#  run_once: true
-
+# Corosync configuration
 - name: Corosync configuration
   template: src=corosync.conf.j2 dest={{ cluster_corosync_configuration }}
   register: corosync_template_result
   vars:
     generated_cluster_ring0_port: 'ansible_{{ cluster_ring0_port | regex_replace("-","_") }}'
     generated_cluster_ring1_port: 'ansible_{{ cluster_ring1_port | regex_replace("-","_") }}'
+  tags:
+    - cluster-corosync
+
+- name: Restart the cluster (force)
+  shell: pcs cluster stop --force && pcs cluster start
+  when:
+    - cluster_force_restart == true
+    - corosync_template_result | changed
+  tags:
+    - cluster-corosync
 
 - name: Start the cluster
-#  command: pcs cluster start 
-  #run_once: true
   service: name=pacemaker state=started
 
 - name: Waits for the cluster to be online
-  command: crm_mon -s
+  command: crm_mon -1
   register: crm_mon
-  until: crm_mon.stdout.find("CLUSTER OK") > -1
+  until: crm_mon.stdout.find("partition with quorum") > -1
   retries: 10
   delay: 10
   run_once: true
