@@ -46,7 +46,7 @@ This is a simple example, the only mandatory variable is ```cluster_expected_vot
 
 Openstack-Ansible use case:
 
-* the group inventory is persisent, that is why we can set ```cluster_expected_votes``` to a dynamic value ;
+* the group inventory is persistent, that is why we can set ```cluster_expected_votes``` to a dynamic value ;
 
 * the cluster's name is set thanks to ```cluster_name``` ;
 
