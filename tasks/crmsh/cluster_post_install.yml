@@ -1,6 +1,5 @@
 ---
 
-
 # CRM scripts
 - include: cluster_post_install_crm_scripts.yml
   tags:
@@ -22,22 +21,27 @@
   tags:
     - cluster-corosync
 
-- name: Restart corosync
+- name: Restart the cluster
   shell: "{{ item }}"
   with_items:
     - crm cluster stop
     - crm cluster start
   when:
+    - cluster_force_restart == true
     - corosync_template_result|changed
   tags:
     - cluster-corosync
 
+- name: Start the cluster
+  service: name=pacemaker state=started
+
 - name: Waits for the cluster to be online
-  shell: crm_mon -s
+  command: crm_mon -1
   register: crm_mon
-  until: crm_mon.stdout.find("CLUSTER OK") > -1
+  until: crm_mon.stdout.find("partition with quorum") > -1
   retries: 10
   delay: 10
+  run_once: true
 
 # Configure IPMI resource
 - include: cluster_post_install_stonith_ipmi.yml
