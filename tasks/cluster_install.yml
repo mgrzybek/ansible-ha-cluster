@@ -34,4 +34,6 @@
 
 - name: Install python-parallax using pip (Debian / Ubuntu / FreeBSD)
   pip: name=parallax extra_args={{ pip_extra_args }}
-  when: ansible_os_family | lower == 'debian' or ansible_os_family | lower == 'freebsd'
+  when:
+      - ansible_os_family | lower == 'debian' or ansible_os_family | lower == 'freebsd'
+      - ansible_os_family | lower != 'ubuntu' and ansible_distribution_major_version | lower | int < 18
