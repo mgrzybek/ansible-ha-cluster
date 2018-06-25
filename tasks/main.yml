@@ -11,9 +11,9 @@
   tags:
     - always
 
-#- include: cluster_pre_install.yml
-#  tags:
-#    - cluster-install
+- include: cluster_pre_install.yml
+  tags:
+    - cluster-pre-install
 
 - include: cluster_install.yml
   tags:
