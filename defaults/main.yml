@@ -58,3 +58,6 @@ cluster_ntp_fqdn: pool.ntp.org
 # Packaging stuff
 cache_timeout: 600
 pip_extra_args: ""
+
+consul_bin: /usr/local/bin/consul
+
