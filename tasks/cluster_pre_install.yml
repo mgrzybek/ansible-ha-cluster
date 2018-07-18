@@ -5,3 +5,17 @@
   register: consul_bin
   when: cluster_monitoring_use_consul == true
 
+- set_fact:
+    use_firewalld: false
+
+- name: Check firewalld
+  when: ansible_system | lower == 'linux'
+  block:
+    - name: Check firewalld
+      shell: systemctl is-active firewalld.service 2>/dev/null || echo ko && exit 0
+      register: firewalld_service
+
+    - set_fact:
+        use_firewalld: true
+      when: firewalld_service.stdout.find('active') > -1
+
