@@ -10,7 +10,7 @@
 {% if ansible_virtualization_role != "guest" %}
 			,
 			{
-				"script": "/usr/lib/nagios/plugins/check_ntp_time -H {{ ntp_fqdn }} -w 1 -c 5",
+				"script": "/usr/lib/nagios/plugins/check_ntp_time -H {{ ntp_fqdn }} -w 1 -c 5",
 				"interval": "60s"
 			}
 {% endif %}
