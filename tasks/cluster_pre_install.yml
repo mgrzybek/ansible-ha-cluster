@@ -2,7 +2,7 @@
 
 - name: Get consul binary path
   shell: systemctl show consul | awk '/^ExecStart=/ { gsub("path=","") ; print $2 }'
-  register: consul_bin
+  register: consul_service
   when: cluster_monitoring_use_consul == true
 
 - set_fact:

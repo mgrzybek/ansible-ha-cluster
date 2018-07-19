@@ -12,3 +12,7 @@
 
 - name: restart sbd resource
   shell: crm -w resource restart sbd
+
+- name: reload firewalld
+  command: firewall-cmd --reload
+
