@@ -61,7 +61,11 @@ logging {
 nodelist {
 {% for node in play_hosts %}
 	node {
+{% if hostvars[ansible_fqdn] is defined %}
 		# {{ hostvars[node]['ansible_fqdn'] }}
+{% else %}
+		# {{ hostvars[node]['ansible_hostname'] }}
+{% endif %}
 {% if cluster_ring0_port != 'None' %}
 		ring0_addr: {{ hostvars[node][generated_cluster_ring0_port]['ipv4']['address'] }}
 {% if cluster_ring1_port != 'None' %}
