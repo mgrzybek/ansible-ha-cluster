@@ -19,3 +19,6 @@
         use_firewalld: true
       when: firewalld_service.stdout.find('active') > -1
 
+#- name: Get installed stonith agents
+#  command: stonith_admin -I
+#  register: stonith_agents

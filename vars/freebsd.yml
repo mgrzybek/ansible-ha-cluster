@@ -22,3 +22,5 @@ cluster_nagios_plugins_root_path: /usr/local/lib/nagios/plugins
 cluster_etc_pacemaker: /usr/local/etc/pacemaker
 
 cluster_stonith_use_sbd: false
+
+cluster_usr_prefix: /usr/local

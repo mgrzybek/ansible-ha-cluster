@@ -26,3 +26,5 @@ cluster_crm_scripts_root_path: /usr/share/crmsh/scripts
 cluster_nagios_plugins_root_path: /usr/lib/nagios/plugins
 
 cluster_etc_pacemaker: /etc/pacemaker
+
+cluster_usr_prefix: /usr

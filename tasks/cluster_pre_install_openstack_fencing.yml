@@ -1,0 +1,21 @@
+---
+
+- name: Local building
+  delegate_to: localhost
+  become: no
+  run_once: true
+  when:
+    - cluster_stonith_use_openstack == true
+    - ansible_virtualization_type == "openstack"
+  block:
+    - name: Clone the repo
+      git:
+        repo: https://github.com/ClusterLabs/fence-agents
+        dest: "{{ cluster_stonith_openstack_fencing_repo_path }}"
+
+    - name: Build the openstack agent
+      shell: >
+          test -f configure || ./autogen.sh ; \
+          ./configure --prefix={{ cluster_usr_prefix }} --with-agents=openstack && make
+      args:
+        chdir: "{{ cluster_stonith_openstack_fencing_repo_path }}"

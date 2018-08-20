@@ -32,6 +32,9 @@ cluster_node_stonith_ipmi_attribute_value: compute
 cluster_node_stonith_sbd_attribute_key: cluster_role
 cluster_node_stonith_sbd_attribute_value: compute
 
+cluster_stonith_use_openstack: true
+cluster_stonith_openstack_fencing_repo_path: /tmp/fence-agents
+
 # Network
 cluster_ring0_port: None
 cluster_ring1_port: None
@@ -60,4 +63,3 @@ cache_timeout: 600
 pip_extra_args: ""
 
 consul_bin: /usr/local/bin/consul
-

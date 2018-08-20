@@ -1,8 +1,8 @@
 ---
 
 # Check if we use FQDNs
-- name: Get nodes list
-  shell: crm node list|awk -F'(' '/{{ ansible_hostname }}/ {print $1}'
+- name: Get node's name
+  command: crm_node -n
   register: crm_node_name
 
 # Utilization attributes
