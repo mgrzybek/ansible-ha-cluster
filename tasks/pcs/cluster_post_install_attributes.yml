@@ -1,8 +1,8 @@
 ---
 
 # Check if we use FQDNs
-- name: Get nodes list
-  shell: pcs config show|grep -A1 "Pacemaker Nodes:"|tail -n1|tr ' ' '\n'|grep {{ ansible_hostname }}
+- name: Get node's name
+  command: crm_node -n
   register: crm_node_name
 
 # Utilization attributes
