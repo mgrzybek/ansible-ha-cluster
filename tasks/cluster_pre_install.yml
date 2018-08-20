@@ -22,3 +22,25 @@
 #- name: Get installed stonith agents
 #  command: stonith_admin -I
 #  register: stonith_agents
+
+- name: Check consul service
+  shell: systemctl is-active consul 2>/dev/null || echo ko && exit 0
+  register: consul_service
+
+- set_fact:
+    configure_consul: false
+
+- set_fact:
+    configure_consul: true
+  when:
+    - cluster_monitoring_use_consul == true
+    - consul_service.stdout.find('inactive') < 0
+
+- name: Create consul_bin variable
+  when: cluster_monitoring_use_consul == true
+  block:
+    - name: Get consul path from systemd
+      shell: systemctl show -p ExecStart consul|tr ' ' '\n'|awk -F= '/path=/ {print $2}'
+      register: consul_bin_path
+
+    - set_fact: consul_bin="{{ consul_bin_path.stdout }}"
