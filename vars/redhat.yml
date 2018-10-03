@@ -19,3 +19,6 @@ cluster_distro_openstack_fencing_packages:
   - python2-novaclient
 
 cluster_usr_prefix: /usr
+
+cluster_openstack_distro_repo_packages:
+    - centos-release-openstack-queens

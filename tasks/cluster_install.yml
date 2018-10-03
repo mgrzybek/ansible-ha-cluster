@@ -43,6 +43,42 @@
     - cluster_stonith_use_openstack == true
     - ansible_virtualization_type == "openstack"
   block:
+    - name: Install openstack_cluster_node repo packages
+      package:
+        name: "{{ cluster_openstack_distro_repo_packages }}"
+        state: "{{ cluster_package_state }}"
+        update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
+        cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
+      register: install_packages
+      until: install_packages is success
+      retries: 5
+      delay: 2
+      tags:
+        - install-apt
+        - install-yum
+        - install-zypper
+
+    - name: Remove CentOS-QEMU-EV repo
+      when: ansible_os_family | lower == 'redhat'
+      file:
+        path: /etc/yum.repos.d/CentOS-QEMU-EV.repo
+        state: absent
+
+    - name: Install openstack_cluster_node packages
+      package:
+        name: "{{ cluster_openstack_distro_repo_packages }}"
+        state: "{{ cluster_package_state }}"
+        update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
+        cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
+      register: install_packages
+      until: install_packages is success
+      retries: 5
+      delay: 2
+      tags:
+        - install-apt
+        - install-yum
+        - install-zypper
+
     - name: Install openstack fencing packages
       package:
         name: "{{ cluster_distro_openstack_fencing_packages }}"
@@ -70,3 +106,5 @@
         - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/lib/fencing.py"
           dest: "/usr/share/fence/"
           mode: 644
+
+

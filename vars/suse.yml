@@ -27,3 +27,5 @@ cluster_distro_openstack_fencing_packages:
   - python-novaclient
 
 cluster_usr_prefix: /usr
+
+cluster_openstack_distro_repo_packages: []
