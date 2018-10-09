@@ -4,7 +4,7 @@
 		"enableTagOverride": false,
 		"checks": [
 			{
-				"script": "/usr/sbin/crm_mon -Afr1 ; /usr/sbin/crm_mon -s",
+				"args": [ "/usr/sbin/crm_mon", "-s" ],
 				"interval": "60s"
 			}
 {% if ansible_virtualization_role != "guest" %}

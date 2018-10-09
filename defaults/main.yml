@@ -49,6 +49,34 @@ cluster_net_ilo:
 cluster_monitoring_use_nrpe: false
 cluster_monitoring_use_consul: false
 
+cluster_monitoring_consul:
+    - service:
+        name: "cluster"
+        tags:
+            - "pacemaker"
+            - "traefik.enable=false"
+        checks:
+            - args:
+                - "/usr/sbin/crm_mon"
+                - "-s"
+              interval: "15s"
+#    - service:
+#        name: "ntp"
+#        tags:
+#            - "ntp"
+#            - "traefik.enable=false"
+#        checks:
+#            - args:
+#                - "/usr/lib/nagios/plugins/check_ntp_time"
+#                - "-H"
+#                - "{{ ntp_fqdn }}"
+#                - "-w"
+#                - "1"
+#                - "-c"
+#                - "5"
+#              interval: "60s"
+
+
 # Repositories
 cluster_repo_sle_server_product: None
 cluster_repo_sle_server_updates: None

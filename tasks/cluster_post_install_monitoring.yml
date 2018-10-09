@@ -9,7 +9,8 @@
   when: cluster_monitoring_use_nrpe == true
 
 - name: Set monitoring probes (consul)
-  template: src=consul/cluster.json.j2 dest=/etc/consul.d/cluster.json
+  template: src=consul/service.json.j2 dest=/etc/consul.d/{{ item.service.name }}.json
+  with_items: "{{ cluster_monitoring_consul }}"
   notify: reload consul
   when: cluster_monitoring_use_consul == true
 
