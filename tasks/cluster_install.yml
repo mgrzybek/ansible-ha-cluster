@@ -38,6 +38,27 @@
       - ansible_os_family | lower == 'debian' or ansible_os_family | lower == 'freebsd'
       - ansible_os_family | lower != 'ubuntu' and ansible_distribution_major_version | lower | int < 18
 
+- name: Install monitoring-plugins-crm using pip
+  when: cluster_monitoring_use_nrpe == true or cluster_monitoring_use_consul == true
+  block:
+    - name: Install pip
+      package:
+        name: "{{ cluster_distro_pip_packages }}"
+        state: "{{ cluster_package_state }}"
+        update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
+        cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
+      register: install_packages
+      until: install_packages is success
+      retries: 5
+      delay: 2
+      tags:
+        - install-apt
+        - install-yum
+        - install-zypper
+
+    - name: Install monitoring-plugins-crm
+      pip: name=monitoring-plugins-crm extra_args={{ pip_extra_args }}
+
 - name: Openstack fencing
   when:
     - cluster_stonith_use_openstack == true

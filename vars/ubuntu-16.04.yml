@@ -30,3 +30,6 @@ cluster_etc_pacemaker: /etc/pacemaker
 cluster_usr_prefix: /usr
 
 cluster_openstack_distro_repo_packages: []
+
+cluster_distro_pip_packages:
+    - python-pip
