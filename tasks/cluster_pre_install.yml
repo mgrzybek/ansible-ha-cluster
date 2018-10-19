@@ -1,5 +1,10 @@
 ---
 
+- name: Check if all the expected nodes are alive
+  fail: msg="Some nodes are unavailable. Expected {{ cluster_expected_votes }}, got {{ play_hosts | length }}"
+  when: cluster_expected_votes != play_hosts | length
+  run_once: true
+
 - name: Get consul binary path
   shell: systemctl show consul | awk '/^ExecStart=/ { gsub("path=","") ; print $2 }'
   register: consul_service
