@@ -59,6 +59,19 @@
     - name: Install monitoring-plugins-crm
       pip: name=monitoring-plugins-crm extra_args={{ pip_extra_args }}
 
+- name: Adds some environment variables to pacemaker service
+  when:
+    - cluster_systemd_service_env != None
+    - cluster_systemd_service_env | length > 0
+    - ansible_service_mgr == "systemd"
+  block:
+    - name: Creates directory
+      file: path=/etc/systemd/system/pacemaker.service.d state=directory
+
+    - name: Environment file
+      template: src=systemd.conf.j2 dest=/etc/systemd/system/pacemaker.service.d/environment.conf
+      register: environment_conf
+
 - name: Openstack fencing
   when:
     - cluster_stonith_use_openstack == true
@@ -127,5 +140,6 @@
         - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/lib/fencing.py"
           dest: "/usr/share/fence/"
           mode: 644
+
 
 

@@ -1,5 +1,6 @@
 ---
 
+cluster_systemd_service_env:
 cluster_name: ha-cluster
 cluster_package_state: present
 cluster_force_restart: false
