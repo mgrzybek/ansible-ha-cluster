@@ -14,7 +14,7 @@
   shell: pcs cluster stop --force && pcs cluster start
   when:
     - cluster_force_restart == true
-    - corosync_template_result | changed
+    - corosync_template_result is changed
   tags:
     - cluster-corosync
 
