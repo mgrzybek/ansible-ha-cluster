@@ -39,6 +39,9 @@ cluster_stonith_openstack_fencing_repo_path: /tmp/fence-agents
 # Network
 cluster_ring0_port: None
 cluster_ring1_port: None
+cluster_transport: udpu
+cluster_mcast_address:
+cluster_mcast_port:
 
 # ILO / IPMI interface (one per physical node)
 cluster_net_ilo:

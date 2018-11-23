@@ -1,9 +1,17 @@
 ---
 
-- name: Check if all the expected nodes are alive
-  fail: msg="Some nodes are unavailable. Expected {{ cluster_expected_votes }}, got {{ play_hosts | length }}"
-  when: cluster_expected_votes != play_hosts | length
+- name: Checks
   run_once: true
+  block:
+    - name: Check if all the expected nodes are alive
+      fail: msg="Some nodes are unavailable. Expected {{ cluster_expected_votes }}, got {{ play_hosts | length }}"
+      when: cluster_expected_votes != play_hosts | length
+
+    - name: Check multicast settings
+      fail: msg="A valid multicast address amd port must be given"
+      when:
+        - cluster_transport | lower != 'udpu'
+        - cluster_mcast_address | ipaddr | lower == 'false' or cluster_mcast_port == None
 
 - name: Get consul binary path
   shell: systemctl show consul | awk '/^ExecStart=/ { gsub("path=","") ; print $2 }'
