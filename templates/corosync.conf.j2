@@ -25,7 +25,7 @@ totem {
 {% endif %}
 {% endif %}
 		ttl:		1
-{% if cluster_transport | lower != 'udpu' and cluster_mcast_address | length > 0 %}
+{% if cluster_transport | lower != 'udpu' and cluster_mcast_address != None %}
 		mcastaddr:	{{ cluster_mcast_address }}
 {% endif %}
 	}
@@ -39,7 +39,7 @@ totem {
 		bindnetaddr:	{{ hostvars[ansible_hostname][generated_cluster_ring1_port]['ipv4']['network'] }}
 {% endif %}
 		ttl:		1
-{% if cluster_transport | lower != 'udpu' and cluster_mcast_address | length > 0 %}
+{% if cluster_transport | lower != 'udpu' and cluster_mcast_address != None %}
 		mcastaddr:	{{ cluster_mcast_address }}
 {% endif %}
 	}
