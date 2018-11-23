@@ -10,10 +10,10 @@
         - cluster_transport | lower == 'udpu'
 
     - name: Check multicast settings
-      fail: msg="A valid multicast address amd port must be given"
+      fail: msg="A valid multicast address or cluster name must be given"
       when:
         - cluster_transport | lower != 'udpu'
-        - cluster_mcast_address | ipaddr | lower == 'false' or cluster_mcast_port == None
+        - cluster_mcast_address | ipaddr | lower == 'false' cluster_name | length == 0
 
 - name: Get consul binary path
   shell: systemctl show consul | awk '/^ExecStart=/ { gsub("path=","") ; print $2 }'

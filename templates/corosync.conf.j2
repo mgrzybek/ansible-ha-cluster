@@ -25,6 +25,9 @@ totem {
 {% endif %}
 {% endif %}
 		ttl:		1
+{% if cluster_transport | lower != 'udpu' and cluster_mcast_address | length > 0 %}
+		mcastaddr:	{{ cluster_mcast_address }}
+{% endif %}
 	}
 
 {% if cluster_ring1_port != 'None' %}
@@ -36,13 +39,16 @@ totem {
 		bindnetaddr:	{{ hostvars[ansible_hostname][generated_cluster_ring1_port]['ipv4']['network'] }}
 {% endif %}
 		ttl:		1
+{% if cluster_transport | lower != 'udpu' and cluster_mcast_address | length > 0 %}
+		mcastaddr:	{{ cluster_mcast_address }}
+{% endif %}
 	}
 
 	rrp_mode:	{{ cluster_rrp_mode }}
 {% endif %}
 
 
-	transport: udpu
+	transport: {{ cluster_transport | lower }}
 }
 
 logging {
@@ -58,6 +64,7 @@ logging {
 	}
 }
 
+{% if cluster_transport | lower != 'udpu' %}
 nodelist {
 {% for node in play_hosts %}
 	node {
@@ -79,6 +86,7 @@ nodelist {
 	}
 {% endfor %}
 }
+{% endif %}
 
 quorum {
 	# Enable and configure quorum subsystem (default: off)
