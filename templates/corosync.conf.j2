@@ -1,44 +1,50 @@
 # {{ ansible_managed }}
 
 totem {
-	version:		2
-	secauth:		off
-	cluster_name:		{{ cluster_name }}
+	version:	2
+	secauth:	off
+	cluster_name:   {{ cluster_name }}
 	clear_node_high_bit:	yes
 
 	crypto_cipher:	none
 	crypto_hash:	none
 
 	interface {
-		ringnumber:	0
-{% if cluster_ring0_port != 'None' %}
+		ringnumber:	 0
+{% if generated_cluster_ring0_port | lower != 'ansible_none' %}
 {% if hostvars[ansible_fqdn] is defined %}
 		bindnetaddr:	{{ hostvars[ansible_fqdn][generated_cluster_ring0_port]['ipv4']['network'] }}
-{% else %}
+{% elif hostvars[ansible_hostname] is defined  %}
 		bindnetaddr:	{{ hostvars[ansible_hostname][generated_cluster_ring0_port]['ipv4']['network'] }}
+{% else %}
+		bindnetaddr:	{{ self_facts['ansible_facts'][generated_cluster_ring0_port]['ipv4']['network'] }}
 {% endif %}
 {% else %}
 {% if hostvars[ansible_fqdn] is defined %}
 		bindnetaddr:	{{ hostvars[ansible_fqdn]['ansible_default_ipv4']['network'] }}
-{% else %}
+{% elif hostvars[ansible_hostname] is defined  %}
 		bindnetaddr:	{{ hostvars[ansible_hostname]['ansible_default_ipv4']['network'] }}
+{% else %}
+		bindnetaddr:	{{ self_facts['ansible_facts']['ansible_default_ipv4']['network'] }}
 {% endif %}
 {% endif %}
-		ttl:		1
+		ttl:			1
 {% if cluster_transport | lower != 'udpu' and cluster_mcast_address != None %}
 		mcastaddr:	{{ cluster_mcast_address }}
 {% endif %}
 	}
 
-{% if cluster_ring1_port != 'None' %}
+{% if generated_cluster_ring1_port | lower != 'ansible_none' %}
 	interface {
 		ringnumber:	1
 {% if hostvars[ansible_fqdn] is defined %}
 		bindnetaddr:	{{ hostvars[ansible_fqdn][generated_cluster_ring1_port]['ipv4']['network'] }}
-{% else %}
+{% elif hostvars[ansible_hostname] is defined  %}
 		bindnetaddr:	{{ hostvars[ansible_hostname][generated_cluster_ring1_port]['ipv4']['network'] }}
+{% else %}
+		bindnetaddr:	{{ self_facts['ansible_facts'][generated_cluster_ring1_port]['ipv4']['network'] }}
 {% endif %}
-		ttl:		1
+		ttl:			1
 {% if cluster_transport | lower != 'udpu' and cluster_mcast_address != None %}
 		mcastaddr:	{{ cluster_mcast_address }}
 {% endif %}
@@ -46,7 +52,6 @@ totem {
 
 	rrp_mode:	{{ cluster_rrp_mode }}
 {% endif %}
-
 
 	transport: {{ cluster_transport | lower }}
 }
@@ -73,9 +78,9 @@ nodelist {
 {% else %}
 		# {{ hostvars[node]['ansible_hostname'] }}
 {% endif %}
-{% if cluster_ring0_port != 'None' %}
+{% if generated_cluster_ring0_port | lower != 'ansible_none' %}
 		ring0_addr: {{ hostvars[node][generated_cluster_ring0_port]['ipv4']['address'] }}
-{% if cluster_ring1_port != 'None' %}
+{% if generated_cluster_ring1_port | lower != 'ansible_none' %}
 		ring1_addr: {{ hostvars[node][generated_cluster_ring1_port]['ipv4']['address'] }}
 {% endif %}
 		nodeid: {{ hostvars[node][generated_cluster_ring0_port]['ipv4']['address'] | regex_replace("\D", "") | regex_replace("^\w+(\d){8}$","\\1") }}
