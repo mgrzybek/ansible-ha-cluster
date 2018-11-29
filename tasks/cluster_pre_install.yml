@@ -3,11 +3,19 @@
 - name: Checks
   run_once: true
   block:
-    - name: Check if all the expected nodes are alive
+    - name: Check if all the expected nodes are alive (using inventory)
       fail: msg="Some nodes are unavailable. Expected {{ cluster_expected_votes }}, got {{ play_hosts | length }}"
       when:
         - cluster_expected_votes != play_hosts | length
         - cluster_transport | lower == 'udpu'
+        - not ansible_local.cluster_nodes is defined
+
+    - name: Check if all the expected nodes are alive (using local fact)
+      fail: msg="Some nodes are unavailable. Expected {{ cluster_expected_votes }}, got {{ ansible_local.cluster_nodes | length }}"
+      when:
+        - cluster_expected_votes != ansible_local.cluster_nodes | length
+        - cluster_transport | lower == 'udpu'
+        - ansible_local.luster_nodes is defined
 
     - name: Check multicast settings
       fail: msg="A valid multicast address or cluster name must be given"

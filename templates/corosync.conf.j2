@@ -90,6 +90,17 @@ nodelist {
 {% endif %}
 	}
 {% endfor %}
+{% if play_hosts | length == 0 %}
+{% for node in ansible_local.cluster_nodes %}
+	node {
+		# {{ node['name'] }}
+		ring0_addr: {{ node['ring0_address'] }}
+{% if node['ring1_address'] is defined %}
+		ring1_addr: {{ node['ring1_address'] }}
+{% endif %}
+	}
+{% endfor %}
+{% endif %}
 }
 {% endif %}
 
