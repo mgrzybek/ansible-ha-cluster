@@ -69,7 +69,7 @@ logging {
 	}
 }
 
-{% if cluster_transport | lower != 'udpu' %}
+{% if cluster_transport | lower == 'udpu' %}
 nodelist {
 {% for node in play_hosts %}
 	node {
