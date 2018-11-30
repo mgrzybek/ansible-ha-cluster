@@ -2,3 +2,4 @@
 *.pdf
 *lab*
 doc/build
+.vscode/
