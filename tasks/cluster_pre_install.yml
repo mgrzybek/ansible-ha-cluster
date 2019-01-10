@@ -13,9 +13,9 @@
     - name: Check if all the expected nodes are alive (using local fact)
       fail: msg="Some nodes are unavailable. Expected {{ cluster_expected_votes }}, got {{ ansible_local.cluster_nodes | length }}"
       when:
+        - ansible_local.cluster_nodes is defined
         - cluster_expected_votes != ansible_local.cluster_nodes | length
         - cluster_transport | lower == 'udpu'
-        - ansible_local.luster_nodes is defined
 
     - name: Check multicast settings
       fail: msg="A valid multicast address or cluster name must be given"
