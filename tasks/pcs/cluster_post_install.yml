@@ -58,7 +58,7 @@
   run_once: true
 
 # Creates a cloned resource to ping three peers.
-# This is an anti-splitbran system for share-nothing on two-nodes clusters
+# This is an anti-splitbrain system for share-nothing on two-nodes clusters
 - block:
   - name: Gets the corosync ring0 IP address
     shell: awk 'BEGIN { ORS=" " } /ring0_addr/ { print $2 }' {{ cluster_corosync_configuration }}
