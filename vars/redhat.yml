@@ -2,6 +2,7 @@ cluster_distro_packages:
   #- fping
   #- pacemaker
   - pcs
+  - epel-release
 
 cluster_sbd_configuration: /etc/sysconfig/sbd
 cluster_corosync_configuration: /etc/corosync/corosync.conf
