@@ -24,4 +24,4 @@ cluster_openstack_distro_repo_packages:
     - centos-release-openstack-queens
 
 cluster_distro_pip_packages:
-    - python-pip
+    - python2-pip
