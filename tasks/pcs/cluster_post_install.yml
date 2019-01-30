@@ -93,3 +93,6 @@
   when: cluster_mgmt_ip != None
   tags:
     - cluster-mgmt-ip-addr
+
+- name: Enable pacemaker at boot
+  service: name=pacemaker enabled=yes
