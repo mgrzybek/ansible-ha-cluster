@@ -24,7 +24,7 @@ cluster_hawk_file_pem: None
 # Stonith
 cluster_stonith_use_sbd: true
 cluster_stonith_use_ipmi: false
-cluster_stonith_sbd_luns: None
+cluster_stonith_sbd_luns: []
 cluster_sbd_start_mode: clean # or always
 
 cluster_node_stonith_ipmi_attribute_key: cluster_role
