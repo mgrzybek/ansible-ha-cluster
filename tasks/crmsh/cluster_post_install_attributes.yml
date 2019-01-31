@@ -17,4 +17,7 @@
 
 # Usage attributes
 - name: Add {{ cluster_node_attribute_key }} attribute
-  shell: crm_attribute --node {{ crm_node_name.stdout }} --name {{ cluster_node_attribute_key }} --update {{ cluster_node_attribute_value }}
+  command: crm_attribute --node {{ crm_node_name.stdout }} --name {{ cluster_node_attribute_key }} --update {{ cluster_node_attribute_value }}
+  when:
+    - cluster_node_attribute_key|length > 0
+    - cluster_node_attribute_value|length > 0
