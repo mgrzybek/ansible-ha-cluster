@@ -20,7 +20,7 @@
 - name: Configure sbd if the resource does not exist
   replace: dest={{ cluster_sbd_configuration }} regexp='^SBD_DEVICE=(.*?)$' replace='SBD_DEVICE="{{ cluster_stonith_sbd_luns | join(';') }}"'
   when:
-    - crm_resources_stonith.stdout.find("sbd") < 0
+    - crm_configure_show.stdout.find("sbd") < 0
     - cluster_stonith_sbd_luns | length > 0
     - ansible_virtualization_type != 'lxc' # Physical nodes or Xen/KVM
   notify: restart sbd resource
