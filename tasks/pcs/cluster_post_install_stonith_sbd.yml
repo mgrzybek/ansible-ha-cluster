@@ -38,4 +38,7 @@
 - name: Create SBD resource
   command: pcs sbd enable
   run_once: true
-  when: cluster_stonith_use_sbd == true
+  when:
+    - cluster_stonith_use_sbd == true
+    - cluster_stonith_sbd_luns | length > 0
+    - ansible_virtualization_type != 'lxc'
