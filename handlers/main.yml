@@ -3,7 +3,7 @@
 
 - name: reload consul
   shell: "{{ consul_bin }} reload"
-  when: consul_service.stdout.find('inactive') < 0
+  when: consul_service.stdout.find('ko') < 0
 
 - name: restart hawk resource
   shell: crm -w resource restart hawk
