@@ -34,7 +34,7 @@
 
 - name: Install python-parallax using pip
   pip: name=parallax extra_args={{ pip_extra_args }}
-  when: cluster_pip_parallax | lower = 'true'
+  when: cluster_pip_parallax | lower == 'true'
 
 - name: Install monitoring-plugins-crm using pip
   when: cluster_monitoring_use_nrpe == true or cluster_monitoring_use_consul == true
