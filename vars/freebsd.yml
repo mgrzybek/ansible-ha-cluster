@@ -26,3 +26,8 @@ cluster_stonith_use_sbd: false
 cluster_usr_prefix: /usr/local
 
 cluster_openstack_distro_repo_packages: []
+
+cluster_pip_parallax: true
+
+cluster_distro_pip_packages:
+  - py27-pip

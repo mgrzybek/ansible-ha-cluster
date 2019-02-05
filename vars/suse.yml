@@ -32,3 +32,5 @@ cluster_openstack_distro_repo_packages: []
 
 cluster_distro_pip_packages:
     - python-pip
+
+cluster_pip_parallax: false
