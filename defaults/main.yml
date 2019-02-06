@@ -64,6 +64,10 @@ cluster_monitoring_consul:
                 - "/usr/sbin/crm_mon"
                 - "-s"
               interval: "15s"
+            - args:
+                - "/usr/sbin/crm_mon"
+                - "-Afr1"
+              interval: "60s"
 #    - service:
 #        name: "ntp"
 #        tags:
