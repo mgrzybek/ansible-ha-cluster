@@ -24,6 +24,12 @@
         - cluster_mcast_address | ipaddr | lower == 'false'
         - cluster_name | length == 0
 
+    - name: Check pip usage
+      fail: msg="We should be able to download pip artifacts but pip is disabled"
+      when:
+        - cluster_repo_use_pip | lower == 'false'
+        - cluster_pip_parallax | lower == 'true'
+
 - name: Get consul binary path
   shell: systemctl show consul | awk '/^ExecStart=/ { gsub("path=","") ; print $2 }'
   register: consul_service

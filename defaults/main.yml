@@ -90,6 +90,7 @@ cluster_repo_sle_server_product: None
 cluster_repo_sle_server_updates: None
 cluster_repo_sle_ha_product: None
 cluster_repo_sle_ha_updates: None
+cluster_repo_use_pip: false
 
 # Time
 cluster_ntp_fqdn: pool.ntp.org
