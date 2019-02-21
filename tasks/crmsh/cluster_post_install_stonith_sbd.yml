@@ -44,9 +44,16 @@
 
 # Create SBD resource
 - name: Create SBD resource
-  shell: crm -w script run sbd id=stonith_sbd
   run_once: true
   when:
     - cluster_stonith_use_sbd == true
     - cluster_stonith_sbd_luns | length > 0
     - ansible_virtualization_type != 'lxc'
+  block:
+    - name: Time buffer
+      when: hostvars | length == 0
+      wait_for: timeout={{ wait_for_duration }}
+      become: false
+
+    - name: Create SBD resource
+      shell: crm -w script run sbd id=stonith_sbd

@@ -49,9 +49,10 @@
   tags:
     - cluster-stonith
 
+
+
 # The STONITH suicide is used when SBD is unused
 - name: Create suicide resource
-  shell: crm -w script run suicide
   run_once: true
   when:
     - cluster_stonith_use_sbd == false
@@ -59,6 +60,14 @@
     - ansible_os_family | lower != 'freebsd'
   tags:
     - cluster-stonith
+  block:
+    - name: Time buffer
+      when: hostvars | length == 0
+      wait_for: timeout={{ wait_for_duration }}
+      become: false
+
+    - name: Create suicide resource
+      shell: crm -w script run suicide
 
 # Nodes attributes
 - include: cluster_post_install_attributes.yml
@@ -96,11 +105,18 @@
     - cluster_ping_remote_addr != None
 
 - name: Sets a ping resource on two-nodes clusters
-  shell: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
   run_once: true
   when:
     - cluster_expected_votes < 3
     - cluster_ping_remote_addr != None
+  block:
+    - name: Time buffer
+      when: hostvars | length == 0
+      wait_for: timeout={{ wait_for_duration }}
+      become: false
+
+    - name: Sets a ping resource on two-nodes clusters
+      shell: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
 
 - include: cluster_post_install_hawk.yml
   when:
@@ -111,16 +127,23 @@
 
 # Creates management IP, Hawk resources
 - name: Sets the management IP
-  shell: >
-    crm script run mgmt \
-      ip={{ cluster_mgmt_ip }} \
-      use_hawk={{ cluster_use_hawk | lower }} \
-      attribute_name={{ cluster_node_mgmt_ip_attribute_key }} \
-      attribute_value={{ cluster_node_mgmt_ip_attribute_value }}
   run_once: true
   when: cluster_mgmt_ip != None
   tags:
     - cluster-mgmt-ip-addr
+  block:
+    - name: Time buffer
+      when: hostvars | length == 0
+      wait_for: timeout={{ wait_for_duration }}
+      become: false
+
+    - name: Sets the management IP
+      shell: >
+        crm script run mgmt \
+          ip={{ cluster_mgmt_ip }} \
+          use_hawk={{ cluster_use_hawk | lower }} \
+          attribute_name={{ cluster_node_mgmt_ip_attribute_key }} \
+          attribute_value={{ cluster_node_mgmt_ip_attribute_value }}
 
 - name: Enable pacemaker at boot
   service: name=pacemaker enabled=yes
