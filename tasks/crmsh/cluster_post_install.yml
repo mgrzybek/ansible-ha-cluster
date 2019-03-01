@@ -39,7 +39,7 @@
   command: crm_mon -1
   register: crm_mon
   until: crm_mon.stdout.find("partition with quorum") > -1
-  retries: 10
+  retries: 300
   delay: 10
   run_once: true
 
