@@ -25,7 +25,7 @@
       with_items:
         - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
           dest: "{{ cluster_usr_prefix }}/sbin/fence_openstack"
-          mode: 0755
+          mode: "0755"
 
     - name: Set the python interpretor
       lineinfile:
