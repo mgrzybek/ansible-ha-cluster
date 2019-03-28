@@ -25,6 +25,7 @@ cluster_etc_pacemaker: /etc/pacemaker
 cluster_distro_openstack_fencing_packages:
   - python-pexpect
   - python-novaclient
+  - python-pycurl
 
 cluster_usr_prefix: /usr
 

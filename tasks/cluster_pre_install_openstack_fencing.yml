@@ -13,9 +13,27 @@
         repo: https://github.com/ClusterLabs/fence-agents
         dest: "{{ cluster_stonith_openstack_fencing_repo_path }}"
 
-    - name: Build the openstack agent
-      shell: >
-          test -f configure || ./autogen.sh ; \
-          ./configure --prefix={{ cluster_usr_prefix }} --with-agents=openstack && make
-      args:
-        chdir: "{{ cluster_stonith_openstack_fencing_repo_path }}"
+    #- name: Build the openstack agent
+    #  shell: >
+    #      test -f configure || ./autogen.sh ; \
+    #      ./configure --prefix={{ cluster_usr_prefix }} --with-agents=openstack && make
+    #  args:
+    #    chdir: "{{ cluster_stonith_openstack_fencing_repo_path }}"
+
+    - name: Install the agent
+      copy: src="{{ item.src }}" dest="{{ item.dest }}" mode="{{ item.mode }}"
+      with_items:
+        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
+          dest: "{{ cluster_usr_prefix }}/sbin/fence_openstack"
+          mode: 0755
+
+    - name: Set the python interpretor
+      lineinfile:
+        path: "{{ cluster_usr_prefix }}/sbin/fence_openstack"
+        regexp: "^#!"
+        line: "#! {{ cluster_usr_prefix }}/bin/python3"
+
+    - name: Cleanup
+      file:
+        path: "{{ cluster_stonith_openstack_fencing_repo_path }}"
+        state: absent
