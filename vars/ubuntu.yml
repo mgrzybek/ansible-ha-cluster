@@ -33,7 +33,8 @@ cluster_openstack_distro_repo_packages:
   - python3-novaclient
   - python3-pycurl
 
-cluster_distro_openstack_fencing_packages: []
+cluster_distro_openstack_fencing_packages:
+  - fence-agents
 
 cluster_distro_pip_packages:
   - python3-pip

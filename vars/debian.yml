@@ -22,7 +22,8 @@ cluster_nagios_plugins_root_path: /usr/lib/nagios/plugins
 
 cluster_etc_pacemaker: /etc/pacemaker
 
-cluster_distro_openstack_fencing_packages: []
+cluster_distro_openstack_fencing_packages:
+  - fence-agents
 
 cluster_usr_prefix: /usr
 
