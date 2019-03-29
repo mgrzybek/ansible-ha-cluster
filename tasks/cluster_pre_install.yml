@@ -30,6 +30,12 @@
         - cluster_repo_use_pip | lower == 'false'
         - cluster_pip_parallax | lower == 'true'
 
+    - name: Openstack fencing usage
+      fail: msg="We can only install openstack fencing agents on openstack instances"
+      when:
+        - cluster_stonith_use_openstack | lower == 'true'
+        - ansible_virtualization_type != "openstack"
+
 - name: Get consul binary path
   shell: systemctl show consul | awk '/^ExecStart=/ { gsub("path=","") ; print $2 }'
   register: consul_service
@@ -49,16 +55,19 @@
         use_firewalld: true
       when: firewalld_service.stdout.find('active') > -1
 
-#- name: Get installed stonith agents
-#  command: stonith_admin -I
-#  register: stonith_agents
-
 - name: Check consul service
   shell: systemctl is-active consul 2>/dev/null || echo ko && exit 0
   register: consul_service
 
 - set_fact:
     configure_consul: false
+    install_openstack_fencing_from_github: false
+    build_openstack_fencing_from_deployment_host: true
+    configure_openstack_fencing: false
+
+- set_fact:
+   install_openstack_fencing_from_github: true
+  when: cluster_stonith_use_openstack | lower == 'true'
 
 - set_fact:
     configure_consul: true
@@ -83,4 +92,5 @@
       setup:
 
     - set_fact:
+        build_openstack_fencing_from_deployment_host: false
         wait_for_duration: "{{ 60 | random }}"

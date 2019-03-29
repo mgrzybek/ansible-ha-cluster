@@ -1,0 +1,24 @@
+---
+
+- name: Local cleaning
+  delegate_to: localhost
+  become: no
+  run_once: true
+  when:
+    - install_openstack_fencing_from_github == true
+    - build_openstack_fencing_from_deployment_host == true
+  block:
+    - name: Cleanup
+      file:
+        path: "{{ cluster_stonith_openstack_fencing_repo_path }}"
+        state: absent
+
+- name: Remote cleaning
+  when:
+    - install_openstack_fencing_from_github == true
+    - build_openstack_fencing_from_deployment_host == false
+  block:
+    - name: Cleanup
+      file:
+        path: "{{ cluster_stonith_openstack_fencing_repo_path }}"
+        state: absent

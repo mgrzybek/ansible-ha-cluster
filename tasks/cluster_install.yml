@@ -76,7 +76,6 @@
 - name: Openstack fencing
   when:
     - cluster_stonith_use_openstack == true
-    - ansible_virtualization_type == "openstack"
   block:
     - name: Install openstack_cluster_node repo packages
       package:
@@ -129,18 +128,29 @@
         - install-yum
         - install-zypper
 
-#    - name: Copy openstack fencing agent to the nodes
-#      copy: src="{{ item.src }}" dest="{{ item.dest }}" mode={{ item.mode }}
-#      with_items:
-#        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack"
-#          dest: "/usr/sbin/"
-#          mode: 755
-#        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.8"
-#          dest: "/usr/share/man/man8/"
-#          mode: 644
-#        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/lib/fencing.py"
-#          dest: "/usr/share/fence/"
-#          mode: 644
+    - name: Get installed stonith agents
+      command: stonith_admin -I
+      register: stonith_agents
+
+    - name: Check if fence_openstack have been installed by fencing packages
+      when: stonith_agents.stdout.find('fence_openstack') > -1
+      set_fact:
+        install_openstack_fencing_from_github: false
+
+    - name: Copy openstack fencing agent
+      when:
+        - install_openstack_fencing_from_github == true
+      copy: src="{{ item.src }}" dest="{{ item.dest }}" mode={{ item.mode }}
+      with_items:
+        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack"
+          dest: "{{ cluster_usr_prefix }}/sbin/"
+          mode: 755
+        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.8"
+          dest: "{{ cluster_usr_prefix }}/share/man/man8/"
+          mode: 644
+        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/lib/fencing.py"
+          dest: "{{ cluster_usr_prefix }}/share/fence/"
+          mode: 644
 
 
 

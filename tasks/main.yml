@@ -36,3 +36,7 @@
 - include: cluster_post_install_monitoring.yml
   tags:
     - cluster-post-install
+
+- include: cluster_post_install.yml
+  tags:
+    - cluster-post-install

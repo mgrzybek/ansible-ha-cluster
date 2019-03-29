@@ -5,35 +5,40 @@
   become: no
   run_once: true
   when:
-    - cluster_stonith_use_openstack == true
-    - ansible_virtualization_type == "openstack"
+    - install_openstack_fencing_from_github == true
+    - build_openstack_fencing_from_deployment_host == true
   block:
     - name: Clone the repo
       git:
         repo: https://github.com/ClusterLabs/fence-agents
         dest: "{{ cluster_stonith_openstack_fencing_repo_path }}"
 
-    #- name: Build the openstack agent
-    #  shell: >
-    #      test -f configure || ./autogen.sh ; \
-    #      ./configure --prefix={{ cluster_usr_prefix }} --with-agents=openstack && make
-    #  args:
-    #    chdir: "{{ cluster_stonith_openstack_fencing_repo_path }}"
-
-    - name: Install the agent
-      copy: src="{{ item.src }}" dest="{{ item.dest }}" mode="{{ item.mode }}"
-      with_items:
-        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
-          dest: "{{ cluster_usr_prefix }}/sbin/fence_openstack"
-          mode: "0755"
-
     - name: Set the python interpretor
       lineinfile:
-        path: "{{ cluster_usr_prefix }}/sbin/fence_openstack"
+        path: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
         regexp: "^#!"
         line: "#! {{ cluster_usr_prefix }}/bin/python3"
 
-    - name: Cleanup
-      file:
-        path: "{{ cluster_stonith_openstack_fencing_repo_path }}"
-        state: absent
+#    - name: Install the agent
+#      copy: src="{{ item.src }}" dest="{{ item.dest }}" mode="{{ item.mode }}"
+#      with_items:
+#        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
+#          dest: "{{ cluster_usr_prefix }}/sbin/fence_openstack"
+#          mode: "0755"
+
+- name: Remote building
+  become: no
+  when:
+    - install_openstack_fencing_from_github == true
+    - build_openstack_fencing_from_deployment_host == false
+  block:
+    - name: Clone the repo
+      git:
+        repo: https://github.com/ClusterLabs/fence-agents
+        dest: "{{ cluster_stonith_openstack_fencing_repo_path }}"
+
+    - name: Set the python interpretor
+      lineinfile:
+        path: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
+        regexp: "^#!"
+        line: "#! {{ cluster_usr_prefix }}/bin/python3"
