@@ -142,13 +142,13 @@
         - install_openstack_fencing_from_github == true
       copy: src="{{ item.src }}" dest="{{ item.dest }}" mode={{ item.mode }}
       with_items:
-        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack"
+        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
           dest: "{{ cluster_usr_prefix }}/sbin/"
           mode: 755
-        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.8"
-          dest: "{{ cluster_usr_prefix }}/share/man/man8/"
-          mode: 644
-        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/lib/fencing.py"
+        #- src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.8"
+        #  dest: "{{ cluster_usr_prefix }}/share/man/man8/"
+        #  mode: 644
+        - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/lib/fencing.py.py"
           dest: "{{ cluster_usr_prefix }}/share/fence/"
           mode: 644
 
