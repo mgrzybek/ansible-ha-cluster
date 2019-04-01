@@ -143,7 +143,7 @@
       copy: src="{{ item.src }}" dest="{{ item.dest }}" mode={{ item.mode }}
       with_items:
         - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
-          dest: "{{ cluster_usr_prefix }}/sbin/"
+          dest: "{{ cluster_usr_prefix }}/sbin/fence_openstack"
           mode: 755
         #- src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.8"
         #  dest: "{{ cluster_usr_prefix }}/share/man/man8/"
