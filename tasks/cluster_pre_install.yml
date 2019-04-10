@@ -67,7 +67,10 @@
 
 - set_fact:
    install_openstack_fencing_from_github: true
+   configure_openstack_fencing: true
   when: cluster_stonith_use_openstack | lower == 'true'
+
+# TODO: check openstack credentials before setting configure_openstack_fencing to true
 
 - set_fact:
     configure_consul: true
