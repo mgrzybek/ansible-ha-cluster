@@ -9,6 +9,12 @@
     A STONITH primitive is created. They use Openstack API.
 
   parameters:
+    - name: node
+      shortdesc: Node name
+      longdesc: Server's name
+      required: true
+      type: string
+
     - name: uuid
       shortdesc: Server's UUID
       longdesc: UUID of the server we want to fence.
@@ -48,4 +54,5 @@
                 passwd="{{password}}"
                 project-name="{{project_name}}"
                 uuid="{{uuid}}"
+                pcmk_host_list="{{node}}"
             op monitor interval="60" timeout="60"
