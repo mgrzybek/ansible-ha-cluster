@@ -47,7 +47,7 @@
 
   actions:
     - cib: |
-        primitive stonith_openstack_pub-db-1 stonith:fence_openstack
+        primitive stonith_openstack_{{node}} stonith:fence_openstack
             params
                 auth-url="{{auth_url}}"
                 login="{{login}}"
