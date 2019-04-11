@@ -15,5 +15,5 @@
       file: path={{ cluster_crm_scripts_root_path }}/openstack_fencing state=directory
 
     - name: Install openstack_fencing crm script (file)
-      copy: src=scripts/{{ item }}.yml dest={{ cluster_crm_scripts_root_path }}/openstack_fencing/main.yml
+      copy: src=scripts/openstack_fencing.yml dest={{ cluster_crm_scripts_root_path }}/openstack_fencing/main.yml
 
