@@ -50,7 +50,6 @@
     - cluster-stonith
 
 
-
 # The STONITH suicide is used when SBD is unused
 - name: Create suicide resource
   run_once: true
@@ -87,6 +86,13 @@
   with_items:
     - attribute: timeout
       value: 60
+  run_once: true
+
+- name: Set resource defaults
+  shell: crm configure rsc_defaults {{ item.attribute }}={{ item.value }}
+  with_items:
+    - attribute: resource-stickiness
+      value: "{{ cluster_default_resource_stickiness }}"
   run_once: true
 
 - name: Disable stonith on FreeBSD

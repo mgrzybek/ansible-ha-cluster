@@ -57,6 +57,13 @@
       value: "{{ cluster_no_quorum_policy }}"
   run_once: true
 
+- name: Set resource defaults
+  command: pcs resource rsc defaults {{ item.attribute }}={{ item.value }}
+  with_items:
+    - attribute: resource-stickiness
+      value: "{{ cluster_default_resource_stickiness }}"
+  run_once: true
+
 # Creates a cloned resource to ping three peers.
 # This is an anti-splitbrain system for share-nothing on two-nodes clusters
 - block:

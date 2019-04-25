@@ -14,6 +14,7 @@ cluster_node_mgmt_ip_attribute_key: cluster_role
 cluster_node_mgmt_ip_attribute_value: compute
 cluster_ping_remote_addr:
 cluster_rrp_mode: active # active or passive
+cluster_default_resource_stickiness: 100
 
 # Hawk : management WebGUI
 cluster_use_hawk: false
