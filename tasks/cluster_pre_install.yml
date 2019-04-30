@@ -37,7 +37,7 @@
         - ansible_virtualization_type != "openstack"
 
 - name: Get services facts
-  service_fact:
+  service_facts:
 
 - name: Get consul binary path
   shell: systemctl show consul | awk '/^ExecStart=/ { gsub("path=","") ; print $2 }'
