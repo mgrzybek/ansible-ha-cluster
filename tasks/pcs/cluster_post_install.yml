@@ -29,7 +29,7 @@
   delay: 10
 
 # Configure IPMI resource
-- include: cluster_post_install_stonith_ipmi.yml
+- include_tasks: cluster_post_install_stonith_ipmi.yml
   when: cluster_stonith_use_ipmi == true
   tags:
     - cluster-stonith
@@ -45,7 +45,7 @@
     - cluster-stonith
 
 # Nodes attributes
-- include: cluster_post_install_attributes.yml
+- include_tasks: cluster_post_install_attributes.yml
   tags:
     - cluster-attributes
 

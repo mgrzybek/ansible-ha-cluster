@@ -11,32 +11,32 @@
   tags:
     - always
 
-- include: cluster_pre_install.yml
+- include_tasks: cluster_pre_install.yml
   tags:
     - cluster-pre-install
 
-- include: cluster_pre_install_openstack_fencing.yml
+- include_tasks: cluster_pre_install_openstack_fencing.yml
   tags:
     - cluster-pre-install
 
-- include: cluster_install.yml
+- include_tasks: cluster_install.yml
   tags:
     - cluster-install
 
-- include: crmsh/cluster_post_install.yml
+- include_tasks: crmsh/cluster_post_install.yml
   when: ansible_os_family | lower != 'redhat'
   tags:
     - cluster-post-install
 
-- include: pcs/cluster_post_install.yml
+- include_tasks: pcs/cluster_post_install.yml
   when: ansible_os_family | lower == 'redhat'
   tags:
     - cluster-post-install
 
-- include: cluster_post_install_monitoring.yml
+- include_tasks: cluster_post_install_monitoring.yml
   tags:
     - cluster-post-install
 
-- include: cluster_post_install.yml
+- include_tasks: cluster_post_install.yml
   tags:
     - cluster-post-install

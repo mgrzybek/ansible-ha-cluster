@@ -1,12 +1,12 @@
 ---
 
 # CRM scripts
-- include: cluster_post_install_crm_scripts.yml
+- include_tasks: cluster_post_install_crm_scripts.yml
   tags:
     - cluster-crm-scripts
 
 # Configure SBD service
-- include: cluster_post_install_stonith_sbd.yml
+- include_tasks: cluster_post_install_stonith_sbd.yml
   when: cluster_stonith_use_sbd == true
   tags:
     - cluster-stonith
@@ -44,7 +44,7 @@
   run_once: true
 
 # Configure IPMI resource
-- include: cluster_post_install_stonith_ipmi.yml
+- include_tasks: cluster_post_install_stonith_ipmi.yml
   when: cluster_stonith_use_ipmi == true
   tags:
     - cluster-stonith
@@ -69,7 +69,7 @@
       command: crm -w script run suicide
 
 # Nodes attributes
-- include: cluster_post_install_attributes.yml
+- include_tasks: cluster_post_install_attributes.yml
   tags:
     - cluster-attributes
 
@@ -124,7 +124,7 @@
     - name: Sets a ping resource on two-nodes clusters
       command: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
 
-- include: cluster_post_install_hawk.yml
+- include_tasks: cluster_post_install_hawk.yml
   when:
     - cluster_use_hawk == true
     - ansible_os_family | lower == 'suse'
