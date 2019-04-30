@@ -92,7 +92,7 @@
         pcs resource create mgmt_ip_addr IPAddr2 ip={{ cluster_mgmt_ip }}
 
     - name: Add management IP constraint rule
-      shell: >
+      command: >
         pcs constraint location mgmt_ip_addr rule \
             "{{ cluster_node_mgmt_ip_attribute_key }}" eq "{{ cluster_node_mgmt_ip_attribute_value }}"
 
