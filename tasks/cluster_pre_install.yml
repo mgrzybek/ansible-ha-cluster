@@ -80,7 +80,8 @@
       shell: systemctl show -p ExecStart consul|tr ' ' '\n'|awk -F= '/path=/ {print $2}'
       register: consul_bin_path
 
-    - set_fact: consul_bin="{{ consul_bin_path.stdout }}"
+    - name: Set consul bin path
+      set_fact: consul_bin="{{ consul_bin_path.stdout }}"
 
 - name: Deal with self-configuration
   when: hostvars | length == 0
