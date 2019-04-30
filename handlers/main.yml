@@ -7,13 +7,13 @@
     || systemctl start consul
 
 - name: restart hawk resource
-  shell: crm -w resource restart hawk
+  command: crm -w resource restart hawk
 
 - name: restart nrpe
   service: name=nrpe state=restarted enabled=yes
 
 - name: restart sbd resource
-  shell: crm -w resource restart sbd
+  command: crm -w resource restart sbd
 
 - name: reload firewalld
   command: firewall-cmd --reload
