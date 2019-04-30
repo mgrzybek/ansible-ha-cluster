@@ -37,6 +37,7 @@
         repo: https://github.com/ClusterLabs/fence-agents
         dest: "{{ cluster_stonith_openstack_fencing_repo_path }}"
         force: yes
+        version: master
 
     - name: Set the python interpretor
       lineinfile:
