@@ -12,6 +12,7 @@
       git:
         repo: https://github.com/ClusterLabs/fence-agents
         dest: "{{ cluster_stonith_openstack_fencing_repo_path }}"
+        version: master
 
     - name: Set the python interpretor
       lineinfile:
