@@ -36,6 +36,9 @@
         - cluster_stonith_use_openstack | lower == 'true'
         - ansible_virtualization_type != "openstack"
 
+- name: Get services facts
+  service_fact:
+
 - name: Get consul binary path
   shell: systemctl show consul | awk '/^ExecStart=/ { gsub("path=","") ; print $2 }'
   register: consul_service
@@ -47,17 +50,9 @@
 - name: Check firewalld
   when: ansible_system | lower == 'linux'
   block:
-    - name: Check firewalld
-      shell: systemctl is-active firewalld.service 2>/dev/null || echo ko && exit 0
-      register: firewalld_service
-
-    - set_fact:
+    - when: ansible_facts.services.firewalld is defined
+      set_fact:
         use_firewalld: true
-      when: firewalld_service.stdout.find('active') > -1
-
-- name: Check consul service
-  shell: systemctl is-active consul 2>/dev/null || echo ko && exit 0
-  register: consul_service
 
 - set_fact:
     configure_consul: false
@@ -76,7 +71,7 @@
     configure_consul: true
   when:
     - cluster_monitoring_use_consul == true
-    - consul_service.stdout.find('inactive') < 0
+    - ansible_facts.services.consul is defined
 
 - name: Create consul_bin variable
   when: cluster_monitoring_use_consul == true
