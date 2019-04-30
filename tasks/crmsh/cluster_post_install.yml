@@ -122,7 +122,7 @@
       become: false
 
     - name: Sets a ping resource on two-nodes clusters
-      shell: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
+      command: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
 
 - include: cluster_post_install_hawk.yml
   when:
@@ -144,7 +144,7 @@
       become: false
 
     - name: Sets the management IP
-      shell: >
+      command: >
         crm script run mgmt \
           ip={{ cluster_mgmt_ip }} \
           use_hawk={{ cluster_use_hawk | lower }} \
