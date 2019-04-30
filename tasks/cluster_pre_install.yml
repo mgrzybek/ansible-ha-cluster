@@ -93,6 +93,7 @@
       register: self_facts
       setup:
 
-    - set_fact:
+    - name: Set openstack fencing facts
+      set_fact:
         build_openstack_fencing_from_deployment_host: false
         wait_for_duration: "{{ 60 | random }}"
