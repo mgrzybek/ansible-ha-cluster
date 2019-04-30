@@ -22,7 +22,7 @@
     - cluster-corosync
 
 - name: Restart the cluster
-  shell: "{{ item }}"
+  command: "{{ item }}"
   with_items:
     - crm cluster stop
     - crm cluster start
@@ -66,7 +66,7 @@
       become: false
 
     - name: Create suicide resource
-      shell: crm -w script run suicide
+      command: crm -w script run suicide
 
 # Nodes attributes
 - include: cluster_post_install_attributes.yml
@@ -75,28 +75,28 @@
 
 # Default values
 - name: Set no-quorum-policy
-  shell: crm configure property {{ item.attribute }}={{ item.value }}
+  command: crm configure property {{ item.attribute }}={{ item.value }}
   with_items:
     - attribute: no-quorum-policy
       value: "{{ cluster_no_quorum_policy }}"
   run_once: true
 
 - name: Set default options
-  shell: crm configure op_defaults {{ item.attribute }}={{ item.value }}
+  command: crm configure op_defaults {{ item.attribute }}={{ item.value }}
   with_items:
     - attribute: timeout
       value: 60
   run_once: true
 
 - name: Set resource defaults
-  shell: crm configure rsc_defaults {{ item.attribute }}={{ item.value }}
+  command: crm configure rsc_defaults {{ item.attribute }}={{ item.value }}
   with_items:
     - attribute: resource-stickiness
       value: "{{ cluster_default_resource_stickiness }}"
   run_once: true
 
 - name: Disable stonith on FreeBSD
-  shell: crm configure op_defaults stonith-enabled=false
+  command: crm configure op_defaults stonith-enabled=false
   when:
     - ansible_os_family | lower == 'freebsd'
   run_once: true
