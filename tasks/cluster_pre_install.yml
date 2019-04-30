@@ -67,7 +67,8 @@
 
 # TODO: check openstack credentials before setting configure_openstack_fencing to true
 
-- set_fact:
+- name: Configure consul
+  set_fact:
     configure_consul: true
   when:
     - cluster_monitoring_use_consul == true
