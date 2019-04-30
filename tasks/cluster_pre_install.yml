@@ -54,13 +54,15 @@
       set_fact:
         use_firewalld: true
 
-- set_fact:
+- name: Set default facts
+  set_fact:
     configure_consul: false
     install_openstack_fencing_from_github: false
     build_openstack_fencing_from_deployment_host: true
     configure_openstack_fencing: false
 
-- set_fact:
+- name: Set cluster-aware facts
+  set_fact:
    install_openstack_fencing_from_github: true
    configure_openstack_fencing: true
   when: cluster_stonith_use_openstack | lower == 'true'
