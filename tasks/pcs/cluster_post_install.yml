@@ -89,7 +89,7 @@
     - name: Create the management IP
       shell: >
         pcs resource show mgmt_ip_addr || \
-        pcs resource create mgmt_ip_addr IPAddr2 ip={{ cluster_mgmt_ip }} 
+        pcs resource create mgmt_ip_addr IPAddr2 ip={{ cluster_mgmt_ip }}
 
     - name: Add management IP constraint rule
       shell: >
