@@ -77,7 +77,7 @@
     - ansible_facts.services.consul is defined
 
 - name: Create consul_bin variable
-  when: cluster_monitoring_use_consul == true
+  when: configure_consul | lower == 'true'
   block:
     - name: Get consul path from systemd
       shell: systemctl show -p ExecStart consul|tr ' ' '\n'|awk -F= '/path=/ {print $2}'
