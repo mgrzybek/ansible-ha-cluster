@@ -44,13 +44,15 @@
   register: consul_service
   when: cluster_monitoring_use_consul == true
 
-- set_fact:
+- name: Set default facts
+  set_fact:
     use_firewalld: false
 
 - name: Check firewalld
   when: ansible_system | lower == 'linux'
   block:
     - when: ansible_facts.services.firewalld is defined
+      name: Set firewalld fact
       set_fact:
         use_firewalld: true
 
