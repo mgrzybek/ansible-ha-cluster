@@ -39,11 +39,6 @@
 - name: Get services facts
   service_facts:
 
-- name: Get consul binary path
-  shell: systemctl show consul | awk '/^ExecStart=/ { gsub("path=","") ; print $2 }'
-  register: consul_service
-  when: cluster_monitoring_use_consul == true
-
 - name: Set default facts
   set_fact:
     use_firewalld: false
@@ -82,11 +77,11 @@
   when: configure_consul | lower == 'true'
   block:
     - name: Get consul path from systemd
-      shell: systemctl show -p ExecStart consul|tr ' ' '\n'|awk -F= '/path=/ {print $2}'
-      register: consul_bin_path
+      systemd: name=consul
+      register: systemd_consul
 
     - name: Set consul bin path
-      set_fact: consul_bin="{{ consul_bin_path.stdout }}"
+      set_fact: consul_bin="{{ systemd_consul.status.ExecStart | regex_replace('^.*?path=(.+?) .+$', '\\1') }}"
 
 - name: Deal with self-configuration
   when: hostvars | length == 0
