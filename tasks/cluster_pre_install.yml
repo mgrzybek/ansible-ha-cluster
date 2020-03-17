@@ -70,7 +70,7 @@
   set_fact:
     configure_consul: true
   when:
-    - cluster_monitoring_use_consul == true
+    - cluster_monitoring_use_consul | lower == 'true'
     - ansible_facts.services.consul is defined
 
 - name: Create consul_bin variable

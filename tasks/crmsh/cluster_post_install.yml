@@ -7,7 +7,7 @@
 
 # Configure SBD service
 - include_tasks: cluster_post_install_stonith_sbd.yml
-  when: cluster_stonith_use_sbd == true
+  when: cluster_stonith_use_sbd | lower == 'true'
   tags:
     - cluster-stonith
 
@@ -27,7 +27,7 @@
     - crm cluster stop
     - crm cluster start
   when:
-    - cluster_force_restart == true
+    - cluster_force_restart | lower == 'true'
     - corosync_template_result is changed
   tags:
     - cluster-corosync
@@ -45,7 +45,7 @@
 
 # Configure IPMI resource
 - include_tasks: cluster_post_install_stonith_ipmi.yml
-  when: cluster_stonith_use_ipmi == true
+  when: cluster_stonith_use_ipmi | lower == 'true'
   tags:
     - cluster-stonith
 
@@ -54,7 +54,7 @@
 - name: Create suicide resource
   run_once: true
   when:
-    - cluster_stonith_use_sbd == false
+    - cluster_stonith_use_sbd | lower == 'false'
     - ansible_virtualization_type != 'lxc'
     - ansible_os_family | lower != 'freebsd'
   tags:
@@ -126,7 +126,7 @@
 
 - include_tasks: cluster_post_install_hawk.yml
   when:
-    - cluster_use_hawk == true
+    - cluster_use_hawk | lower == 'true'
     - ansible_os_family | lower == 'suse'
   tags:
     - cluster-mgmt-hawk

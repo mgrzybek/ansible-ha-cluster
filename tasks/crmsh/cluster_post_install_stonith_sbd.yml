@@ -46,7 +46,7 @@
 - name: Create SBD resource
   run_once: true
   when:
-    - cluster_stonith_use_sbd == true
+    - cluster_stonith_use_sbd | lower == 'true'
     - cluster_stonith_sbd_luns | length > 0
     - ansible_virtualization_type != 'lxc'
   block:

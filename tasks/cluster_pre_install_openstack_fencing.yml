@@ -5,8 +5,8 @@
   become: no
   run_once: true
   when:
-    - install_openstack_fencing_from_github == true
-    - build_openstack_fencing_from_deployment_host == true
+    - install_openstack_fencing_from_github | lower == 'true'
+    - build_openstack_fencing_from_deployment_host | lower == 'true'
   block:
     - name: Clone the repo
       git:
@@ -30,8 +30,8 @@
 - name: Remote building
   become: no
   when:
-    - install_openstack_fencing_from_github == true
-    - build_openstack_fencing_from_deployment_host == false
+    - install_openstack_fencing_from_github | lower == 'true'
+    - build_openstack_fencing_from_deployment_host | lower == 'false'
   block:
     - name: Clone the repo
       git:

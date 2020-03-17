@@ -13,7 +13,7 @@
 - name: Restart the cluster (force)
   shell: pcs cluster stop --force && pcs cluster start
   when:
-    - cluster_force_restart == true
+    - cluster_force_restart | lower == 'true'
     - corosync_template_result is changed
   tags:
     - cluster-corosync
@@ -30,7 +30,7 @@
 
 # Configure IPMI resource
 - include_tasks: cluster_post_install_stonith_ipmi.yml
-  when: cluster_stonith_use_ipmi == true
+  when: cluster_stonith_use_ipmi | lower == 'true'
   tags:
     - cluster-stonith
 
@@ -39,7 +39,7 @@
   command: pcs stonith create stonith_suicide suicide clone=c-stonith_suicide
   run_once: true
   when:
-    - cluster_stonith_use_sbd == false
+    - cluster_stonith_use_sbd | lower == 'false'
     - ansible_virtualization_type != 'lxc'
   tags:
     - cluster-stonith

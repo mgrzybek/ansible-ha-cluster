@@ -9,7 +9,7 @@
   with_items: "{{ cluster_crm_scripts }}"
 
 - when:
-    - configure_openstack_fencing == true
+    - configure_openstack_fencing | lower == 'true'
   block:
     - name: Install openstack_fencing crm script (directory)
       file: path={{ cluster_crm_scripts_root_path }}/openstack_fencing state=directory

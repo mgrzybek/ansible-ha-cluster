@@ -28,19 +28,19 @@
     update_cache: "{{ (ansible_pkg_mgr == 'apt') | ternary('yes', omit) }}"
     cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
   when:
-    - cluster_stonith_use_sbd == true
+    - cluster_stonith_use_sbd | lower == 'true'
     - ansible_virtualization_type != 'lxc'
     - ansible_distribution != 'SLES' # included in the ha_sles pattern
 
 - name: Download pip artifacts
-  when: cluster_repo_use_pip == true
+  when: cluster_repo_use_pip | lower == 'true'
   block:
     - name: Install python-parallax using pip
       pip: name=parallax extra_args={{ pip_extra_args }}
       when: cluster_pip_parallax | lower == 'true'
 
     - name: Install monitoring-plugins-crm using pip
-      when: cluster_monitoring_use_nrpe == true or cluster_monitoring_use_consul == true
+      when: cluster_monitoring_use_nrpe | lower == 'true' or cluster_monitoring_use_consul | lower == 'true'
       block:
         - name: Install pip
           package:
@@ -75,7 +75,7 @@
 
 - name: Openstack fencing
   when:
-    - cluster_stonith_use_openstack == true
+    - cluster_stonith_use_openstack | lower == 'true'
   block:
     - name: Install openstack_cluster_node repo packages
       package:
@@ -139,7 +139,7 @@
 
     - name: Copy openstack fencing agent
       when:
-        - install_openstack_fencing_from_github == true
+        - install_openstack_fencing_from_github | lower == 'true'
       copy: src="{{ item.src }}" dest="{{ item.dest }}" mode={{ item.mode }}
       with_items:
         - src: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
