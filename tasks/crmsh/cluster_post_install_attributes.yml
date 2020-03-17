@@ -7,7 +7,7 @@
 
 # Utilization attributes
 - name: Define cpu and memory allocation ratio
-  shell: crm_attribute -z --node {{ crm_node_name.stdout }} --name {{ item.property }} --update {{ item.value }}
+  command: crm_attribute -z --node {{ crm_node_name.stdout }} --name {{ item.property }} --update {{ item.value }}
   with_items:
     - property: cpu
       value: "{{ (ansible_processor_vcpus * cluster_allocation_vcpus_ratio) | int }}"

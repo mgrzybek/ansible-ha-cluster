@@ -10,7 +10,7 @@
   when: ansible_virtualization_type == 'lxc' # Containers do not see physical block devices
 
 - name: LUNs initialisation for SBD if the resource does not exist
-  shell: sbd -d {{ item }} create
+  command: sbd -d {{ item }} create
   with_items: "{{ cluster_stonith_sbd_luns }}"
   when:
     - crm_configure_show.stdout.find("sbd") < 0
@@ -56,4 +56,4 @@
       become: false
 
     - name: Create SBD resource
-      shell: crm -w script run sbd id=stonith_sbd
+      command: crm -w script run sbd id=stonith_sbd
