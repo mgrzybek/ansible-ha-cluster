@@ -1,49 +1,49 @@
 ---
 
-- name: Checks
+- name: Pre-Install | | Checks
   run_once: true
   block:
-    - name: Check if all the expected nodes are alive (using inventory)
+    - name: Pre-Install | | Check if all the expected nodes are alive (using inventory)
       fail: msg="Some nodes are unavailable. Expected {{ cluster_expected_votes }}, got {{ play_hosts | length }}"
       when:
         - cluster_expected_votes != play_hosts | length
         - cluster_transport | lower == 'udpu'
         - not ansible_local.cluster_nodes is defined
 
-    - name: Check if all the expected nodes are alive (using local fact)
+    - name: Pre-Install | | Check if all the expected nodes are alive (using local fact)
       fail: msg="Some nodes are unavailable. Expected {{ cluster_expected_votes }}, got {{ ansible_local.cluster_nodes | length }}"
       when:
         - ansible_local.cluster_nodes is defined
         - cluster_expected_votes != ansible_local.cluster_nodes | length
         - cluster_transport | lower == 'udpu'
 
-    - name: Check multicast settings
+    - name: Pre-Install | | Check multicast settings
       fail: msg="A valid multicast address or cluster name must be given"
       when:
         - cluster_transport | lower != 'udpu'
         - cluster_mcast_address | ipaddr | lower == 'false'
         - cluster_name | length == 0
 
-    - name: Check pip usage
+    - name: Pre-Install | | Check pip usage
       fail: msg="We should be able to download pip artifacts but pip is disabled"
       when:
         - cluster_repo_use_pip | lower == 'false'
         - cluster_pip_parallax | lower == 'true'
 
-    - name: Openstack fencing usage
+    - name: Pre-Install | | Openstack fencing usage
       fail: msg="We can only install openstack fencing agents on openstack instances"
       when:
         - cluster_stonith_use_openstack | lower == 'true'
         - ansible_virtualization_type != "openstack"
 
-- name: Get services facts
+- name: Pre-Install | | Get services facts
   service_facts:
 
-- name: Set default facts
+- name: Pre-Install | | Set default facts
   set_fact:
     use_firewalld: false
 
-- name: Check firewalld
+- name: Pre-Install | | Check firewalld
   when: ansible_system | lower == 'linux'
   block:
     - when: ansible_facts.services.firewalld is defined
@@ -51,14 +51,14 @@
       set_fact:
         use_firewalld: true
 
-- name: Set default facts
+- name: Pre-Install | | Set default facts
   set_fact:
     configure_consul: false
     install_openstack_fencing_from_github: false
     build_openstack_fencing_from_deployment_host: true
     configure_openstack_fencing: false
 
-- name: Set cluster-aware facts
+- name: Pre-Install | | Set cluster-aware facts
   set_fact:
    install_openstack_fencing_from_github: true
    configure_openstack_fencing: true
@@ -66,31 +66,31 @@
 
 # TODO: check openstack credentials before setting configure_openstack_fencing to true
 
-- name: Configure consul
+- name: Pre-Install | | Configure consul
   set_fact:
     configure_consul: true
   when:
     - cluster_monitoring_use_consul | lower == 'true'
     - ansible_facts.services.consul is defined
 
-- name: Create consul_bin variable
+- name: Pre-Install | | Create consul_bin variable
   when: configure_consul | lower == 'true'
   block:
-    - name: Get consul path from systemd
+    - name: Pre-Install | | Get consul path from systemd
       systemd: name=consul
       register: systemd_consul
 
-    - name: Set consul bin path
+    - name: Pre-Install | | Set consul bin path
       set_fact: consul_bin="{{ systemd_consul.status.ExecStart | regex_replace('^.*?path=(.+?) .+$', '\\1') }}"
 
-- name: Deal with self-configuration
+- name: Pre-Install | | Deal with self-configuration
   when: hostvars | length == 0
   block:
-    - name: Generate facts
+    - name: Pre-Install | | Generate facts
       register: self_facts
       setup:
 
-    - name: Set openstack fencing facts
+    - name: Pre-Install | | Set openstack fencing facts
       set_fact:
         build_openstack_fencing_from_deployment_host: false
         wait_for_duration: "{{ 60 | random }}"

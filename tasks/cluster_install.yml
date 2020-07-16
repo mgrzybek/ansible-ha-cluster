@@ -1,12 +1,12 @@
 ---
 
-- name: Install HA pattern (SLES only)
+- name: Install | | Install HA pattern (SLES only)
   zypper: type=pattern name={{ item }} state=present
   with_items:
     - ha_sles
   when: ansible_distribution == 'SLES'
 
-- name: Install corosync / pacemaker packages
+- name: Install | | Install corosync / pacemaker packages
   package:
     name: "{{ cluster_distro_packages }}"
     state: "{{ cluster_package_state }}"
@@ -21,7 +21,7 @@
     - install-yum
     - install-zypper
 
-- name: Install sbd package
+- name: Install | | Install sbd package
   package:
     name: sbd
     state: "{{ cluster_package_state }}"
@@ -32,17 +32,17 @@
     - ansible_virtualization_type != 'lxc'
     - ansible_distribution != 'SLES' # included in the ha_sles pattern
 
-- name: Download pip artifacts
+- name: Install | | Download pip artifacts
   when: cluster_repo_use_pip | lower == 'true'
   block:
-    - name: Install python-parallax using pip
+    - name: Install | | Install python-parallax using pip
       pip: name=parallax extra_args={{ pip_extra_args }}
       when: cluster_pip_parallax | lower == 'true'
 
-    - name: Install monitoring-plugins-crm using pip
+    - name: Install | | Install monitoring-plugins-crm using pip
       when: cluster_monitoring_use_nrpe | lower == 'true' or cluster_monitoring_use_consul | lower == 'true'
       block:
-        - name: Install pip
+        - name: Install | | Install pip
           package:
             name: "{{ cluster_distro_pip_packages }}"
             state: "{{ cluster_package_state }}"
@@ -57,27 +57,27 @@
             - install-yum
             - install-zypper
 
-        - name: Install monitoring-plugins-crm
+        - name: Install | | Install monitoring-plugins-crm
           pip: name=monitoring-plugins-crm extra_args={{ pip_extra_args }}
 
-- name: Adds some environment variables to pacemaker service
+- name: Install | | Adds some environment variables to pacemaker service
   when:
     - cluster_systemd_service_env != None
     - cluster_systemd_service_env | length > 0
     - ansible_service_mgr == "systemd"
   block:
-    - name: Creates directory
+    - name: Install | | Creates directory
       file: path=/etc/systemd/system/pacemaker.service.d state=directory
 
-    - name: Environment file
+    - name: Install | | Environment file
       template: src=systemd.conf.j2 dest=/etc/systemd/system/pacemaker.service.d/environment.conf
       register: environment_conf
 
-- name: Openstack fencing
+- name: Install | | Openstack fencing
   when:
     - cluster_stonith_use_openstack | lower == 'true'
   block:
-    - name: Install openstack_cluster_node repo packages
+    - name: Install | | Install openstack_cluster_node repo packages
       package:
         name: "{{ cluster_openstack_distro_repo_packages }}"
         state: "{{ cluster_package_state }}"
@@ -92,13 +92,13 @@
         - install-yum
         - install-zypper
 
-    - name: Remove CentOS-QEMU-EV repo
+    - name: Install | | Remove CentOS-QEMU-EV repo
       when: ansible_os_family | lower == 'redhat'
       file:
         path: /etc/yum.repos.d/CentOS-QEMU-EV.repo
         state: absent
 
-    - name: Install openstack_cluster_node packages
+    - name: Install | | Install openstack_cluster_node packages
       package:
         name: "{{ cluster_openstack_distro_repo_packages }}"
         state: "{{ cluster_package_state }}"
@@ -113,7 +113,7 @@
         - install-yum
         - install-zypper
 
-    - name: Install openstack fencing packages
+    - name: Install | | Install openstack fencing packages
       package:
         name: "{{ cluster_distro_openstack_fencing_packages }}"
         state: "{{ cluster_package_state }}"
@@ -128,16 +128,16 @@
         - install-yum
         - install-zypper
 
-    - name: Get installed stonith agents
+    - name: Install | | Get installed stonith agents
       command: stonith_admin -I
       register: stonith_agents
 
-    - name: Check if fence_openstack have been installed by fencing packages
+    - name: Install | | Check if fence_openstack have been installed by fencing packages
       when: stonith_agents.stdout.find('fence_openstack') > -1
       set_fact:
         install_openstack_fencing_from_github: false
 
-    - name: Copy openstack fencing agent
+    - name: Install | | Copy openstack fencing agent
       when:
         - install_openstack_fencing_from_github | lower == 'true'
       copy: src="{{ item.src }}" dest="{{ item.dest }}" mode={{ item.mode }}
