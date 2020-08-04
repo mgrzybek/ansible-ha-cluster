@@ -1,3 +1,4 @@
+---
 # Copyright (C) 2016 Mathieu Grzybek
 #
 # License: GNU General Public License (GPL)
@@ -10,56 +11,56 @@
     Location is set by 'attribute_name' and 'attribute_value'.
 
   parameters:
-   - name: node
-     shortdesc: Node to control.
-     longdesc: Name of the node we want to control by IPMI.
-     required: true
-     type: string
+  - name: node
+    shortdesc: Node to control.
+    longdesc: Name of the node we want to control by IPMI.
+    required: true
+    type: string
 
-   - name: ipmi_ip
-     shortdesc: Management board address.
-     longdesc: Address or hostname of the management board.
-     required: true
-     type: string
+  - name: ipmi_ip
+    shortdesc: Management board address.
+    longdesc: Address or hostname of the management board.
+    required: true
+    type: string
 
-   - name: userid
-     shortdesc: User.
-     longdesc: Username able to reboot the server.
-     required: true
-     type: string
+  - name: userid
+    shortdesc: User.
+    longdesc: Username able to reboot the server.
+    required: true
+    type: string
 
-   - name: passwd
-     shortdesc: Password.
-     longdesc: User's password.
-     required: true
-     type: string
+  - name: passwd
+    shortdesc: Password.
+    longdesc: User's password.
+    required: true
+    type: string
 
-   - name: attribute_name
-     shortdesc: Attribute to check for placement.
-     longdesc: Attribute to check for placement.
-     required: true
-     type: string
+  - name: attribute_name
+    shortdesc: Attribute to check for placement.
+    longdesc: Attribute to check for placement.
+    required: true
+    type: string
 
-   - name: attribute_value
-     shortdesc: Value to test.
-     longdesc: Value to test.
-     required: true
-     type: string
+  - name: attribute_value
+    shortdesc: Value to test.
+    longdesc: Value to test.
+    required: true
+    type: string
 
   actions:
-    - cib: |
-        primitive stonith_ipmi_{{node}} stonith:external/ipmi
-         params hostname={{node}}
-         interface=lanplus
-         ipaddr={{ipmi_ip}}
-         userid={{userid}}
-         passwd={{passwd}}
-         passwd_method=param
-         op monitor interval=120 timeout=20
-         op start interval=0 timeout=20
-         op stop interval=0 timeout=15
-         meta is-managed=true target-role=Started
+  - cib: |
+      primitive stonith_ipmi_{{node}} stonith:external/ipmi
+       params hostname={{node}}
+       interface=lanplus
+       ipaddr={{ipmi_ip}}
+       userid={{userid}}
+       passwd={{passwd}}
+       passwd_method=param
+       op monitor interval=120 timeout=20
+       op start interval=0 timeout=20
+       op stop interval=0 timeout=15
+       meta is-managed=true target-role=Started
 
-    - cib: |
-        location loc_stonith_ipmi_{{node}} stonith_ipmi_{{node}} resource-discovery=always
-         rule -inf: {{attribute_name}} ne {{attribute_value}}
+  - cib: |
+      location loc_stonith_ipmi_{{node}} stonith_ipmi_{{node}} resource-discovery=always
+       rule -inf: {{attribute_name}} ne {{attribute_value}}

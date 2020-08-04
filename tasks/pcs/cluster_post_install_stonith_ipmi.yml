@@ -1,23 +1,21 @@
----
-
 - block:
-    - name: Add IPMI stonith resources on hardware nodes
-      command: >
-        pcs stonith create stonith_ipmi_{{ ansible_hostname }} ipmi \
-            ipmi_ip="{{ ilo.addr }}" \
-            passwd="{{ ilo.password }}" \
-            userid="{{ ilo.login }}" \
+  - name: Add IPMI stonith resources on hardware nodes
+    command: >
+      pcs stonith create stonith_ipmi_{{ ansible_hostname }} ipmi \
+          ipmi_ip="{{ ilo.addr }}" \
+          passwd="{{ ilo.password }}" \
+          userid="{{ ilo.login }}" \
 
-    - name: Add IPMI stonith constraint rule
-      command: >
-        pcs constraint location rule \
-            loc_rule_stonith_ipmi_{{ ansible_hostname }} \
-            "{{ cluster_node_stonith_ipmi_attribute_key }}" eq "{{ cluster_node_stonith_ipmi_attribute_value }}"
+  - name: Add IPMI stonith constraint rule
+    command: >
+      pcs constraint location rule \
+          loc_rule_stonith_ipmi_{{ ansible_hostname }} \
+          "{{ cluster_node_stonith_ipmi_attribute_key }}" eq "{{ cluster_node_stonith_ipmi_attribute_value }}"
 
-    - name: Add IPMI stonith constraint
-      command: >
-        pcs constraint location add \
-            loc_rule_stonith_ipmi_{{ ansible_hostname }} \
-            stonith_ipmi_{{ ansible_hostname }}
+  - name: Add IPMI stonith constraint
+    command: >
+      pcs constraint location add \
+          loc_rule_stonith_ipmi_{{ ansible_hostname }} \
+          stonith_ipmi_{{ ansible_hostname }}
 
   when: ansible_virtualization_role == 'host'

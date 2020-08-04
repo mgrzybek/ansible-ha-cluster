@@ -1,3 +1,4 @@
+---
 # Copyright (C) 2016 Mathieu Grzybek
 #
 # License: GNU General Public License (GPL)
@@ -10,18 +11,18 @@
     Three nodes are used (host_list)
 
   parameters:
-   - name: host_list
-     shortdesc: Hosts list.
-     longdesc: Space-separated list of nodes.
-     required: true
-     type: string
+  - name: host_list
+    shortdesc: Hosts list.
+    longdesc: Space-separated list of nodes.
+    required: true
+    type: string
 
   actions:
-    - cib: |
-        primitive splitbrain_detection ocf:pacemaker:ping
-         params host_list="{{host_list}}"
-         op monitor interval=10s timeout=60s
+  - cib: |
+      primitive splitbrain_detection ocf:pacemaker:ping
+       params host_list="{{host_list}}"
+       op monitor interval=10s timeout=60s
 
-    - cib: |
-        clone c-splitbrain_detection splitbrain_detection
-          meta interleave=true
+  - cib: |
+      clone c-splitbrain_detection splitbrain_detection
+        meta interleave=true

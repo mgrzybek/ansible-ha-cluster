@@ -1,19 +1,17 @@
----
-
 - name: Add IPMI stonith resources on hardware nodes
   when: ansible_virtualization_role == 'host'
   block:
-    - name: Time buffer
-      when: hostvars | length == 0
-      wait_for: timeout={{ wait_for_duration }}
-      become: false
+  - name: Time buffer
+    when: hostvars | length == 0
+    wait_for: timeout={{ wait_for_duration }}
+    become: false
 
-    - name: Add IPMI stonith resources on hardware nodes
-      shell: >
-        crm script run ipmi \
-          node={{ ansible_hostname }} \
-          ipmi_ip="{{ ilo.addr }}" \
-          passwd="{{ ilo.password }}" \
-          userid="{{ ilo.login }}" \
-          attribute_name="{{ cluster_node_stonith_ipmi_attribute_key }}" \
-          attribute_value="{{ cluster_node_stonith_ipmi_attribute_value }}"
+  - name: Add IPMI stonith resources on hardware nodes
+    shell: >
+      crm script run ipmi \
+        node={{ ansible_hostname }} \
+        ipmi_ip="{{ ilo.addr }}" \
+        passwd="{{ ilo.password }}" \
+        userid="{{ ilo.login }}" \
+        attribute_name="{{ cluster_node_stonith_ipmi_attribute_key }}" \
+        attribute_value="{{ cluster_node_stonith_ipmi_attribute_value }}"

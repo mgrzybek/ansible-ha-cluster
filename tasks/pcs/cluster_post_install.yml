@@ -1,22 +1,20 @@
----
-
 # Corosync configuration
 - name: Corosync configuration
   template: src=corosync.conf.j2 dest={{ cluster_corosync_configuration }}
   register: corosync_template_result
   vars:
-    generated_cluster_ring0_port: 'ansible_{{ cluster_ring0_port | regex_replace("-","_") }}'
-    generated_cluster_ring1_port: 'ansible_{{ cluster_ring1_port | regex_replace("-","_") }}'
+    generated_cluster_ring0_port: ansible_{{ cluster_ring0_port | regex_replace("-","_") }}
+    generated_cluster_ring1_port: ansible_{{ cluster_ring1_port | regex_replace("-","_") }}
   tags:
-    - cluster-corosync
+  - cluster-corosync
 
 - name: Restart the cluster (force)
   shell: pcs cluster stop --force && pcs cluster start
   when:
-    - cluster_force_restart | lower == 'true'
-    - corosync_template_result is changed
+  - cluster_force_restart | lower == 'true'
+  - corosync_template_result is changed
   tags:
-    - cluster-corosync
+  - cluster-corosync
 
 - name: Start the cluster
   service: name=pacemaker state=started
@@ -32,36 +30,36 @@
 - include_tasks: cluster_post_install_stonith_ipmi.yml
   when: cluster_stonith_use_ipmi | lower == 'true'
   tags:
-    - cluster-stonith
+  - cluster-stonith
 
 # The STONITH suicide is used when SBD is unused
 - name: Create suicide resource
   command: pcs stonith create stonith_suicide suicide clone=c-stonith_suicide
   run_once: true
   when:
-    - cluster_stonith_use_sbd | lower == 'false'
-    - ansible_virtualization_type != 'lxc'
+  - cluster_stonith_use_sbd | lower == 'false'
+  - ansible_virtualization_type != 'lxc'
   tags:
-    - cluster-stonith
+  - cluster-stonith
 
 # Nodes attributes
 - include_tasks: cluster_post_install_attributes.yml
   tags:
-    - cluster-attributes
+  - cluster-attributes
 
 # Default values
 - name: Set no-quorum-policy
   command: pcs property set {{ item.attribute }}={{ item.value }}
   with_items:
-    - attribute: no-quorum-policy
-      value: "{{ cluster_no_quorum_policy }}"
+  - attribute: no-quorum-policy
+    value: '{{ cluster_no_quorum_policy }}'
   run_once: true
 
 - name: Set resource defaults
   command: pcs resource defaults {{ item.attribute }}={{ item.value }}
   with_items:
-    - attribute: resource-stickiness
-      value: "{{ cluster_default_resource_stickiness }}"
+  - attribute: resource-stickiness
+    value: '{{ cluster_default_resource_stickiness }}'
   run_once: true
 
 # Creates a cloned resource to ping three peers.
@@ -81,25 +79,25 @@
 
   run_once: true
   when:
-    - cluster_expected_votes < 3
-    - cluster_ping_remote_addr != None
+  - cluster_expected_votes < 3
+  - cluster_ping_remote_addr != None
 
 # Creates management IP
 - block:
-    - name: Create the management IP
-      shell: >
-        pcs resource show mgmt_ip_addr || \
-        pcs resource create mgmt_ip_addr IPAddr2 ip={{ cluster_mgmt_ip }}
+  - name: Create the management IP
+    shell: >
+      pcs resource show mgmt_ip_addr || \
+      pcs resource create mgmt_ip_addr IPAddr2 ip={{ cluster_mgmt_ip }}
 
-    - name: Add management IP constraint rule
-      command: >
-        pcs constraint location mgmt_ip_addr rule \
-            "{{ cluster_node_mgmt_ip_attribute_key }}" eq "{{ cluster_node_mgmt_ip_attribute_value }}"
+  - name: Add management IP constraint rule
+    command: >
+      pcs constraint location mgmt_ip_addr rule \
+          "{{ cluster_node_mgmt_ip_attribute_key }}" eq "{{ cluster_node_mgmt_ip_attribute_value }}"
 
   run_once: true
   when: cluster_mgmt_ip != None
   tags:
-    - cluster-mgmt-ip-addr
+  - cluster-mgmt-ip-addr
 
 - name: Enable pacemaker at boot
   service: name=pacemaker enabled=yes

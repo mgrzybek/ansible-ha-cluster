@@ -1,20 +1,20 @@
 cluster_distro_packages:
-  - fping
-  - pacemaker
-  - crmsh
+- fping
+- pacemaker
+- crmsh
 
 cluster_sbd_configuration: /etc/sysconfig/sbd
 cluster_corosync_configuration: /etc/corosync/corosync.conf
 
 cluster_crm_scripts:
-  - cloned_systemd_service
-  - clone
-  - mgmt
-  - ovs_monitoring
-  - ping
-  - ipmi
-  - suicide
-  - service
+- cloned_systemd_service
+- clone
+- mgmt
+- ovs_monitoring
+- ping
+- ipmi
+- suicide
+- service
 
 cluster_crm_scripts_root_path: /usr/share/crmsh/scripts
 
@@ -23,14 +23,14 @@ cluster_nagios_plugins_root_path: /usr/lib/nagios/plugins
 cluster_etc_pacemaker: /etc/pacemaker
 
 cluster_distro_openstack_fencing_packages:
-  - python-pexpect
-  - python-novaclient
+- python-pexpect
+- python-novaclient
 
 cluster_usr_prefix: /usr
 
 cluster_openstack_distro_repo_packages: []
 
 cluster_distro_pip_packages:
-    - python-pip
+- python-pip
 
 cluster_pip_parallax: false

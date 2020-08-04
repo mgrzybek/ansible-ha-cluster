@@ -1,8 +1,8 @@
 cluster_distro_packages:
   #- fping
   #- pacemaker
-  - pcs
-  - epel-release
+- pcs
+- epel-release
 
 cluster_sbd_configuration: /etc/sysconfig/sbd
 cluster_corosync_configuration: /etc/corosync/corosync.conf
@@ -16,15 +16,15 @@ cluster_nagios_plugins_root_path: /usr/lib/nagios/plugins
 cluster_etc_pacemaker: /etc/pacemaker
 
 cluster_distro_openstack_fencing_packages:
-  - pexpect
-  - python2-novaclient
+- pexpect
+- python2-novaclient
 
 cluster_usr_prefix: /usr
 
 cluster_openstack_distro_repo_packages:
-    - centos-release-openstack-queens
+- centos-release-openstack-queens
 
 cluster_distro_pip_packages:
-    - python2-pip
+- python2-pip
 
 cluster_pip_parallax: false

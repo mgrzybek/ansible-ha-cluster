@@ -1,42 +1,40 @@
----
-
 - name: Gather variables for each operating system
-  include_vars: "{{ item }}"
+  include_vars: '{{ item }}'
   with_first_found:
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
-    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
-    - "{{ ansible_distribution | lower }}.yml"
-    - "{{ ansible_os_family | lower }}.yml"
+  - '{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml'
+  - '{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml'
+  - '{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml'
+  - '{{ ansible_distribution | lower }}.yml'
+  - '{{ ansible_os_family | lower }}.yml'
   tags:
-    - always
+  - always
 
 - include_tasks: cluster_pre_install.yml
   tags:
-    - cluster-pre-install
+  - cluster-pre-install
 
 - include_tasks: cluster_pre_install_openstack_fencing.yml
   tags:
-    - cluster-pre-install
+  - cluster-pre-install
 
 - include_tasks: cluster_install.yml
   tags:
-    - cluster-install
+  - cluster-install
 
 - include_tasks: crmsh/cluster_post_install.yml
   when: ansible_os_family | lower != 'redhat'
   tags:
-    - cluster-post-install
+  - cluster-post-install
 
 - include_tasks: pcs/cluster_post_install.yml
   when: ansible_os_family | lower == 'redhat'
   tags:
-    - cluster-post-install
+  - cluster-post-install
 
 - include_tasks: cluster_post_install_monitoring.yml
   tags:
-    - cluster-post-install
+  - cluster-post-install
 
 - include_tasks: cluster_post_install.yml
   tags:
-    - cluster-post-install
+  - cluster-post-install

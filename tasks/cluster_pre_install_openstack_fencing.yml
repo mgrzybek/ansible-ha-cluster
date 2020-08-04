@@ -1,24 +1,22 @@
----
-
 - name: Pre-Install | openstack fencing | Local building
   delegate_to: localhost
   become: no
   run_once: true
   when:
-    - install_openstack_fencing_from_github | lower == 'true'
-    - build_openstack_fencing_from_deployment_host | lower == 'true'
+  - install_openstack_fencing_from_github | lower == 'true'
+  - build_openstack_fencing_from_deployment_host | lower == 'true'
   block:
-    - name: Pre-Install | openstack fencing | Clone the repo
-      git:
-        repo: https://github.com/ClusterLabs/fence-agents
-        dest: "{{ cluster_stonith_openstack_fencing_repo_path }}"
-        version: master
+  - name: Pre-Install | openstack fencing | Clone the repo
+    git:
+      repo: https://github.com/ClusterLabs/fence-agents
+      dest: '{{ cluster_stonith_openstack_fencing_repo_path }}'
+      version: master
 
-    - name: Pre-Install | openstack fencing | Set the python interpretor
-      lineinfile:
-        path: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
-        regexp: "^#!"
-        line: "#! {{ cluster_usr_prefix }}/bin/python3"
+  - name: Pre-Install | openstack fencing | Set the python interpretor
+    lineinfile:
+      path: '{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py'
+      regexp: ^#!
+      line: '#! {{ cluster_usr_prefix }}/bin/python3'
 
 #    - name: Pre-Install | openstack fencing | Install the agent
 #      copy: src="{{ item.src }}" dest="{{ item.dest }}" mode="{{ item.mode }}"
@@ -30,18 +28,18 @@
 - name: Pre-Install | openstack fencing | Remote building
   become: no
   when:
-    - install_openstack_fencing_from_github | lower == 'true'
-    - build_openstack_fencing_from_deployment_host | lower == 'false'
+  - install_openstack_fencing_from_github | lower == 'true'
+  - build_openstack_fencing_from_deployment_host | lower == 'false'
   block:
-    - name: Pre-Install | openstack fencing | Clone the repo
-      git:
-        repo: https://github.com/ClusterLabs/fence-agents
-        dest: "{{ cluster_stonith_openstack_fencing_repo_path }}"
-        force: yes
-        version: master
+  - name: Pre-Install | openstack fencing | Clone the repo
+    git:
+      repo: https://github.com/ClusterLabs/fence-agents
+      dest: '{{ cluster_stonith_openstack_fencing_repo_path }}'
+      force: yes
+      version: master
 
-    - name: Pre-Install | openstack fencing | Set the python interpretor
-      lineinfile:
-        path: "{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py"
-        regexp: "^#!"
-        line: "#! {{ cluster_usr_prefix }}/bin/python3"
+  - name: Pre-Install | openstack fencing | Set the python interpretor
+    lineinfile:
+      path: '{{ cluster_stonith_openstack_fencing_repo_path }}/agents/openstack/fence_openstack.py'
+      regexp: ^#!
+      line: '#! {{ cluster_usr_prefix }}/bin/python3'

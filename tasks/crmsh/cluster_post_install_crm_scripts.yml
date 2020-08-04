@@ -1,19 +1,17 @@
----
-
 - name: Install some crm scripts (directories)
   file: path={{ cluster_crm_scripts_root_path }}/{{ item }} state=directory
-  with_items: "{{ cluster_crm_scripts }}"
+  with_items: '{{ cluster_crm_scripts }}'
 
 - name: Install some crm scripts (files)
   copy: src=scripts/{{ item }}.yml dest={{ cluster_crm_scripts_root_path }}/{{ item }}/main.yml
-  with_items: "{{ cluster_crm_scripts }}"
+  with_items: '{{ cluster_crm_scripts }}'
 
 - when:
-    - configure_openstack_fencing | lower == 'true'
+  - configure_openstack_fencing | lower == 'true'
   block:
-    - name: Install openstack_fencing crm script (directory)
-      file: path={{ cluster_crm_scripts_root_path }}/openstack_fencing state=directory
+  - name: Install openstack_fencing crm script (directory)
+    file: path={{ cluster_crm_scripts_root_path }}/openstack_fencing state=directory
 
-    - name: Install openstack_fencing crm script (file)
-      copy: src=scripts/openstack_fencing.yml dest={{ cluster_crm_scripts_root_path }}/openstack_fencing/main.yml
+  - name: Install openstack_fencing crm script (file)
+    copy: src=scripts/openstack_fencing.yml dest={{ cluster_crm_scripts_root_path }}/openstack_fencing/main.yml
 

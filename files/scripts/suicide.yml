@@ -1,3 +1,4 @@
+---
 # Copyright (C) 2016 Mathieu Grzybek
 #
 # License: GNU General Public License (GPL)
@@ -9,9 +10,9 @@
     A cloned suicide primitive is created.
 
   actions:
-    - cib: |
-        primitive stonith_suicide stonith:suicide
-          op monitor interval="60" timeout="60"
+  - cib: |
+      primitive stonith_suicide stonith:suicide
+        op monitor interval="60" timeout="60"
 
-    - cib: |
-        clone c-stonith_suicide stonith_suicide
+  - cib: |
+      clone c-stonith_suicide stonith_suicide

@@ -1,36 +1,34 @@
----
-
 # CRM scripts
 - include_tasks: cluster_post_install_crm_scripts.yml
   tags:
-    - cluster-crm-scripts
+  - cluster-crm-scripts
 
 # Configure SBD service
 - include_tasks: cluster_post_install_stonith_sbd.yml
   when: cluster_stonith_use_sbd | lower == 'true'
   tags:
-    - cluster-stonith
+  - cluster-stonith
 
 # Corosync configuration
 - name: Corosync configuration
   template: src=corosync.conf.j2 dest={{ cluster_corosync_configuration }}
   register: corosync_template_result
   vars:
-    generated_cluster_ring0_port: 'ansible_{{ cluster_ring0_port | regex_replace("-","_") }}'
-    generated_cluster_ring1_port: 'ansible_{{ cluster_ring1_port | regex_replace("-","_") }}'
+    generated_cluster_ring0_port: ansible_{{ cluster_ring0_port | regex_replace("-","_") }}
+    generated_cluster_ring1_port: ansible_{{ cluster_ring1_port | regex_replace("-","_") }}
   tags:
-    - cluster-corosync
+  - cluster-corosync
 
 - name: Restart the cluster
-  command: "{{ item }}"
+  command: '{{ item }}'
   with_items:
-    - crm cluster stop
-    - crm cluster start
+  - crm cluster stop
+  - crm cluster start
   when:
-    - cluster_force_restart | lower == 'true'
-    - corosync_template_result is changed
+  - cluster_force_restart | lower == 'true'
+  - corosync_template_result is changed
   tags:
-    - cluster-corosync
+  - cluster-corosync
 
 - name: Start the cluster
   service: name=pacemaker state=started
@@ -47,58 +45,58 @@
 - include_tasks: cluster_post_install_stonith_ipmi.yml
   when: cluster_stonith_use_ipmi | lower == 'true'
   tags:
-    - cluster-stonith
+  - cluster-stonith
 
 
 # The STONITH suicide is used when SBD is unused
 - name: Create suicide resource
   run_once: true
   when:
-    - cluster_stonith_use_sbd | lower == 'false'
-    - ansible_virtualization_type != 'lxc'
-    - ansible_os_family | lower != 'freebsd'
+  - cluster_stonith_use_sbd | lower == 'false'
+  - ansible_virtualization_type != 'lxc'
+  - ansible_os_family | lower != 'freebsd'
   tags:
-    - cluster-stonith
+  - cluster-stonith
   block:
-    - name: Time buffer
-      when: hostvars | length == 0
-      wait_for: timeout={{ wait_for_duration }}
-      become: false
+  - name: Time buffer
+    when: hostvars | length == 0
+    wait_for: timeout={{ wait_for_duration }}
+    become: false
 
-    - name: Create suicide resource
-      command: crm -w script run suicide
+  - name: Create suicide resource
+    command: crm -w script run suicide
 
 # Nodes attributes
 - include_tasks: cluster_post_install_attributes.yml
   tags:
-    - cluster-attributes
+  - cluster-attributes
 
 # Default values
 - name: Set no-quorum-policy
   command: crm configure property {{ item.attribute }}={{ item.value }}
   with_items:
-    - attribute: no-quorum-policy
-      value: "{{ cluster_no_quorum_policy }}"
+  - attribute: no-quorum-policy
+    value: '{{ cluster_no_quorum_policy }}'
   run_once: true
 
 - name: Set default options
   command: crm configure op_defaults {{ item.attribute }}={{ item.value }}
   with_items:
-    - attribute: timeout
-      value: 60
+  - attribute: timeout
+    value: 60
   run_once: true
 
 - name: Set resource defaults
   command: crm configure rsc_defaults {{ item.attribute }}={{ item.value }}
   with_items:
-    - attribute: resource-stickiness
-      value: "{{ cluster_default_resource_stickiness }}"
+  - attribute: resource-stickiness
+    value: '{{ cluster_default_resource_stickiness }}'
   run_once: true
 
 - name: Disable stonith on FreeBSD
   command: crm configure op_defaults stonith-enabled=false
   when:
-    - ansible_os_family | lower == 'freebsd'
+  - ansible_os_family | lower == 'freebsd'
   run_once: true
 
 # Creates a cloned resource to ping three peers.
@@ -107,49 +105,49 @@
   shell: awk 'BEGIN { ORS=" " } /ring0_addr/ { print $2 }' {{ cluster_corosync_configuration }}
   register: crm_nodes_ips
   when:
-    - cluster_expected_votes < 3
-    - cluster_ping_remote_addr != None
+  - cluster_expected_votes < 3
+  - cluster_ping_remote_addr != None
 
 - name: Sets a ping resource on two-nodes clusters
   run_once: true
   when:
-    - cluster_expected_votes < 3
-    - cluster_ping_remote_addr != None
+  - cluster_expected_votes < 3
+  - cluster_ping_remote_addr != None
   block:
-    - name: Time buffer
-      when: hostvars | length == 0
-      wait_for: timeout={{ wait_for_duration }}
-      become: false
+  - name: Time buffer
+    when: hostvars | length == 0
+    wait_for: timeout={{ wait_for_duration }}
+    become: false
 
-    - name: Sets a ping resource on two-nodes clusters
-      command: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
+  - name: Sets a ping resource on two-nodes clusters
+    command: crm -w script run ping host_list="{{ crm_nodes_ips.stdout }}{{ cluster_ping_remote_addr }}"
 
 - include_tasks: cluster_post_install_hawk.yml
   when:
-    - cluster_use_hawk | lower == 'true'
-    - ansible_os_family | lower == 'suse'
+  - cluster_use_hawk | lower == 'true'
+  - ansible_os_family | lower == 'suse'
   tags:
-    - cluster-mgmt-hawk
+  - cluster-mgmt-hawk
 
 # Creates management IP, Hawk resources
 - name: Sets the management IP
   run_once: true
   when: cluster_mgmt_ip != None
   tags:
-    - cluster-mgmt-ip-addr
+  - cluster-mgmt-ip-addr
   block:
-    - name: Time buffer
-      when: hostvars | length == 0
-      wait_for: timeout={{ wait_for_duration }}
-      become: false
+  - name: Time buffer
+    when: hostvars | length == 0
+    wait_for: timeout={{ wait_for_duration }}
+    become: false
 
-    - name: Sets the management IP
-      command: >
-        crm script run mgmt \
-          ip={{ cluster_mgmt_ip }} \
-          use_hawk={{ cluster_use_hawk | lower }} \
-          attribute_name={{ cluster_node_mgmt_ip_attribute_key }} \
-          attribute_value={{ cluster_node_mgmt_ip_attribute_value }}
+  - name: Sets the management IP
+    command: >
+      crm script run mgmt \
+        ip={{ cluster_mgmt_ip }} \
+        use_hawk={{ cluster_use_hawk | lower }} \
+        attribute_name={{ cluster_node_mgmt_ip_attribute_key }} \
+        attribute_value={{ cluster_node_mgmt_ip_attribute_value }}
 
 - name: Enable pacemaker at boot
   service: name=pacemaker enabled=yes

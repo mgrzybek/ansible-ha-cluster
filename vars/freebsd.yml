@@ -1,17 +1,17 @@
 cluster_distro_packages:
-  - crmsh
-  - pacemaker
-  - resource-agents
-  - fping
-  - py27-pip
+- crmsh
+- pacemaker
+- resource-agents
+- fping
+- py27-pip
 
 cluster_crm_scripts:
-  - clone
-  - mgmt
-  - ovs_monitoring
-  - ping
-  - ipmi
-  - suicide
+- clone
+- mgmt
+- ovs_monitoring
+- ping
+- ipmi
+- suicide
 
 cluster_corosync_configuration: /usr/local/etc/corosync/corosync.conf
 
@@ -30,4 +30,4 @@ cluster_openstack_distro_repo_packages: []
 cluster_pip_parallax: true
 
 cluster_distro_pip_packages:
-  - py27-pip
+- py27-pip

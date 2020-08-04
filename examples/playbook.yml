@@ -1,34 +1,34 @@
     # Deployment for large clusters with several network interfaces
-    - name: Installation and setup of corosync / pacemaker
-      hosts: compute-infra_hosts
-      user: root
-      roles:
-        - { role: "ansible-ha-cluster" }
-      vars:
-        cluster_name: openstack
-        cluster_node_attribute_key: os_role
-        cluster_node_attribute_value: infra_hosts
-        cluster_ring0_port: br-mgmt
-        cluster_ring1_port: br-vxlan
-        cluster_expected_votes: "{{ groups['compute-infra_hosts'] | length }}"
+- name: Installation and setup of corosync / pacemaker
+  hosts: compute-infra_hosts
+  user: root
+  roles:
+  - {role: ansible-ha-cluster}
+  vars:
+    cluster_name: openstack
+    cluster_node_attribute_key: os_role
+    cluster_node_attribute_value: infra_hosts
+    cluster_ring0_port: br-mgmt
+    cluster_ring1_port: br-vxlan
+    cluster_expected_votes: "{{ groups['compute-infra_hosts'] | length }}"
 
     # Deployment for small clusters (2 nodes)
-    - name: Installation and setup of corosync / pacemaker
-      hosts: all
-      user: root
-      roles:
-        - { role: "ansible-ha-cluster" }
-      vars:
-        cluster_name: databases
-        cluster_expected_votes: "{{ groups['compute-infra_hosts'] | length }}"
-        cluster_ping_remote_addr: 8.8.8.8
+- name: Installation and setup of corosync / pacemaker
+  hosts: all
+  user: root
+  roles:
+  - {role: ansible-ha-cluster}
+  vars:
+    cluster_name: databases
+    cluster_expected_votes: "{{ groups['compute-infra_hosts'] | length }}"
+    cluster_ping_remote_addr: 8.8.8.8
 
     # Deployment for small clusters (odd number of ndoes)
-    - name: Installation and setup of corosync / pacemaker
-      hosts: all
-      user: root
-      roles:
-        - { role: "ansible-ha-cluster" }
-      vars:
-        cluster_name: databases
-        cluster_expected_votes: "{{ groups['compute-infra_hosts'] | length }}"
+- name: Installation and setup of corosync / pacemaker
+  hosts: all
+  user: root
+  roles:
+  - {role: ansible-ha-cluster}
+  vars:
+    cluster_name: databases
+    cluster_expected_votes: "{{ groups['compute-infra_hosts'] | length }}"

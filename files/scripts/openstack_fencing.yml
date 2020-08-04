@@ -1,3 +1,4 @@
+---
 # Copyright (C) 2019 Mathieu Grzybek
 #
 # License: GNU General Public License (GPL)
@@ -9,50 +10,50 @@
     A STONITH primitive is created. They use Openstack API.
 
   parameters:
-    - name: node
-      shortdesc: Node name
-      longdesc: Server's name
-      required: true
-      type: string
+  - name: node
+    shortdesc: Node name
+    longdesc: Server's name
+    required: true
+    type: string
 
-    - name: uuid
-      shortdesc: Server's UUID
-      longdesc: UUID of the server we want to fence.
-      required: true
-      type: string
+  - name: uuid
+    shortdesc: Server's UUID
+    longdesc: UUID of the server we want to fence.
+    required: true
+    type: string
 
-    - name: auth_url
-      shortdesc: Keystone Auth URL
-      longdesc: Keystone Auth URL
-      required: true
-      type: string
+  - name: auth_url
+    shortdesc: Keystone Auth URL
+    longdesc: Keystone Auth URL
+    required: true
+    type: string
 
-    - name: login
-      shortdesc: Login name
-      longdesc: Openstack username to use
-      required: true
-      type: string
+  - name: login
+    shortdesc: Login name
+    longdesc: Openstack username to use
+    required: true
+    type: string
 
-    - name: password
-      shortdesc: Login password or passphrase
-      longdesc: Openstack login password or passphrase
-      required: true
-      type: string
+  - name: password
+    shortdesc: Login password or passphrase
+    longdesc: Openstack login password or passphrase
+    required: true
+    type: string
 
-    - name: project_name
-      shortdesc: Project's name
-      longdesc: Tenant or project name
-      required: true
-      type: string
+  - name: project_name
+    shortdesc: Project's name
+    longdesc: Tenant or project name
+    required: true
+    type: string
 
   actions:
-    - cib: |
-        primitive stonith_openstack_{{node}} stonith:fence_openstack
-            params
-                auth-url="{{auth_url}}"
-                login="{{login}}"
-                passwd="{{password}}"
-                project-name="{{project_name}}"
-                uuid="{{uuid}}"
-                pcmk_host_list="{{node}}"
-            op monitor interval="60" timeout="60"
+  - cib: |
+      primitive stonith_openstack_{{node}} stonith:fence_openstack
+          params
+              auth-url="{{auth_url}}"
+              login="{{login}}"
+              passwd="{{password}}"
+              project-name="{{project_name}}"
+              uuid="{{uuid}}"
+              pcmk_host_list="{{node}}"
+          op monitor interval="60" timeout="60"
