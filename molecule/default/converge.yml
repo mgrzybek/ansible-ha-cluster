@@ -1,0 +1,10 @@
+- name: Converge
+  hosts: all
+  tasks:
+  - name: Include ../../..
+    include_role:
+      name: ../../..
+  vars:
+    cluster_name: databases
+    cluster_expected_votes: "{{ groups['all'] | length }}"
+    cluster_ping_remote_addr: 8.8.8.8

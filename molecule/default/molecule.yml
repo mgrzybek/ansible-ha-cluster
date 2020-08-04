@@ -1,0 +1,51 @@
+driver:
+  name: docker
+
+platforms:
+- name: centos8
+  registry:
+    url: docker.io/library
+  image: centos:8
+  privileged: true
+  dockerfile: Dockerfile.centos.j2
+  override_command: false
+  volumes:
+  - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  tty: true
+  buildargs:
+    container: docker
+    http_proxy: ${http_proxy}
+    https_proxy: ${https_proxy}
+    no_proxy: 127.0.0.1,localhost,0.0.0.0
+  environment:
+    container: docker
+    http_proxy: ${http_proxy}
+    https_proxy: ${https_proxy}
+    no_proxy: 127.0.0.1,localhost,0.0.0.0
+- name: ubuntu20.04
+  registry:
+    url: docker.io/library
+  image: ubuntu:20.04
+  privileged: true
+  dockerfile: Dockerfile.ubuntu.j2
+  override_command: false
+  volumes:
+  - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  tty: true
+  buildargs:
+    container: docker
+    http_proxy: ${http_proxy}
+    https_proxy: ${https_proxy}
+    no_proxy: 127.0.0.1,localhost,0.0.0.0
+  environment:
+    container: docker
+    http_proxy: ${http_proxy}
+    https_proxy: ${https_proxy}
+    no_proxy: 127.0.0.1,localhost,0.0.0.0
+
+#lint: |
+#  set -e
+#  yamllint .
+#  ansible-lint
+#  flake8
+

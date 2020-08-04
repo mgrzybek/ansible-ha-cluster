@@ -1,0 +1,6 @@
+- name: Verify
+  hosts: all
+  tasks:
+  - name: Test cluster health
+    command: crm_mon -s
+
