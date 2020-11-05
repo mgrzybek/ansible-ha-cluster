@@ -71,16 +71,6 @@
   - cluster_monitoring_use_consul | lower == 'true'
   - ansible_facts.services.consul is defined
 
-- name: Pre-Install | Create consul_bin variable
-  when: configure_consul | lower == 'true'
-  block:
-  - name: Pre-Install | Get consul path from systemd
-    systemd: name=consul
-    register: systemd_consul
-
-  - name: Pre-Install | Set consul bin path
-    set_fact: consul_bin="{{ systemd_consul.status.ExecStart | regex_replace('^.*?path=(.+?) .+$', '\\1') }}"
-
 - name: Pre-Install | Deal with self-configuration
   when: hostvars | length == 0
   block:
