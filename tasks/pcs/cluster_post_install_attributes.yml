@@ -1,6 +1,7 @@
 # Check if we use FQDNs
 - name: Get node's name
   command: crm_node -n
+  changed_when: False
   register: crm_node_name
 
 # Utilization attributes

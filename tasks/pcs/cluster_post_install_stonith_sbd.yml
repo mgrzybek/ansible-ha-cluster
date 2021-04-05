@@ -1,5 +1,7 @@
 - name: Check cluster status
-  shell: pcs configure show || true
+  command: pcs configure show
+  changed_when: False
+  failed_when: False
   register: pcs_configure_show
   run_once: true
 

@@ -35,6 +35,7 @@
 
 - name: Waits for the cluster to be online
   command: crm_mon -1
+  changed_when: False
   register: crm_mon
   until: crm_mon.stdout.find("partition with quorum") > -1
   retries: 300
@@ -103,6 +104,7 @@
 # This is an anti-splitbran system for share-nothing on two-nodes clusters
 - name: Gets the corosync ring0 IP address
   shell: awk 'BEGIN { ORS=" " } /ring0_addr/ { print $2 }' {{ cluster_corosync_configuration }}
+  changed_when: False
   register: crm_nodes_ips
   when:
   - cluster_expected_votes < 3

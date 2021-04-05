@@ -1,5 +1,7 @@
 - name: Check cluster status
-  shell: crm configure show || true
+  command: crm configure show
+  changed_when: False
+  failed_when: False
   register: crm_configure_show
   run_once: true
 

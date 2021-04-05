@@ -21,6 +21,7 @@
 
 - name: Waits for the cluster to be online
   command: crm_mon -1
+  changed_when: False
   register: crm_mon
   until: crm_mon.stdout.find("partition with quorum") > -1
   retries: 300
